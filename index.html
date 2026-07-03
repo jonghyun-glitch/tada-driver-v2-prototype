@@ -2,30 +2,40 @@
 <html lang="ko">
 <head>
 <meta charset="utf-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
-<title>타다 드라이버앱 v2 프로토타입 — 경유지 도착 인식</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"/>
+<meta name="theme-color" content="#101A3D"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="타다 드라이버 v2"/>
+<title>타다 드라이버앱 v2 프로토타입</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/spoqa/spoqa-han-sans@latest/css/SpoqaHanSansNeo.css"/>
 <style>
 :root{--font-sans:'Spoqa Han Sans Neo','Noto Sans KR',sans-serif;--color-background-primary:#12151b;--color-background-secondary:#171a21;--color-text-primary:#e8eaed;--color-text-secondary:#9aa3b2;--color-border-secondary:#2a3140;--color-text-info:#32A2FA;}
-html,body{margin:0;padding:0;background:#0b0e13;font-family:var(--font-sans);-webkit-font-smoothing:antialiased;}
-.page{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:16px 12px 40px;}
-.page h1{color:#e8eaed;font-size:16px;font-weight:700;margin:2px 0 2px;text-align:center;}
-.page .sub{color:#9aa3b2;font-size:12px;margin-bottom:2px;text-align:center;max-width:420px;line-height:1.5;}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%;background:#101A3D;font-family:var(--font-sans);-webkit-font-smoothing:antialiased;overflow:hidden;overscroll-behavior:none;}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
-</style>
-</head>
-<body>
-<div class="page">
-<h1>타다 드라이버앱 v2 — 경유지 도착 인식</h1>
-<div class="sub">인터랙티브 프로토타입 · 버튼을 눌러 흐름을 체험해보세요<br>(경로 안내받기 → 타다 복귀 → 도착 완료 → 다음 경유 · 경유 개수/글씨 크기 토글 가능)</div>
-<h2 class="sr-only">타다 드라이버앱 v2 프로토타입 — 파란 네이비 테마. 운행중 남은 경로, 현재 카드 인라인 경로 안내받기/도착 완료, 상단 버블, 전체 보기.</h2>
-<style>
-.stage{display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 0;font-family:'Spoqa Han Sans Neo','Roboto','Noto Sans KR',var(--font-sans),sans-serif}
-.surfx{background:var(--color-background-secondary);border-radius:22px;padding:18px;display:flex;flex-direction:column;align-items:center}
-.tagb{font-size:11px;font-weight:700;color:#5CB4FA;background:#0d1630;border:0.5px solid #24345c;padding:4px 10px;border-radius:8px;margin-bottom:12px}
-.ph{--navy:#101A3D;--navy2:#19254D;--navyL:#283873;--navy700:#293F71;--blue700:#0074D7;--cobalt:#0055FF;--blue:#32A2FA;--b300:#5CB4FA;--red:#FE4C00;--lemon:#EEFF00;--e6:#E6E9EF;--ef:#EFEFF1;--dim:#99A5C0;--off:#F5F6F7;--ink:#171A24;--bd:#E3E4E8;--ok:#2FA76A;width:340px;height:718px;background:var(--navy);border:8px solid #05070c;border-radius:38px;overflow:hidden;position:relative}
-.ph *{box-sizing:border-box}
+/* ===== 기기(반응형): 모바일은 화면 꽉 채움 ===== */
+#ph{--navy:#101A3D;--navy2:#19254D;--navyL:#283873;--navy700:#293F71;--blue700:#0074D7;--cobalt:#0055FF;--blue:#32A2FA;--b300:#5CB4FA;--red:#FE4C00;--lemon:#EEFF00;--e6:#E6E9EF;--ef:#EFEFF1;--dim:#99A5C0;--off:#F5F6F7;--ink:#171A24;--bd:#E3E4E8;--ok:#2FA76A;--fs:1;position:fixed;inset:0;width:100%;height:100dvh;background:var(--navy);overflow:hidden;}
 #app{height:100%;display:flex;flex-direction:column;overflow:hidden}
+/* ===== 데스크톱: 가운데 폰 프레임 ===== */
+@media (min-width:600px){
+  html,body{background:#0a0d12;}
+  body{display:flex;align-items:center;justify-content:center;}
+  #ph{position:relative;inset:auto;flex:none;width:min(392px,96vw);height:min(848px,94dvh);border:9px solid #05070c;border-radius:44px;box-shadow:0 26px 72px rgba(0,0,0,.6);}
+}
+/* ===== 프로토타입 설정(햄버거) ===== */
+.devbtn{position:fixed;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);width:44px;height:44px;border-radius:50%;background:rgba(16,26,45,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.18);color:#dfe6f2;display:flex;align-items:center;justify-content:center;font-size:21px;z-index:120;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.45);user-select:none;}
+.devbtn:active{filter:brightness(1.18)}
+.devscrim{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:118;opacity:0;pointer-events:none;transition:opacity .2s ease;}
+.devscrim.open{opacity:1;pointer-events:auto;}
+.devpanel{position:fixed;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 66px);width:min(292px,86vw);background:var(--color-background-secondary);border:1px solid var(--color-border-secondary);border-radius:16px;padding:14px;z-index:121;display:flex;flex-direction:column;gap:12px;box-shadow:0 16px 44px rgba(0,0,0,.55);transform:translateY(8px) scale(.98);opacity:0;pointer-events:none;transform-origin:bottom right;transition:opacity .18s ease,transform .18s ease;}
+.devpanel.open{opacity:1;pointer-events:auto;transform:none;}
+.devhd{display:flex;justify-content:space-between;align-items:center;color:var(--color-text-primary);font-size:13px;font-weight:700;}
+.devx{color:var(--color-text-secondary);cursor:pointer;font-size:15px;padding:2px 8px;margin:-2px -6px;}
+.ctl{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.ctl .lbl{font-size:12px;color:var(--color-text-secondary);min-width:62px;}
+.fb{font-size:13px;padding:7px 13px;border-radius:9px;border:0.5px solid var(--color-border-secondary);color:var(--color-text-secondary);cursor:pointer;background:var(--color-background-primary)}.fb.on{background:#32A2FA;color:#fff;border-color:transparent}
+/* ===== 앱 내부 UI ===== */
 .sb{flex:none;display:flex;justify-content:space-between;align-items:center;padding:9px 18px 3px;color:#fff;font-size:11px;background:#000}
 .appbar{flex:none;display:flex;gap:8px;align-items:center;justify-content:space-between;padding:6px 10px;background:var(--navy)}
 .mbtn{width:calc(40px * var(--fs,1));height:calc(40px * var(--fs,1));display:flex;align-items:center;justify-content:center;color:#cdd6e6;font-size:calc(20px * var(--fs,1));cursor:pointer;flex:0 0 auto}
@@ -88,15 +98,18 @@ html,body{margin:0;padding:0;background:#0b0e13;font-family:var(--font-sans);-we
 .paywrap{flex:1;display:flex;flex-direction:column;padding:8px 16px 8px;color:#fff}.payhd{font-size:16px;font-weight:700;padding:12px 4px 16px;color:var(--ef)}.payrow{display:flex;justify-content:space-between;align-items:center;padding:15px 4px;border-bottom:1px solid var(--navyL);font-size:16px;color:var(--dim)}.payrow b{color:#fff;font-size:19px}.paywarn{display:flex;gap:6px;color:#ff8a6b;font-size:12px;margin-top:16px}
 .donew{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:24px;color:#fff;text-align:center}.dok{color:#7fd6a0;font-size:13px;margin-bottom:14px}.dbig{font-size:22px;font-weight:700;margin-bottom:6px}.dsub{font-size:13px;color:var(--dim);margin-bottom:26px}.dcirc{width:150px;height:150px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;margin-bottom:24px;line-height:1.3}.drest{color:var(--dim);font-size:13px;border:1px solid var(--navyL);padding:10px 18px;border-radius:20px;cursor:pointer}
 .cov{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:40}.cbox{background:var(--navy2);border-radius:16px;padding:22px;width:264px;text-align:center}.ctit{color:#fff;font-size:calc(18px * var(--fs,1));font-weight:700;margin-bottom:9px;line-height:1.35}.cdsc{color:var(--dim);font-size:calc(13px * var(--fs,1));margin-bottom:18px;line-height:1.5}.cdsc b{color:#f2a33c}.cbs{display:flex;gap:10px}.cb{flex:1;padding:13px;border-radius:8px;font-size:calc(15px * var(--fs,1));font-weight:700;cursor:pointer}.cb.no{background:var(--navyL);color:var(--ef)}.cb.yes{background:var(--blue);color:#fff}
-.ctl{display:flex;align-items:center;gap:7px;justify-content:center;flex-wrap:wrap}.ctl .lbl{font-size:12px;color:var(--color-text-secondary);min-width:64px;text-align:right}
-.fb{font-size:13px;padding:6px 12px;border-radius:9px;border:0.5px solid var(--color-border-secondary);color:var(--color-text-secondary);cursor:pointer;background:var(--color-background-primary)}.fb.on{background:#32A2FA;color:#fff;border-color:transparent}
-.legend{font-size:11px;color:var(--color-text-secondary);max-width:360px;text-align:center}.legend b{color:var(--color-text-primary)}
 </style>
-<div class="stage">
-  <div class="surfx"><div class="tagb">타다 드라이버앱 v2 · 운행중 · 경유지 도착 인식</div><div class="ph" id="ph" style="--fs:1"><div id="app"></div></div></div>
+</head>
+<body>
+<h2 class="sr-only">타다 드라이버앱 v2 프로토타입 — 운행중 화면. 모바일에서 화면 전체에 반응형으로 표시되고, 프로토타입 설정(경유 개수·글씨 크기)은 우하단 톱니 버튼에 숨겨져 있습니다.</h2>
+<div id="ph" style="--fs:1"><div id="app"></div></div>
+<button class="devbtn" id="devbtn" aria-label="프로토타입 설정 열기">⚙</button>
+<div class="devscrim" id="devscrim"></div>
+<div class="devpanel" id="devpanel">
+  <div class="devhd"><span>프로토타입 설정</span><span class="devx" id="devx">✕</span></div>
   <div class="ctl"><span class="lbl">경유 개수</span><span class="fb" onclick="P.setWays(2,this)">2</span><span class="fb on" onclick="P.setWays(3,this)">3</span><span class="fb" onclick="P.setWays(5,this)">5</span></div>
   <div class="ctl"><span class="lbl">글씨(sp)</span><span class="fb on" onclick="P.setFont(1,this)">보통</span><span class="fb" onclick="P.setFont(1.25,this)">크게</span><span class="fb" onclick="P.setFont(1.5,this)">아주 크게</span></div>
-  <div class="legend"><span><b>경로 안내받기</b> → <b>↩ 타다</b> → <b>도착 완료</b> 순으로 눌러 경유지 진행을 체험하세요. 앞으로 갈 곳 탭 = 건너뛰기, <b>전체 보기</b> = 전체 경로.</span></div>
+  <div class="ctl"><span class="lbl">화면</span><span class="fb" onclick="P.reset()">↺ 처음부터</span></div>
 </div>
 <script>
 (function(){
@@ -218,6 +231,8 @@ html,body{margin:0;padding:0;background:#0b0e13;font-family:var(--font-sans);-we
   build(3);resetState();render();
 })();
 </script>
-</div>
+<script>
+(function(){var p=document.getElementById('devpanel'),s=document.getElementById('devscrim');function t(){var o=!p.classList.contains('open');p.classList.toggle('open',o);s.classList.toggle('open',o);}document.getElementById('devbtn').addEventListener('click',t);document.getElementById('devx').addEventListener('click',t);s.addEventListener('click',t);})();
+</script>
 </body>
 </html>
