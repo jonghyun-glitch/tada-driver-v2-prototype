@@ -23,6 +23,9 @@ html,body{margin:0;padding:0;height:100%;background:#101A3D;font-family:var(--fo
   html,body{background:#0a0d12;}
   body{display:flex;align-items:center;justify-content:center;}
   #ph{position:relative;inset:auto;flex:none;width:min(392px,96vw);height:min(848px,94dvh);border:9px solid #05070c;border-radius:44px;box-shadow:0 26px 72px rgba(0,0,0,.6);}
+  /* ⚙ 조정버튼·패널을 뷰포트가 아닌 가운데 폰 프레임 우하단에 앵커 */
+  body .devbtn{right:calc(50% - 174px);bottom:calc(50% - min(424px,47dvh) + 22px);}
+  body .devpanel{right:calc(50% - 174px);bottom:calc(50% - min(424px,47dvh) + 74px);}
 }
 /* ===== 프로토타입 설정(햄버거) ===== */
 .devbtn{position:fixed;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);width:44px;height:44px;border-radius:50%;background:rgba(16,26,45,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.18);color:#dfe6f2;display:flex;align-items:center;justify-content:center;font-size:21px;z-index:120;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.45);user-select:none;}
