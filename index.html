@@ -46,23 +46,28 @@ html,body{margin:0;padding:0;height:100%;background:#101A3D;font-family:var(--fo
 .achip.lm{color:var(--lemon)}.achip .ld{width:8px;height:8px;border-radius:50%;background:var(--lemon)}
 .body{flex:1 1 auto;position:relative;min-height:0;overflow:hidden;background:#E7ECF0}
 .map{position:absolute;inset:0;background:#E7ECF0}
-.pin{position:absolute;transform:translate(-50%,-50%);z-index:1}
+.pin{position:absolute;transform:translate(-50%,-88%);z-index:1}
+.mk{width:38px;height:39.5px;display:block;filter:drop-shadow(0 2px 2px rgba(10,16,36,.32))}
+.carsvg{width:24px;height:31px;display:block;filter:drop-shadow(0 2px 3px rgba(10,16,36,.3))}
+svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
+.mbtn svg{width:calc(22px * var(--fs,1));height:calc(22px * var(--fs,1))}
+.achip svg{width:calc(17px * var(--fs,1));height:calc(17px * var(--fs,1));flex:none}
 .dot{min-width:44px;height:30px;padding:0 7px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.35)}
 .dot.org{background:var(--blue700)}.dot.way{background:var(--navyL)}.dot.cur{background:var(--blue700);box-shadow:0 0 0 3px rgba(0,116,215,.35),0 1px 3px rgba(0,0,0,.35)}.dot.dest{background:var(--red)}.dot.done{background:#1f6d3e}
-.car{position:absolute;width:16px;height:16px;border-radius:50%;background:var(--cobalt);border:3px solid #fff;transform:translate(-50%,-50%);box-shadow:0 0 0 4px rgba(0,85,255,.3);z-index:2}
+.car{position:absolute;transform:translate(-50%,-50%);z-index:2}
 .bubs{position:absolute;right:10px;top:10px;display:flex;gap:8px;z-index:4}
 .bub{width:calc(60px * var(--fs,1));height:calc(60px * var(--fs,1));border-radius:15px;border:2px solid #fff;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:calc(15px * var(--fs,1));font-weight:700;color:#fff;line-height:1.12;cursor:pointer;gap:1px}
-.bub svg{width:calc(19px*var(--fs,1));height:calc(19px*var(--fs,1));fill:#fff}
+.bub svg{width:calc(23px * var(--fs,1));height:calc(23px * var(--fs,1))}
 .bub.pay{background:var(--navy2);border-color:var(--b300);padding:5px}.bub.pay .bin{background:var(--cobalt);border:1px solid #3385ff;border-radius:8px;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
 .bub.grad{background:linear-gradient(var(--navy2),var(--navyL))}.bub.chg{background:var(--navyL)}.bub.nav{background:#0044A6}
 .bottom{position:absolute;left:0;right:0;bottom:0;max-height:calc(100% - 84px * var(--fs,1));display:flex;flex-direction:column;z-index:3;min-height:0}
 .pinfo{flex:0 0 auto;padding:14px 14px 12px}
 .pcard{background:var(--navy);border-radius:12px;padding:10px;box-shadow:0 8px 5px rgba(0,0,0,.28),0 16px 12px rgba(0,0,0,.2),0 6px 15px rgba(0,0,0,.18);display:flex;flex-direction:column;gap:10px}
 .prow{display:flex;align-items:center;gap:10px;padding:0 5px}
-.pav{width:calc(28px * var(--fs,1));height:calc(28px * var(--fs,1));border-radius:50%;background:var(--navy700);display:flex;align-items:center;justify-content:center;color:#cdd6e6;font-size:calc(15px * var(--fs,1));flex:0 0 auto}
+.pav{width:calc(28px * var(--fs,1));height:calc(28px * var(--fs,1));flex:0 0 auto}.pav svg{width:100%;height:100%;display:block}
 .pnm{flex:1;min-width:0;font-size:calc(24px * var(--fs,1));font-weight:700;color:var(--ef);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pcall{color:#cdd6e6;font-size:calc(20px * var(--fs,1));padding:0 8px 0 25px;cursor:pointer}
-.preq{background:var(--navy700);border-radius:8px;padding:10px;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--ef);font-size:calc(18px * var(--fs,1));cursor:pointer}
+.pcall{color:#e6ecf7;padding:0 8px 0 25px;cursor:pointer;display:flex;align-items:center}.pcall svg{width:calc(24px * var(--fs,1));height:calc(24px * var(--fs,1));display:block}
+.preq{background:var(--navy700);border-radius:8px;padding:10px;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--ef);font-size:calc(18px * var(--fs,1));cursor:pointer}.preq .chev{display:inline-flex;color:var(--dim)}.preq .chev svg{width:calc(8px * var(--fs,1));height:calc(13px * var(--fs,1));display:block}
 .route{flex:1 1 auto;background:var(--navy);border-radius:12px 12px 0 0;box-shadow:0 -8px 24px rgba(0,0,0,.28);display:flex;flex-direction:column;gap:8px;padding:calc(6px * var(--fs,1)) 12px calc(12px * var(--fs,1));min-height:0;overflow:hidden}
 .rhd{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:calc(12px * var(--fs,1)) 16px}
 .rhd .t{font-size:calc(18px * var(--fs,1));font-weight:700;color:var(--e6);white-space:nowrap}
@@ -115,7 +120,19 @@ html,body{margin:0;padding:0;height:100%;background:#101A3D;font-family:var(--fo
 </div>
 <script>
 (function(){
-  var NAV='<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M3 11l18-7-7 18-2.6-8.4z"/></svg>';
+  var IC={
+    menu:'<svg class="i" viewBox="0 0 24 24"><path d="M0 3H24V5.5H0V3Z"/><path d="M0 10.75H24V13.25H0V10.75Z"/><path d="M24 18.5H0V21H24V18.5Z"/></svg>',
+    reserv:'<svg class="is" viewBox="0 0 24 24"><path d="M8.5 7V1.5M15.5 1.5V7M8.67 11.51L10.82 14L15.38 10.59M3.25 4.25H20.75V19.75H3.25V4.25Z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    navi:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#F9F9F9"/><path d="M13.9 19.72L10.65 14.77L4.83 13.66L4.62 12.59L17.36 4.74L14.97 19.51L13.9 19.72Z" fill="#0074D7"/></svg>',
+    navarrow:'<svg viewBox="0 0 24 24"><path d="M15 6V1L24 7.5L15 14V10H14C11.19 10 10 11.39 10 15V23H6V15C6 9.3 8.83 6 14 6H15Z"/></svg>',
+    person:'<svg viewBox="0 0 28 28"><path fill-rule="evenodd" clip-rule="evenodd" d="M14 28C21.732 28 28 21.732 28 14C28 6.26801 21.732 0 14 0C6.26801 0 0 6.26801 0 14C0 21.732 6.26801 28 14 28ZM16.8039 9.18737C16.8039 10.879 15.4785 12.2497 13.844 12.2497C12.2095 12.2497 10.8842 10.879 10.8842 9.18737C10.8842 7.49578 12.2095 6.125 13.844 6.125C15.4785 6.125 16.8039 7.49578 16.8039 9.18737ZM7 20.125L7.56467 14.5591C7.56467 14.5591 14.1575 13.8218 20.5613 14.4926L21 20.0573L7 20.125Z" fill="#C2CADB"/></svg>',
+    phone:'<svg class="i" viewBox="0 0 28 28"><path d="M17.83 17.9L17.19 21.8C17.19 21.8 13.98 20.52 11.44 17.25C8.91 13.98 7.61 9.45 7.61 9.45L11.44 8.8V1H2.5V9.21C2.5 9.8 2.58 10.39 2.77 10.94C3.34 12.62 4.85 16.5 7.61 19.85C9.81 22.52 12.15 24.57 13.66 25.78C14.69 26.61 15.98 27 17.3 27H25.5V17.9H17.83Z"/></svg>',
+    next:'<svg class="i" viewBox="0 0 10 16"><path d="M0.625 1.78L7.33 7.89L0.74 13.9L2.07 15.11L9.99 7.89L1.95 0.57L0.625 1.78Z"/></svg>'
+  };
+  var NAV=IC.navarrow;
+  function pinSVG(label,fill,tc){var fs=(label==='✓')?19:(label.length>=3?11:13);return '<svg class="mk" viewBox="0 0 50 52"><ellipse cx="25" cy="46" rx="14" ry="4.5" fill="#0a1024" opacity="0.22"/><path d="M4 0.5H46C47.933 0.5 49.5 2.067 49.5 4V27C49.5 28.933 47.933 30.5 46 30.5H26V45C26 45.55 25.55 46 25 46C24.45 46 24 45.55 24 45V30.5H4C2.067 30.5 0.5 28.933 0.5 27V4C0.5 2.067 2.067 0.5 4 0.5Z" fill="'+fill+'" stroke="rgba(0,0,0,.14)"/><text x="25" y="15.8" text-anchor="middle" dominant-baseline="central" font-family="SpoqaHanSans,sans-serif" font-weight="700" font-size="'+fs+'" fill="'+tc+'">'+label+'</text></svg>';}
+  function pinFor(i){var s=stops[i],fill,label;if(isDone(i)){fill='#2E7D52';label='✓';}else if(s.t==='origin'){fill='#0074D7';label='출발';}else if(s.t==='dest'){fill='#FE4C00';label='도착';}else if(i===nextArmed()){fill='#0074D7';label='경유'+s.n;}else{fill='#556895';label='경유'+s.n;}return pinSVG(label,fill,'#fff');}
+  function carSVG(){return '<svg class="carsvg" viewBox="0 0 26 34"><ellipse cx="13" cy="30.5" rx="8.5" ry="2.8" fill="#0a1024" opacity="0.2"/><rect x="3.5" y="1.5" width="19" height="29" rx="7.5" fill="#fff" stroke="rgba(0,0,0,.15)"/><path d="M6.6 10.6C10.4 8.5 15.6 8.5 19.4 10.6L18.3 15C15 13.5 11 13.5 7.7 15L6.6 10.6Z" fill="#26365F"/><rect x="7.6" y="18" width="10.8" height="8.5" rx="2.5" fill="#3C4E77"/></svg>';}
   var origin={t:'origin',name:'위워크 삼성역점',addr:'서울 강남구 청담동 92-18',short:'삼성역'};
   var dest={t:'dest',name:'뚝섬역 1번 출구',addr:'서울 성동구 성수동1가 685',short:'뚝섬역'};
   var POOL=[
@@ -136,17 +153,17 @@ html,body{margin:0;padding:0;height:100%;background:#101A3D;font-family:var(--fo
   function routePath(){var d='M'+PCT[0][0]+' '+PCT[0][1];for(var i=1;i<PCT.length;i++)d+=' L'+PCT[i][0]+' '+PCT[i][1];return d}
   function mapBg(){return '<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%"><rect width="100" height="100" fill="#E7ECF0"/><rect x="0" y="30" width="100" height="7" fill="#fff" opacity="0.85"/><rect x="44" y="0" width="5" height="100" fill="#fff" opacity="0.8"/><rect x="10" y="40" width="26" height="18" fill="#DCEAD7" opacity="0.7"/><path d="'+routePath()+'" stroke="#2E7CE0" stroke-width="5" vector-effect="non-scaling-stroke" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.9"/></svg>'}
   function sb(){return '<div class="sb"><span>12:45</span><span>· · · ·  100%</span></div>'}
-  function appbar(){return '<div class="appbar"><div class="mbtn">☰</div><div class="abr"><span class="achip">▦ 예약콜</span><span class="achip lm"><span class="ld"></span> 미리배차 켜짐</span></div></div>'}
-  function passenger(){return '<div class="pinfo"><div class="pcard"><div class="prow"><span class="pav">◠</span><span class="pnm">김지혜</span><span class="pcall">✆</span></div><div class="preq">고객 요청사항 보기 <span style="color:var(--dim)">›</span></div></div></div>'}
-  function dotc(i){var s=stops[i],c,v=(''+(s.n||''));if(isDone(i)){c='done';v='✓'}else if(s.t==='origin'){c='org';v='출발'}else if(s.t==='dest'){c='dest';v='도착'}else{c=(i===nextArmed())?'cur':'way'}return '<div class="pin" style="left:'+PCT[i][0]+'%;top:'+PCT[i][1]+'%"><div class="dot '+c+'">'+v+'</div></div>'}
-  function markers(){var h='';for(var i=0;i<stops.length;i++)h+=dotc(i);h+='<div class="car" style="left:'+PCT[S.lastAt][0]+'%;top:'+PCT[S.lastAt][1]+'%"></div>';return h}
-  function bubbles(pay){var h='';if(pay)h+='<div class="bub pay"><div class="bin">결제</div></div>';h+='<div class="bub grad">예약</div><div class="bub chg">경로<br>변경</div><div class="bub nav">'+NAV+'<span>내비</span></div>';return '<div class="bubs">'+h+'</div>'}
+  function appbar(){return '<div class="appbar"><div class="mbtn">'+IC.menu+'</div><div class="abr"><span class="achip">'+IC.reserv+'예약콜</span><span class="achip lm"><span class="ld"></span> 미리배차 켜짐</span></div></div>'}
+  function passenger(){return '<div class="pinfo"><div class="pcard"><div class="prow"><span class="pav">'+IC.person+'</span><span class="pnm">김지혜</span><span class="pcall">'+IC.phone+'</span></div><div class="preq">고객 요청사항 보기 <span class="chev">'+IC.next+'</span></div></div></div>'}
+  function dotc(i){return '<div class="pin" style="left:'+PCT[i][0]+'%;top:'+PCT[i][1]+'%">'+pinFor(i)+'</div>'}
+  function markers(){var h='';for(var i=0;i<stops.length;i++)h+=dotc(i);h+='<div class="car" style="left:'+PCT[S.lastAt][0]+'%;top:'+PCT[S.lastAt][1]+'%">'+carSVG()+'</div>';return h}
+  function bubbles(pay){var h='';if(pay)h+='<div class="bub pay"><div class="bin">결제</div></div>';h+='<div class="bub grad">예약</div><div class="bub chg">경로<br>변경</div><div class="bub nav">'+IC.navi+'<span>내비</span></div>';return '<div class="bubs">'+h+'</div>'}
   function cardHTML(s,o){var nav=o.nav?'<span class="cnav" onclick="'+o.navClick+'">'+NAV+'</span>':'';return '<div class="crd"><div class="crd-top"><span class="badge '+bcls(s)+'">'+bt(s)+'</span><div class="cinfo"><div class="cname">'+s.name+'</div><div class="caddr">'+s.addr+'</div></div>'+nav+'</div><div class="cbtn '+o.btnCls+'" onclick="'+o.btnClick+'">'+o.label+'</div></div>'}
   function goCard(i){return cardHTML(stops[i],{btnCls:'go',label:'경로 안내받기',btnClick:'P.startNav()',nav:false})}
   function irow(i,navOn){var s=stops[i];return '<div class="irow tap" onclick="P.askGo('+i+')"><span class="badge '+bcls(s)+'">'+bt(s)+'</span><div class="nm">'+s.name+'</div><span class="rnav'+(navOn?' on':'')+'">'+NAV+'</span></div>'}
   function shell(mapInner,bottomInner){return sb()+appbar()+'<div class="body"><div class="map">'+mapInner+'</div><div class="bottom">'+bottomInner+'</div></div>'}
-  function pickup(){var s=stops[0];var go=(S.pphase==='go');var hdr=go?'출발하기':'출발지로 이동 중';var c=cardHTML(s,go?{btnCls:'go',label:'고객 위치로 출발하기',btnClick:'P.goPickupNav()',nav:false}:{btnCls:'done',label:'고객에게 도착 알리기',btnClick:'P.notifyArrived()',nav:true,navClick:'P.goPickupNav()'});var mapInner=mapBg()+'<div class="pin" style="left:60%;top:26%"><div class="dot cur">출발</div></div><div class="car" style="left:33%;top:54%"></div>'+bubbles(false);var route='<div class="route"><div class="rhd"><span class="t">'+hdr+'</span></div><div class="plist">'+c+'</div></div>';return shell(mapInner,passenger()+route)}
-  function ptmap(){return sb()+'<div class="tnav"><span class="tn-a">⤴</span><div><div class="tn-d">320m</div><div class="tn-r">'+stops[0].short+' 방면</div></div><span class="tn-t">T map</span></div><div class="tmapmap">'+mapBg()+'<div class="pin" style="left:70%;top:20%"><div class="dot cur">출발</div></div><div class="car" style="left:20%;top:64%"></div><div class="ttip">'+stops[0].name+' 도착 → <b>타다</b> 복귀</div><div class="tovr"><span class="tob">경로<br>변경</span><span class="tob tada" onclick="P.backPickup()">↩<br>타다</span></div></div><div class="tbar"><span>1.2km · 오후 3:52</span><span>✕</span></div>'}
+  function pickup(){var s=stops[0];var go=(S.pphase==='go');var hdr=go?'출발하기':'출발지로 이동 중';var c=cardHTML(s,go?{btnCls:'go',label:'고객 위치로 출발하기',btnClick:'P.goPickupNav()',nav:false}:{btnCls:'done',label:'고객에게 도착 알리기',btnClick:'P.notifyArrived()',nav:true,navClick:'P.goPickupNav()'});var mapInner=mapBg()+'<div class="pin" style="left:60%;top:26%">'+pinSVG('출발','#0074D7','#fff')+'</div><div class="car" style="left:33%;top:54%">'+carSVG()+'</div>'+bubbles(false);var route='<div class="route"><div class="rhd"><span class="t">'+hdr+'</span></div><div class="plist">'+c+'</div></div>';return shell(mapInner,passenger()+route)}
+  function ptmap(){return sb()+'<div class="tnav"><span class="tn-a">⤴</span><div><div class="tn-d">320m</div><div class="tn-r">'+stops[0].short+' 방면</div></div><span class="tn-t">T map</span></div><div class="tmapmap">'+mapBg()+'<div class="pin" style="left:70%;top:20%">'+pinSVG('출발','#0074D7','#fff')+'</div><div class="car" style="left:20%;top:64%">'+carSVG()+'</div><div class="ttip">'+stops[0].name+' 도착 → <b>타다</b> 복귀</div><div class="tovr"><span class="tob">경로<br>변경</span><span class="tob tada" onclick="P.backPickup()">↩<br>타다</span></div></div><div class="tbar"><span>1.2km · 오후 3:52</span><span>✕</span></div>'}
   function preview(){var rows='';for(var i=0;i<stops.length;i++){rows+=irow(i,i===0)}var mapInner=mapBg()+markers()+bubbles(false);var route='<div class="route"><div class="rhd"><span class="t">남은 경로 '+(WAYS+1)+'개</span></div><div class="plist">'+rows+'</div><div class="barfull" onclick="P.start()">운행 시작하기</div></div>';return shell(mapInner,passenger()+route)}
   function driveRoute(){var cur=nextArmed();var rem=stops.length-cur;var go=(S.phase==='go');var s=stops[cur];var dest=(s.t==='dest');var c;if(go){c=goCard(cur)}else{c=cardHTML(s,{btnCls:'done',label:dest?'요금 결제하기':'도착 완료',btnClick:dest?'P.pay()':'P.complete()',nav:true,navClick:'P.startNav()'})}var up='';for(var i=cur+1;i<stops.length;i++)up+=irow(i,false);return '<div class="route"><div class="rhd"><span class="t">남은 경로 '+rem+'개</span><span class="see" onclick="P.full()">전체 보기 ›</span></div><div class="plist">'+c+up+'</div></div>'}
   function drive(){var mapInner=mapBg()+markers()+bubbles(true);return shell(mapInner,passenger()+driveRoute())}
