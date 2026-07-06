@@ -229,7 +229,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
       var cel=app.querySelector('.rhd .t');if(cel)cel.textContent='남은 경로 '+(stops.length-ncur)+'개';
       void app.offsetWidth;
       requestAnimationFrame(function(){requestAnimationFrame(function(){
-        oldCard.style.transition='max-height .46s '+E;oldCard.style.maxHeight='0px';
+        oldCard.style.transition='max-height .46s '+E+',margin-bottom .46s '+E;oldCard.style.maxHeight='0px';oldCard.style.marginBottom='-2px';
         nextCard.style.transition='max-height .46s '+E+',border-color .4s ease .05s';nextCard.style.maxHeight=H_full+'px';nextCard.style.borderColor='var(--bd)';
         if(nm){nm.style.transition='transform .44s '+E+',color .4s ease';nm.style.transform='scale(1)';nm.style.color='#fff'}
         if(ad){ad.style.transition='opacity .32s ease .12s';ad.style.opacity='1'}
@@ -262,9 +262,9 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
     if(bubs&&!bubs.querySelector('.bub.pay')){pb=document.createElement('div');pb.className='bub pay';pb.innerHTML='<div class="bin">결제</div>';pb.style.opacity='0';bubs.insertBefore(pb,bubs.firstChild)}
     void app.offsetWidth;
     requestAnimationFrame(function(){requestAnimationFrame(function(){
-      if(barfull){barfull.style.transition='opacity .3s ease,transform .34s '+E+',max-height .42s '+E+' .05s,margin .42s '+E+' .05s,padding .42s '+E+' .05s';barfull.style.opacity='0';barfull.style.transform='translateY(18px)';barfull.style.maxHeight='0px';barfull.style.marginTop='0';barfull.style.marginBottom='0';barfull.style.paddingTop='0';barfull.style.paddingBottom='0'}
+      if(barfull){barfull.style.transition='opacity .3s ease,transform .34s '+E+',max-height .42s '+E+' .05s,margin .42s '+E+' .05s,padding .42s '+E+' .05s';barfull.style.opacity='0';barfull.style.transform='translateY(18px)';barfull.style.maxHeight='0px';barfull.style.marginTop='-8px';barfull.style.marginBottom='0';barfull.style.paddingTop='0';barfull.style.paddingBottom='0'}
       if(preq){preq.style.transition='max-height .4s '+E+',opacity .26s ease,margin-top .4s '+E+',padding .4s '+E;preq.style.maxHeight='0px';preq.style.opacity='0';preq.style.marginTop='-10px';preq.style.paddingTop='0';preq.style.paddingBottom='0'}
-      startRow.style.transition='max-height .44s '+E+',opacity .3s ease,transform .36s '+E;startRow.style.opacity='0';startRow.style.transform='translateY(-12px)';startRow.style.maxHeight='0px';
+      startRow.style.transition='max-height .44s '+E+',opacity .3s ease,transform .36s '+E+',margin-bottom .44s '+E;startRow.style.opacity='0';startRow.style.transform='translateY(-12px)';startRow.style.maxHeight='0px';startRow.style.marginBottom='-2px';
       newCard.style.transition='max-height .5s '+E+',border-color .42s ease .06s';newCard.style.maxHeight=H_full+'px';newCard.style.borderColor='var(--bd)';
       if(nm){nm.style.transition='transform .48s '+E+',color .42s ease';nm.style.transform='scale(1)';nm.style.color='#fff'}
       if(ad){ad.style.transition='opacity .34s ease .16s';ad.style.opacity='1'}
