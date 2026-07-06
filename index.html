@@ -106,6 +106,16 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 .tbar{flex:none;display:flex;align-items:center;justify-content:space-between;padding:13px 17px;background:var(--navy);color:#cdd6e6;font-size:13px;font-weight:600}
 .tovr{position:absolute;right:12px;top:14px;display:flex;flex-direction:column;gap:8px;z-index:3}.tob{min-width:54px;padding:9px 6px;border-radius:14px;background:var(--navyL);color:#fff;font-size:12px;font-weight:700;text-align:center;line-height:1.15}.tob.tada{background:var(--blue);cursor:pointer}
 .ttip{position:absolute;left:50%;top:14px;transform:translateX(-50%);background:rgba(16,26,61,.95);color:#cdd6e6;font-size:11px;padding:6px 12px;border-radius:20px;white-space:nowrap;z-index:3}.ttip b{color:var(--b300)}
+.tsel-hd{flex:none;display:flex;align-items:center;gap:12px;padding:14px 16px;background:#fff;color:#20232B}
+.tsel-back{font-size:22px;line-height:1;color:#3a3f4a;cursor:pointer;flex:none}
+.tsel-dst{flex:1;min-width:0}.tsel-dst .d1{font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tsel-dst .d2{font-size:12px;color:#8a8f9c;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tsel-logo{flex:none;font-size:12px;font-weight:800;color:#0064FF;letter-spacing:.3px}
+.tsel-sheet{flex:none;background:#fff;border-top:1px solid #eef0f2}
+.tsel-opt{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer}.tsel-opt+.tsel-opt{border-top:1px solid #f0f1f3}
+.tsel-oi{flex:1;min-width:0}.tsel-oi b{display:block;font-size:16px;font-weight:700;color:#20232B}.tsel-oi span{display:block;font-size:12.5px;color:#8a8f9c;margin-top:3px}
+.tsel-go{flex:none;display:flex;align-items:center;gap:6px;background:#0064FF;color:#fff;font-size:16px;font-weight:700;padding:11px 17px;border-radius:24px}
+.tsel-cd{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:rgba(255,255,255,.26);font-size:12px;font-weight:700}
+.tsel-go2{flex:none;background:#fff;color:#4a4f5a;font-size:16px;font-weight:700;padding:10px 19px;border-radius:24px;border:1.5px solid #d5d8de}
 .full{flex:1;display:flex;flex-direction:column;background:var(--navy);min-height:0}
 .fhd{flex:none;display:flex;align-items:center;justify-content:space-between;padding:16px 14px 12px;color:#fff;font-size:calc(20px * var(--fs,1));font-weight:700}
 .fsum{display:flex;gap:8px;padding:0 16px 12px}
@@ -178,11 +188,14 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
   function drive(){var mapInner=mapBg()+markers()+bubbles(true);return shell(mapInner,passenger(true)+driveRoute())}
   function full(){var rows='';for(var i=0;i<stops.length;i++){var s=stops[i],done=(i===0)||isDone(i),unc=isUnc(i),cur=(i===nextArmed()&&!done&&!unc);var st=done?'<span style="color:var(--green);font-size:calc(16px*var(--fs,1));font-weight:700;white-space:nowrap">✓ 완료</span>':(unc?'<span style="color:var(--amber);font-size:calc(15px*var(--fs,1));font-weight:700;white-space:nowrap">? 미확인</span>':'');var right='<span style="display:inline-flex;align-items:center;gap:10px">'+st+'<span class="rnav on" onclick="P.peekGo('+i+')">'+NAV+'</span></span>';rows+='<div class="irow"><span class="badge '+bcls(s)+'">'+bt(s)+'</span><div class="nm" style="color:'+(done?'var(--dim)':'#fff')+'">'+s.name+'</div>'+right+'</div>'}var dn=S.done.length+1,uc=S.uncertain.length;return sb()+'<div class="full"><div class="fhd"><span onclick="P.closeFull()" style="cursor:pointer">← 전체 경로</span><span style="font-size:calc(13px*var(--fs,1));color:var(--dim)">경유 '+WAYS+'</span></div><div class="fsum"><div class="fsc"><div class="n">'+stops.length+'</div><div class="l">전체</div></div><div class="fsc done"><div class="n">'+dn+'</div><div class="l">도착 완료</div></div><div class="fsc unc"><div class="n">'+uc+'</div><div class="l">미확인</div></div></div><div class="plist" style="flex:1">'+rows+'</div></div>'}
   function tmap(){var s=stops[S.target];return sb()+'<div class="tnav"><span class="tn-a">⤴</span><div><div class="tn-d">137m</div><div class="tn-r">'+s.short+' 방면</div></div><span class="tn-t">T map</span></div><div class="tmapmap">'+mapBg()+markers()+'<div class="ttip">'+s.name+' 도착 → <b>타다</b> 복귀</div><div class="tovr"><span class="tob">경로<br>변경</span><span class="tob tada" onclick="P.backTmap()">↩<br>타다</span></div></div><div class="tbar"><span>4.1km · 오후 4:07</span><span>✕</span></div>'}
+  function tmapsel(){var s=stops[S.target];return sb()+'<div class="tsel-hd"><span class="tsel-back" onclick="P.cancelNav()">←</span><div class="tsel-dst"><div class="d1">'+s.name+'</div><div class="d2">'+s.addr+'</div></div><span class="tsel-logo">T map</span></div><div class="tmapmap">'+mapBg()+markers()+'</div><div class="tsel-sheet"><div class="tsel-opt reco" onclick="P.startGuide()"><div class="tsel-oi"><b>티맵 추천</b><span>13분 · 4.1km · 0원</span></div><div class="tsel-go">안내<span class="tsel-cd" id="navcd">15</span></div></div><div class="tsel-opt" onclick="P.startGuide()"><div class="tsel-oi"><b>최소시간</b><span>12분 · 5.2km · 통행료 1,200원</span></div><div class="tsel-go2">안내</div></div></div>'}
+  function clearNavCd(){if(S._navcd){clearInterval(S._navcd);S._navcd=null}}
+  function startNavCd(){clearNavCd();var n=15;var id=setInterval(function(){var e=document.getElementById('navcd');if(!e){clearInterval(id);return}n--;if(n<0)n=0;e.textContent=n;if(n<=0){clearInterval(id);if(S._navcd===id)S._navcd=null;P.startGuide()}},1000);S._navcd=id}
   function pay(){return sb()+'<div class="paywrap"><div class="payhd">← 최종 요금 결제</div><div class="payrow"><span>운행요금</span><b>24,600원</b></div><div class="payrow"><span>통행료</span><b>+0원</b></div><div class="paywarn">⚠ 절대 카드/현금을 직접 받지 마세요.</div></div><div class="barfull" onclick="P.finish()">24,600원 결제하기</div>'}
   function done(){return sb()+'<div class="donew"><div class="dok">✓ 결제 완료</div><div class="dbig">운행 완료</div><div class="dsub">8초 뒤 콜 수신이 자동 진행됩니다.</div><div class="dcirc">콜 바로<br>수신하기</div><div class="drest" onclick="P.reset()">↺ 처음부터 다시</div></div>'}
   function cov(){var i=S.confirm,s=stops[i];return '<div class="cov"><div class="cbox"><div class="ctit">'+bt(s)+' '+s.name+'(으)로<br>먼저 가시겠어요?</div><div class="cdsc">사이 경유지는 <b>도착 미확인</b>으로 둘게요.</div><div class="cbs"><div class="cb no" onclick="P.confirmNo()">아니요</div><div class="cb yes" onclick="P.confirmYes()">네, 안내</div></div></div></div>'}
-  function html(){return S.screen==='pickup'?pickup():S.screen==='ptmap'?ptmap():S.screen==='preview'?preview():S.screen==='drive'?drive():S.screen==='full'?full():S.screen==='tmap'?tmap():S.screen==='pay'?pay():done()}
-  function render(){var h=html();if(S.confirm!=null)h+=cov();var app=document.getElementById('app');var ch=(S._last!==S.screen);app.innerHTML=h;if(ch){app.style.transition='none';app.style.opacity='0';void app.offsetWidth;app.style.transition='opacity .2s ease';app.style.opacity='1'}S._last=S.screen}
+  function html(){return S.screen==='pickup'?pickup():S.screen==='ptmap'?ptmap():S.screen==='preview'?preview():S.screen==='drive'?drive():S.screen==='full'?full():S.screen==='tmapsel'?tmapsel():S.screen==='tmap'?tmap():S.screen==='pay'?pay():done()}
+  function render(){var h=html();if(S.confirm!=null)h+=cov();var app=document.getElementById('app');var ch=(S._last!==S.screen);app.innerHTML=h;if(ch){app.style.transition='none';app.style.opacity='0';void app.offsetWidth;app.style.transition='opacity .2s ease';app.style.opacity='1'}S._last=S.screen;if(S.screen==='tmapsel'){startNavCd()}else{clearNavCd()}}
   function advance(cur){
     var app=document.getElementById('app');var plist=app.querySelector('.plist');
     var oldCard=plist?plist.querySelector('.crd'):null;var oldRow=plist?plist.querySelector('.irow'):null;
@@ -240,23 +253,25 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
   window.P={
     setFont:function(v,el){var ph=document.getElementById('ph');ph.style.setProperty('--fs',v);ph.classList.toggle('tight',v>=1.25);var b=el.parentNode.querySelectorAll('.fb');for(var i=0;i<b.length;i++)b[i].classList.remove('on');el.classList.add('on')},
     setWays:function(n,el){build(n);resetState();var b=el.parentNode.querySelectorAll('.fb');for(var i=0;i<b.length;i++)b[i].classList.remove('on');el.classList.add('on');render()},
-    goPickupNav:function(){if(S.busy)return;appOpen(ptmap(),function(){S.screen='ptmap';S._last='ptmap';render()})},
+    goPickupNav:function(){if(S.busy)return;S.target=0;S.navReturn='pickup';appOpen(tmapsel(),function(){S.screen='tmapsel';S._last='tmapsel';render()})},
     backPickup:function(){if(S.busy)return;S.pphase='arrived';appClose(pickup(),function(){S.screen='pickup';S._last='pickup';render()})},
     notifyArrived:function(){S.screen='preview';render()},
     start:function(){S.phase='go';S.screen='drive';render()},
-    startNav:function(){if(S.busy)return;S.target=nextArmed();S.navReturn='drive';S.navProgress=true;appOpen(tmap(),function(){S.screen='tmap';S._last='tmap';render()})},
+    startNav:function(){if(S.busy)return;S.target=nextArmed();S.navReturn='drive';S.navProgress=true;appOpen(tmapsel(),function(){S.screen='tmapsel';S._last='tmapsel';render()})},
+    startGuide:function(){if(S.busy)return;clearNavCd();S.screen=(S.navReturn==='pickup')?'ptmap':'tmap';render()},
+    cancelNav:function(){if(S.busy)return;clearNavCd();var r=S.navReturn||'drive';var h=(r==='pickup')?pickup():(r==='preview')?preview():(r==='full')?full():drive();appClose(h,function(){S.screen=r;S._last=r;render()})},
     backTmap:function(){if(S.busy)return;if(S.navProgress){S.lastAt=S.target;S.phase='arrived';appClose(drive(),function(){S.screen='drive';S._last='drive';render()})}else{var ret=S.navReturn||'drive';var h=(ret==='preview')?preview():(ret==='full')?full():drive();appClose(h,function(){S.screen=ret;S._last=ret;render()})}},
     complete:function(){if(S.busy)return;var cur=nextArmed();S.busy=true;advance(cur)},
     pay:function(){S.screen='pay';render()},
     full:function(){S.screen='full';render()},
     closeFull:function(){S.screen='drive';render()},
-    askGo:function(i){if(S.busy)return;var a=nextArmed();if(i>a){P.toast('아직 안내할 수 없습니다');return}S.target=i;S.navReturn=S.screen;S.navProgress=(i===a);appOpen(tmap(),function(){S.screen='tmap';S._last='tmap';render()})},
-    peekGo:function(i){if(S.busy)return;S.target=i;S.navReturn=S.screen;S.navProgress=false;appOpen(tmap(),function(){S.screen='tmap';S._last='tmap';render()})},
+    askGo:function(i){if(S.busy)return;var a=nextArmed();if(i>a){P.toast('아직 안내할 수 없습니다');return}S.target=i;S.navReturn=S.screen;S.navProgress=(i===a);appOpen(tmapsel(),function(){S.screen='tmapsel';S._last='tmapsel';render()})},
+    peekGo:function(i){if(S.busy)return;S.target=i;S.navReturn=S.screen;S.navProgress=false;appOpen(tmapsel(),function(){S.screen='tmapsel';S._last='tmapsel';render()})},
     confirmNo:function(){S.confirm=null;render()},
-    confirmYes:function(){var i=S.confirm;S.confirm=null;var a=nextArmed();if(i>a){for(var j=a;j<i;j++){if(stops[j].t==='way'&&!isDone(j)&&!isUnc(j))S.uncertain.push(j)}}S.target=i;appOpen(tmap(),function(){S.screen='tmap';S._last='tmap';render()})},
+    confirmYes:function(){var i=S.confirm;S.confirm=null;var a=nextArmed();if(i>a){for(var j=a;j<i;j++){if(stops[j].t==='way'&&!isDone(j)&&!isUnc(j))S.uncertain.push(j)}}S.target=i;appOpen(tmapsel(),function(){S.screen='tmapsel';S._last='tmapsel';render()})},
     finish:function(){S.screen='done';render()},
     toast:function(msg){var ph=document.getElementById('ph');var old=document.getElementById('toast');if(old&&old.parentNode)old.parentNode.removeChild(old);var t=document.createElement('div');t.id='toast';t.className='toast';t.textContent=msg;ph.appendChild(t);requestAnimationFrame(function(){requestAnimationFrame(function(){t.classList.add('on')})});clearTimeout(P._tt);P._tt=setTimeout(function(){t.classList.remove('on');setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t)},260)},1700)},
-    reset:function(){resetState();render()}
+    reset:function(){clearNavCd();resetState();render()}
   };
   build(3);resetState();render();
 })();
