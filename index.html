@@ -70,9 +70,11 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 .pcard{background:var(--navy);border-radius:12px;padding:10px;box-shadow:0 8px 5px rgba(0,0,0,.28),0 16px 12px rgba(0,0,0,.2),0 6px 15px rgba(0,0,0,.18);display:flex;flex-direction:column;gap:10px}
 .prow{display:flex;align-items:center;gap:10px;padding:0 5px}
 .pav{width:calc(28px * var(--fsx));height:calc(28px * var(--fsx));flex:0 0 auto}.pav svg{width:100%;height:100%;display:block}
-.pnm{flex:1;min-width:0;font-size:calc(24px * var(--fsd));font-weight:700;color:var(--ef);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pnm{flex:1;min-width:0;font-size:calc(24px * var(--fsd));font-weight:700;color:var(--ef);word-break:keep-all;overflow-wrap:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .pcall{color:#e6ecf7;padding:0 8px 0 25px;cursor:pointer;display:flex;align-items:center}.pcall svg{width:calc(24px * var(--fsx));height:calc(24px * var(--fsx));display:block}
 .preq{background:var(--navy700);border-radius:8px;padding:10px;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--ef);font-size:calc(18px * var(--fs,1));cursor:pointer}.preq .chev{display:inline-flex;color:var(--dim)}.preq .chev svg{width:calc(8px * var(--fs,1));height:calc(13px * var(--fs,1));display:block}
+/* 확대(tight) 시 승객카드 축약: 요청사항 행 접기(정체성 행=이름·전화만 유지). 케이스 무관—행이 없으면 자동으로 이미 컴팩트 */
+#ph.tight .preq{display:none}
 .route{flex:1 1 auto;background:var(--navy);border-radius:12px 12px 0 0;box-shadow:0 -8px 24px rgba(0,0,0,.28);display:flex;flex-direction:column;gap:8px;padding:calc(6px * var(--fs,1)) 12px calc(12px * var(--fs,1));min-height:0;overflow:hidden}
 .rhd{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:calc(12px * var(--fsx)) 16px}
 .rhd .t{font-size:calc(18px * var(--fs,1));font-weight:700;color:var(--e6);white-space:nowrap}
@@ -234,7 +236,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
     requestAnimationFrame(function(){requestAnimationFrame(function(){var E='cubic-bezier(.2,0,0,1)';bw.style.transition='transform .44s '+E+',border-radius .44s '+E;bw.style.transform='translateX(0) scale(1)';bw.style.borderRadius='0px';scr.style.transition='opacity .44s';scr.style.opacity='0';fore.style.transition='transform .44s '+E;fore.style.transform='translateX(100%)';setTimeout(function(){if(after)after();if(sw.parentNode)sw.parentNode.removeChild(sw);S.busy=false},460)})});
   }
   window.P={
-    setFont:function(v,el){document.getElementById('ph').style.setProperty('--fs',v);var b=el.parentNode.querySelectorAll('.fb');for(var i=0;i<b.length;i++)b[i].classList.remove('on');el.classList.add('on')},
+    setFont:function(v,el){var ph=document.getElementById('ph');ph.style.setProperty('--fs',v);ph.classList.toggle('tight',v>=1.25);var b=el.parentNode.querySelectorAll('.fb');for(var i=0;i<b.length;i++)b[i].classList.remove('on');el.classList.add('on')},
     setWays:function(n,el){build(n);resetState();var b=el.parentNode.querySelectorAll('.fb');for(var i=0;i<b.length;i++)b[i].classList.remove('on');el.classList.add('on');render()},
     goPickupNav:function(){if(S.busy)return;appOpen(ptmap(),function(){S.screen='ptmap';S._last='ptmap';render()})},
     backPickup:function(){if(S.busy)return;S.pphase='arrived';appClose(pickup(),function(){S.screen='pickup';S._last='pickup';render()})},
