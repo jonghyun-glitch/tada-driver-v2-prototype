@@ -209,7 +209,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
     var app=document.getElementById('app');var plist=app.querySelector('.plist');
     var oldCard=plist?plist.querySelector('.crd'):null;var oldRow=plist?plist.querySelector('.irow'):null;
     if(!plist||!oldCard||!oldRow){if(S.done.indexOf(cur)<0)S.done.push(cur);S.lastAt=cur;S.phase='go';render();S.busy=false;return}
-    var E='cubic-bezier(.3,0,0,1)';
+    var E='cubic-bezier(.65,0,.35,1)';
     var obtn=oldCard.querySelector('.cbtn');if(obtn){obtn.className='cbtn ok';obtn.textContent='✓ 도착 완료'}
     oldCard.style.overflow='hidden';oldCard.style.maxHeight=oldCard.offsetHeight+'px';
     setTimeout(function(){
@@ -244,7 +244,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
     var rows=plist?plist.querySelectorAll('.irow'):[];var barfull=app.querySelector('.barfull');var preq=app.querySelector('.preq');
     var cur=nextArmed();
     if(!plist||rows.length<2||!rows[cur]){S.phase='go';S.screen='drive';render();S.busy=false;return}
-    var E='cubic-bezier(.3,0,0,1)';var startRow=rows[0],curRow=rows[cur];
+    var E='cubic-bezier(.65,0,.35,1)';var startRow=rows[0],curRow=rows[cur];
     if(barfull){barfull.style.overflow='hidden';barfull.style.maxHeight=barfull.offsetHeight+'px'}
     if(preq){preq.style.overflow='hidden';preq.style.maxHeight=preq.offsetHeight+'px'}
     startRow.style.overflow='hidden';startRow.style.maxHeight=startRow.offsetHeight+'px';
