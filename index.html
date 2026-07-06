@@ -16,7 +16,7 @@
 html,body{margin:0;padding:0;height:100%;background:#101A3D;font-family:var(--font-sans);-webkit-font-smoothing:antialiased;overflow:hidden;overscroll-behavior:none;}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
 /* ===== 기기(반응형): 모바일은 화면 꽉 채움 ===== */
-#ph{--navy:#101A3D;--navy2:#19254D;--navyL:#283873;--navy700:#293F71;--blue700:#0074D7;--cobalt:#0055FF;--blue:#32A2FA;--b300:#5CB4FA;--red:#FE4C00;--lemon:#EEFF00;--e6:#E6E9EF;--ef:#EFEFF1;--dim:#99A5C0;--off:#F5F6F7;--ink:#171A24;--bd:#E3E4E8;--ok:#2FA76A;--fs:1;--fsd:calc(1 + (var(--fs,1) - 1)*.6);--fsx:calc(1 + (var(--fs,1) - 1)*.4);position:fixed;inset:0;width:100%;height:100dvh;background:var(--navy);overflow:hidden;}
+#ph{--navy:#101A3D;--navy2:#19254D;--navyL:#283873;--navy700:#293F71;--blue700:#0074D7;--cobalt:#0055FF;--blue:#32A2FA;--b300:#5CB4FA;--red:#FE4C00;--lemon:#EEFF00;--e6:#E6E9EF;--ef:#EFEFF1;--dim:#99A5C0;--n1:#C0C8D9;--off:#F5F6F7;--ink:#171A24;--bd:#E3E4E8;--ok:#2FA76A;--fs:1;--fsd:calc(1 + (var(--fs,1) - 1)*.6);--fsx:calc(1 + (var(--fs,1) - 1)*.4);position:fixed;inset:0;width:100%;height:100dvh;background:var(--navy);overflow:hidden;}
 #app{height:100%;display:flex;flex-direction:column;overflow:hidden}
 /* ===== 데스크톱: 가운데 폰 프레임 ===== */
 @media (min-width:600px){
@@ -70,14 +70,14 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 .pcard{background:var(--navy);border-radius:12px;padding:10px;box-shadow:0 8px 5px rgba(0,0,0,.28),0 16px 12px rgba(0,0,0,.2),0 6px 15px rgba(0,0,0,.18);display:flex;flex-direction:column;gap:10px}
 .prow{display:flex;align-items:center;gap:10px;padding:0 5px}
 .pav{width:calc(28px * var(--fsx));height:calc(28px * var(--fsx));flex:0 0 auto}.pav svg{width:100%;height:100%;display:block}
-.pnm{flex:1;min-width:0;font-size:calc(24px * var(--fsd));font-weight:700;color:var(--ef);word-break:keep-all;overflow-wrap:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pnm{flex:1;min-width:0;font-size:calc(24px * var(--fsd));font-weight:700;color:var(--e6);word-break:keep-all;overflow-wrap:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .pcall{color:#e6ecf7;padding:0 8px 0 25px;cursor:pointer;display:flex;align-items:center}.pcall svg{width:calc(24px * var(--fsx));height:calc(24px * var(--fsx));display:block}
 .preq{background:rgba(255,255,255,.06);border-radius:8px;padding:8px 10px;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--dim);font-size:calc(16px * var(--fsx));cursor:pointer}.preq .chev{display:inline-flex;color:var(--dim)}.preq .chev svg{width:calc(8px * var(--fsx));height:calc(13px * var(--fsx));display:block}
 /* 확대(tight) 시 승객카드 축약: 요청사항 행 접기(정체성 행=이름·전화만 유지). 케이스 무관—행이 없으면 자동으로 이미 컴팩트 */
 #ph.tight .preq{display:none}
 .route{flex:1 1 auto;background:var(--navy);border-radius:12px 12px 0 0;box-shadow:0 -8px 24px rgba(0,0,0,.28);display:flex;flex-direction:column;gap:8px;padding:calc(6px * var(--fs,1)) 12px calc(12px * var(--fs,1));min-height:0;overflow:hidden}
 .rhd{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:calc(12px * var(--fsx)) 16px}
-.rhd .t{font-size:calc(18px * var(--fs,1));font-weight:700;color:var(--e6);white-space:nowrap}
+.rhd .t{font-size:calc(18px * var(--fs,1));font-weight:700;color:var(--n1);white-space:nowrap}
 .rhd .see{margin-left:auto;color:var(--b300);font-size:calc(15px * var(--fsx));white-space:nowrap;cursor:pointer}
 .plist{flex:1 1 auto;display:flex;flex-direction:column;gap:2px;overflow-y:auto;min-height:0}
 .badge{width:calc(56px * var(--fsx));min-height:calc(32px * var(--fsx));border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:calc(18px * var(--fsx));font-weight:700;color:var(--e6);flex:0 0 auto;white-space:nowrap}
@@ -92,7 +92,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 .crd-top .badge{margin-top:4px}
 .cinfo{flex:1;min-width:0;display:flex;flex-direction:column;gap:8px}
 .cname{font-size:calc(26px * var(--fsd));font-weight:700;color:#fff;line-height:1.28;word-break:keep-all;overflow-wrap:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.caddr{font-size:calc(18px * var(--fs,1));color:var(--ef);line-height:1.35;word-break:keep-all;overflow-wrap:break-word}
+.caddr{font-size:calc(18px * var(--fs,1));color:var(--n1);line-height:1.35;word-break:keep-all;overflow-wrap:break-word}
 .cnav{width:calc(24px * var(--fsx));height:calc(24px * var(--fsx));flex:0 0 auto;margin-top:6px;cursor:pointer}.cnav svg{width:100%;height:100%;fill:#fff}
 .cbtn{flex:0 0 auto;min-height:calc(56px * var(--fs,1));display:flex;align-items:center;justify-content:center;gap:10px;padding:calc(15px*var(--fs,1)) 16px;font-size:calc(20px * var(--fs,1));font-weight:700;cursor:pointer;white-space:nowrap}.cbtn:active{filter:brightness(.97)}
 .cbtn.go{background:var(--off);color:var(--ink)}
