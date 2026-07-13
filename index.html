@@ -141,6 +141,10 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 /* ── 지도 탭 → 전체 지도(포커스): 시트를 아래로 슬라이드, 앱 상태 변화 시 자동 복귀 ── */
 .bottom{transition:transform .42s cubic-bezier(.5,0,0,1)}
 #ph.mf .bottom{transform:translateY(106%);pointer-events:none}
+.mfexit{position:absolute;bottom:calc(22px + env(safe-area-inset-bottom,0px));left:50%;z-index:7;display:flex;align-items:center;justify-content:center;gap:9px;min-height:clamp(52px, calc(44px + 16px * var(--fs,1)), 60px);padding:0 26px;border-radius:28px;background:rgba(16,26,61,.92);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1.5px solid rgba(255,255,255,.28);color:#fff;font-size:calc(17px * var(--fs,1));font-weight:700;white-space:nowrap;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.5);user-select:none;-webkit-tap-highlight-color:transparent;opacity:0;pointer-events:none;transform:translateX(-50%) translateY(12px);transition:opacity .28s ease .08s,transform .3s cubic-bezier(.2,.7,.3,1) .08s,filter .11s ease}
+.mfexit svg{width:calc(20px * var(--fs,1));height:calc(20px * var(--fs,1));stroke:var(--b300);fill:none}
+#ph.mf .mfexit{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
+#ph.mf .mfexit:active{transform:translateX(-50%) translateY(0) scale(.97);filter:brightness(1.12)}
 </style>
 </head>
 <body>
@@ -206,7 +210,8 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
   function cardHTML(s,o){var bicon=(o.btnCls==='go')?'<span class="cbi">'+NAV+'</span>':'';var nameBlock=o.nav?('<div class="cnavrow" onclick="'+o.navClick+'"><div class="cname">'+s.name+'</div><span class="cnav">'+NAV+'</span></div>'):('<div class="cname">'+s.name+'</div>');return '<div class="crd"><div class="crd-top"><span class="badge '+bcls(s)+'">'+bt(s)+'</span><div class="cinfo">'+nameBlock+'<div class="caddr">'+s.addr+'</div></div></div><div class="cbtn '+o.btnCls+'" onclick="'+o.btnClick+'">'+bicon+o.label+'</div></div>'}
   function goCard(i){return cardHTML(stops[i],{btnCls:'go',label:'경로 안내받기',btnClick:'P.startNav()',nav:false})}
   function irow(i,navOn){var s=stops[i];var oc=navOn?('P.askGo('+i+')'):"P.toast('아직 안내할 수 없습니다')";return '<div class="irow tap'+(navOn?' on':'')+'" onclick="'+oc+'"><span class="badge '+bcls(s)+'">'+bt(s)+'</span><div class="nm">'+s.name+'</div><span class="rnav'+(navOn?' on':'')+'">'+NAV+'</span></div>'}
-  function shell(mapInner,bottomInner,resv){return sb()+appbar(resv)+'<div class="body"><div class="map" onclick="P.mapTap(event)">'+mapInner+'</div><div class="bottom">'+bottomInner+'</div></div>'}
+  function mfExit(){return '<div class="mfexit" onclick="P.mapExit()"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></svg>경로 다시 보기</div>'}
+  function shell(mapInner,bottomInner,resv){return sb()+appbar(resv)+'<div class="body"><div class="map" onclick="P.mapTap(event)">'+mapInner+'</div><div class="bottom">'+bottomInner+'</div>'+mfExit()+'</div>'}
   function pickup(){var s=stops[0];var go=(S.pphase==='go');var c=cardHTML(s,go?{btnCls:'go',label:'고객 위치로 출발하기',btnClick:'P.goPickupNav()',nav:false}:{btnCls:'done',label:'고객에게 도착 알리기',btnClick:'P.notifyArrived()',nav:true,navClick:'P.goPickupNav()'});var mapInner=mapBg()+'<div class="pin" style="left:60%;top:26%">'+pinSVG('출발','#0074D7','#fff')+'</div><div class="car" style="left:33%;top:54%">'+carSVG()+'</div>'+bubbles(false);var route='<div class="route'+(go?' lead':'')+'">'+(go?'':'<div class="rhd"><span class="t">출발지로 이동 중</span></div>')+'<div class="plist">'+c+'</div></div>';return shell(mapInner,passenger()+route,false)}
   function ptmap(){var s=stops[0];return sb()+tbt('320',s.short+' 방면','120')+'<div class="tmapmap">'+tmapMap(0)+tspeed()+tovr('P.backPickup()',false)+'</div>'+tbar('9분','1.2km','오후 3:52',s.name);}
   function preview(){var rows='';for(var i=0;i<stops.length;i++){rows+=irow(i,i===0)}var mapInner=mapBg()+markers()+bubbles(false);var route='<div class="route"><div class="rhd"><span class="t">남은 경로 '+(WAYS+1)+'개</span></div><div class="plist">'+rows+'</div><div class="barfull round" onclick="P.start()">운행 시작하기</div></div>';return shell(mapInner,passenger()+route)}
@@ -349,7 +354,8 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
     finish:function(){S.screen='done';render()},
     toast:function(msg){var ph=document.getElementById('ph');var old=document.getElementById('toast');if(old&&old.parentNode)old.parentNode.removeChild(old);var t=document.createElement('div');t.id='toast';t.className='toast';t.textContent=msg;ph.appendChild(t);requestAnimationFrame(function(){requestAnimationFrame(function(){t.classList.add('on')})});clearTimeout(P._tt);P._tt=setTimeout(function(){t.classList.remove('on');setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t)},260)},1700)},
     reset:function(){clearNavCd();resetState();render()},
-    mapTap:function(e){if(S.busy)return;if(e&&e.target&&e.target.closest&&e.target.closest('.bubs'))return;S.collapsed=!S.collapsed;var ph=document.getElementById('ph');if(ph)ph.classList.toggle('mf',S.collapsed);try{if(navigator.vibrate)navigator.vibrate(11)}catch(_){}},
+    mapTap:function(e){if(S.busy||S.collapsed)return;if(e&&e.target&&e.target.closest&&e.target.closest('.bubs'))return;S.collapsed=true;var ph=document.getElementById('ph');if(ph)ph.classList.add('mf');try{if(navigator.vibrate)navigator.vibrate(11)}catch(_){}},
+    mapExit:function(){if(S.busy)return;S.collapsed=false;var ph=document.getElementById('ph');if(ph)ph.classList.remove('mf');try{if(navigator.vibrate)navigator.vibrate(11)}catch(_){}},
     simEvent:function(){var p=document.getElementById('devpanel'),s=document.getElementById('devscrim');if(p){p.classList.remove('open');if(s)s.classList.remove('open')}S.collapsed=true;var ph=document.getElementById('ph');if(ph)ph.classList.add('mf');P.toast('지도 확대 상태 · 2.5초 뒤 알림 수신');setTimeout(function(){clearMF();P.toast('🔔 새 배차 알림 · 경로 화면 복귀')},2500)}
   };
   build(3);resetState();render();
