@@ -141,8 +141,6 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 /* ── 지도 탭 → 전체 지도(포커스): 시트를 아래로 슬라이드, 앱 상태 변화 시 자동 복귀 ── */
 .bottom{transition:transform .42s cubic-bezier(.5,0,0,1)}
 #ph.mf .bottom{transform:translateY(106%);pointer-events:none}
-.rline{opacity:.9;transition:opacity .32s ease}
-#ph.mf .rline{opacity:0}
 .mfexit{position:absolute;bottom:calc(24px + env(safe-area-inset-bottom,0px));left:50%;z-index:7;display:flex;align-items:center;justify-content:center;gap:10px;min-height:clamp(60px, calc(48px + 16px * var(--fs,1)), 66px);padding:0 30px;border-radius:16px;background:rgba(25,37,77,.96);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);border:1.5px solid rgba(92,180,250,.6);color:#fff;font-size:calc(17px * var(--fs,1));font-weight:700;white-space:nowrap;cursor:pointer;box-shadow:0 10px 26px rgba(0,0,0,.5);user-select:none;-webkit-tap-highlight-color:transparent;opacity:0;pointer-events:none;transform:translateX(-50%) translateY(12px);transition:opacity .28s ease .08s,transform .3s cubic-bezier(.2,.7,.3,1) .08s,filter .11s ease}
 .mfexit svg{width:calc(20px * var(--fs,1));height:calc(20px * var(--fs,1));stroke:var(--b300);fill:none}
 #ph.mf .mfexit{opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0)}
@@ -195,7 +193,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
   function bt(s){return s.t==='origin'?'출발':s.t==='dest'?'도착':('경유'+s.n)}
   function bcls(s){return s.t==='origin'?'org':s.t==='dest'?'dest':'way'}
   function routePath(){var d='M'+PCT[0][0]+' '+PCT[0][1];for(var i=1;i<PCT.length;i++)d+=' L'+PCT[i][0]+' '+PCT[i][1];return d}
-  function mapBg(){return '<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%"><rect width="100" height="100" fill="#E7ECF0"/><rect x="0" y="30" width="100" height="7" fill="#fff" opacity="0.85"/><rect x="44" y="0" width="5" height="100" fill="#fff" opacity="0.8"/><rect x="10" y="40" width="26" height="18" fill="#DCEAD7" opacity="0.7"/><path class="rline" d="'+routePath()+'" stroke="#2E7CE0" stroke-width="5" vector-effect="non-scaling-stroke" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>'}
+  function mapBg(){return '<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%"><rect width="100" height="100" fill="#E7ECF0"/><rect x="0" y="30" width="100" height="7" fill="#fff" opacity="0.85"/><rect x="44" y="0" width="5" height="100" fill="#fff" opacity="0.8"/><rect x="10" y="40" width="26" height="18" fill="#DCEAD7" opacity="0.7"/></svg>'}
   function sb(){return '<div class="sb"><span>12:45</span><span>· · · ·  100%</span></div>'}
   function appbar(resv){var r=(resv===false)?'':'<span class="achip">'+IC.reserv+'예약콜</span>';return '<div class="appbar"><div class="mbtn">'+IC.menu+'</div><div class="abr">'+r+'<span class="achip lm"><span class="ld"></span> 미리배차 켜짐</span></div></div>'}
   function passenger(basic){var req=basic?'':'<div class="preq">고객 요청사항 보기 <span class="chev">'+IC.next+'</span></div>';return '<div class="pinfo"><div class="pcard"><div class="prow"><span class="pav">'+IC.person+'</span><span class="pnm">김지혜</span><span class="pcall">'+IC.phone+'</span></div>'+req+'</div></div>'}
