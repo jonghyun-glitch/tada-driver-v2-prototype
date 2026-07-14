@@ -198,7 +198,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
   function isDone(i){return S.done.indexOf(i)>-1}
   function isUnc(i){return S.uncertain.indexOf(i)>-1}
   function nextArmed(){for(var i=1;i<stops.length;i++){if(!isDone(i)&&!isUnc(i))return i}return stops.length-1}
-  function bt(s){return s.t==='origin'?'출발':s.t==='dest'?'도착':('경유'+s.n)}
+  function bt(s){return s.t==='origin'?'출발지':s.t==='dest'?'도착지':('경유'+s.n)}
   function bcls(s){return s.t==='origin'?'org':s.t==='dest'?'dest':'way'}
   function routePath(){var d='M'+PCT[0][0]+' '+PCT[0][1];for(var i=1;i<PCT.length;i++)d+=' L'+PCT[i][0]+' '+PCT[i][1];return d}
   function mapBg(){return '<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%"><rect width="100" height="100" fill="#E7ECF0"/><rect x="0" y="30" width="100" height="7" fill="#fff" opacity="0.85"/><rect x="44" y="0" width="5" height="100" fill="#fff" opacity="0.8"/><rect x="10" y="40" width="26" height="18" fill="#DCEAD7" opacity="0.7"/></svg>'}
