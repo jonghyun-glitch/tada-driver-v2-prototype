@@ -346,11 +346,11 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
   window.P={
     setFont:function(v,el){var ph=document.getElementById('ph');ph.style.setProperty('--fs',v);ph.classList.toggle('tight',v>=1.25);var b=el.parentNode.querySelectorAll('.fb');for(var i=0;i<b.length;i++)b[i].classList.remove('on');el.classList.add('on')},
     setWays:function(n,el){build(n);resetState();var b=el.parentNode.querySelectorAll('.fb');for(var i=0;i<b.length;i++)b[i].classList.remove('on');el.classList.add('on');render()},
-    goPickupNav:function(){if(S.busy)return;S.target=0;S.navReturn='pickup';appOpen(tmapsel(),function(){S.screen='tmapsel';S._last='tmapsel';render()})},
+    goPickupNav:function(){if(S.busy)return;S.target=0;S.pphase='arrived';S.navReturn='pickup';appOpen(tmapsel(),function(){S.screen='tmapsel';S._last='tmapsel';render()})},
     backPickup:function(){if(S.busy)return;S.pphase='arrived';appClose(pickup(),function(){S.screen='pickup';S._last='pickup';render()})},
     notifyArrived:function(){P.toast('고객에게 도착을 알렸어요');var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;S.screen='preview';if(reduce){render();return}S._last='preview';render();var ap=document.getElementById('app');var it=ap.querySelectorAll('.route .rhd, .route .irow, .route .barfull');for(var k=0;k<it.length;k++){var e=it[k];e.style.opacity='0';e.style.transform='translateY(16px)';e.style.transition='none'}void ap.offsetWidth;for(var k=0;k<it.length;k++){(function(e,i){e.style.transition='opacity .3s ease, transform .3s cubic-bezier(.2,.7,.3,1)';e.style.transitionDelay=(i*0.035)+'s';requestAnimationFrame(function(){e.style.opacity='';e.style.transform=''})})(it[k],k)}},
     start:function(){if(S.busy)return;if(S.collapsed){clearMF();S.phase='go';S.screen='drive';S._last='';render();return}S.busy=true;startMorph()},
-    startNav:function(){if(S.busy)return;S.target=nextArmed();S.navReturn='drive';S.navProgress=true;appOpen(tmapsel(),function(){S.screen='tmapsel';S._last='tmapsel';render()})},
+    startNav:function(){if(S.busy)return;S.target=nextArmed();S.lastAt=S.target;S.phase='arrived';S.navReturn='drive';S.navProgress=true;appOpen(tmapsel(),function(){S.screen='tmapsel';S._last='tmapsel';render()})},
     startGuide:function(){if(S.busy)return;clearNavCd();S.screen=(S.navReturn==='pickup')?'ptmap':'tmap';render()},
     cancelNav:function(){if(S.busy)return;clearNavCd();var r=S.navReturn||'drive';var h=(r==='pickup')?pickup():(r==='preview')?preview():(r==='full')?full():drive();appClose(h,function(){S.screen=r;S._last=r;render()})},
     changeRoute:function(){if(S.busy)return;S.screen='tmapsel';render()},
