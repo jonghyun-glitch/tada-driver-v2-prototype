@@ -52,6 +52,8 @@ html,body{margin:0;padding:0;height:100%;background:#101A3D;font-family:var(--fo
 .pin{position:absolute;transform:translate(-50%,-88%);z-index:1}
 .mklayer{position:absolute;inset:0;transform-origin:0 0;will-change:transform;z-index:1}
 .mk{width:38px;height:39.5px;display:block;filter:drop-shadow(0 2px 2px rgba(10,16,36,.32))}
+.pin.cur .mk{filter:drop-shadow(0 0 5px rgba(0,116,215,.9)) drop-shadow(0 2px 2px rgba(10,16,36,.32))}
+.pin.curd .mk{filter:drop-shadow(0 0 5px rgba(254,76,0,.9)) drop-shadow(0 2px 2px rgba(10,16,36,.32))}
 .carsvg{width:24px;height:31px;display:block;filter:drop-shadow(0 2px 3px rgba(10,16,36,.3))}
 svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 .mbtn svg{width:calc(22px * var(--fsx));height:calc(22px * var(--fsx))}
@@ -180,7 +182,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
   };
   var NAV=IC.navarrow;
   function pinSVG(label,fill,tc){var fs=(label==='✓')?19:(label.length>=3?11:13);return '<svg class="mk" viewBox="0 0 50 52"><ellipse cx="25" cy="46" rx="14" ry="4.5" fill="#0a1024" opacity="0.22"/><path d="M4 0.5H46C47.933 0.5 49.5 2.067 49.5 4V27C49.5 28.933 47.933 30.5 46 30.5H26V45C26 45.55 25.55 46 25 46C24.45 46 24 45.55 24 45V30.5H4C2.067 30.5 0.5 28.933 0.5 27V4C0.5 2.067 2.067 0.5 4 0.5Z" fill="'+fill+'" stroke="rgba(0,0,0,.14)"/><text x="25" y="15.8" text-anchor="middle" dominant-baseline="central" font-family="SpoqaHanSans,sans-serif" font-weight="700" font-size="'+fs+'" fill="'+tc+'">'+label+'</text></svg>';}
-  function pinFor(i){var s=stops[i],fill,label;if(isDone(i)){fill='#2E7D52';label='✓';}else if(s.t==='origin'){fill='#0074D7';label='출발';}else if(s.t==='dest'){fill='#FE4C00';label='도착';}else if(i===nextArmed()){fill='#0074D7';label='경유'+s.n;}else{fill='#556895';label='경유'+s.n;}return pinSVG(label,fill,'#fff');}
+  function pinFor(i){var s=stops[i],done=(i===0)||isDone(i),focus=(i===nextArmed()&&!done),lab=(s.t==='origin'?'출발':s.t==='dest'?'도착':'경유'+s.n),fill,tc='#fff';if(done){fill='#293F71';lab='✓';tc='#3CCB41';}else if(focus){fill=(s.t==='dest'?'#FE4C00':'#0074D7');}else{fill='#293F71';}return pinSVG(lab,fill,tc);}
   function carSVG(){return '<svg class="carsvg" viewBox="0 0 26 34"><ellipse cx="13" cy="30.5" rx="8.5" ry="2.8" fill="#0a1024" opacity="0.2"/><rect x="3.5" y="1.5" width="19" height="29" rx="7.5" fill="#fff" stroke="rgba(0,0,0,.15)"/><path d="M6.6 10.6C10.4 8.5 15.6 8.5 19.4 10.6L18.3 15C15 13.5 11 13.5 7.7 15L6.6 10.6Z" fill="#26365F"/><rect x="7.6" y="18" width="10.8" height="8.5" rx="2.5" fill="#3C4E77"/></svg>';}
   var origin={t:'origin',name:'위워크 삼성역점',addr:'서울 강남구 청담동 92-18',short:'삼성역'};
   var dest={t:'dest',name:'뚝섬역 1번 출구',addr:'서울 성동구 성수동1가 685',short:'뚝섬역'};
@@ -205,7 +207,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
   function sb(){return '<div class="sb"><span>12:45</span><span>· · · ·  100%</span></div>'}
   function appbar(resv){return '<div class="appbar"><div class="mbtn">'+IC.menu+'</div><div class="abr"><span class="achip lm"><span class="ld"></span> 미리배차 켜짐</span></div></div>'}
   function passenger(basic){var req=basic?'':'<div class="preq">고객 요청사항 보기 <span class="chev">'+IC.next+'</span></div>';return '<div class="pinfo"><div class="pcard"><div class="prow"><span class="pav">'+IC.person+'</span><span class="pnm">김지혜</span><span class="pcall">'+IC.phone+'</span></div>'+req+'</div></div>'}
-  function dotc(i){return '<div class="pin" data-bx="'+PCT[i][0]+'" data-by="'+PCT[i][1]+'" style="left:'+PCT[i][0]+'%;top:'+PCT[i][1]+'%">'+pinFor(i)+'</div>'}
+  function dotc(i){var done=(i===0)||isDone(i),focus=(i===nextArmed()&&!done),cls='pin'+(focus?(stops[i].t==='dest'?' cur curd':' cur'):'');return '<div class="'+cls+'" data-bx="'+PCT[i][0]+'" data-by="'+PCT[i][1]+'" style="left:'+PCT[i][0]+'%;top:'+PCT[i][1]+'%">'+pinFor(i)+'</div>'}
   function markers(){var h='';for(var i=0;i<stops.length;i++)h+=dotc(i);h+='<div class="car" data-bx="'+PCT[S.lastAt][0]+'" data-by="'+PCT[S.lastAt][1]+'" style="left:'+PCT[S.lastAt][0]+'%;top:'+PCT[S.lastAt][1]+'%">'+carSVG()+'</div>';return '<div class="mklayer">'+h+'</div>'}
   function driveMarkers(){var i=nextArmed();return '<div class="mklayer">'+dotc(i)+'<div class="car" data-bx="'+PCT[S.lastAt][0]+'" data-by="'+PCT[S.lastAt][1]+'" style="left:'+PCT[S.lastAt][0]+'%;top:'+PCT[S.lastAt][1]+'%">'+carSVG()+'</div></div>';}
   /* 지도 fit-bounds (우버·구글맵 표준): 핀 아이콘은 상수 크기, 표시 핀들의 bbox를
