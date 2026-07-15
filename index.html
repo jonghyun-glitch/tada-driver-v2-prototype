@@ -50,6 +50,7 @@ html,body{margin:0;padding:0;height:100%;background:#101A3D;font-family:var(--fo
 .body{flex:1 1 auto;position:relative;min-height:0;overflow:hidden;background:#E7ECF0}
 .map{position:absolute;inset:0;background:#E7ECF0;cursor:pointer}
 .pin{position:absolute;transform:translate(-50%,-88%);z-index:1}
+.pin.done{opacity:.5;z-index:0}
 .mklayer{position:absolute;inset:0;transform-origin:0 0;will-change:transform;z-index:1}
 .mk{width:38px;height:39.5px;display:block;filter:drop-shadow(0 2px 2px rgba(10,16,36,.32))}
 .tmk{width:34px;height:42.5px;display:block;filter:drop-shadow(0 2px 3px rgba(10,16,36,.35))}
@@ -206,7 +207,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
   function sb(){return '<div class="sb"><span>12:45</span><span>· · · ·  100%</span></div>'}
   function appbar(resv){return '<div class="appbar"><div class="mbtn">'+IC.menu+'</div><div class="abr"><span class="achip lm"><span class="ld"></span> 미리배차 켜짐</span></div></div>'}
   function passenger(basic){var req=basic?'':'<div class="preq">고객 요청사항 보기 <span class="chev">'+IC.next+'</span></div>';return '<div class="pinfo"><div class="pcard"><div class="prow"><span class="pav">'+IC.person+'</span><span class="pnm">김지혜</span><span class="pcall">'+IC.phone+'</span></div>'+req+'</div></div>'}
-  function dotc(i){return '<div class="pin" data-bx="'+PCT[i][0]+'" data-by="'+PCT[i][1]+'" style="left:'+PCT[i][0]+'%;top:'+PCT[i][1]+'%">'+pinFor(i)+'</div>'}
+  function dotc(i){var done=(i===0)||isDone(i);return '<div class="pin'+(done?' done':'')+'" data-bx="'+PCT[i][0]+'" data-by="'+PCT[i][1]+'" style="left:'+PCT[i][0]+'%;top:'+PCT[i][1]+'%">'+pinFor(i)+'</div>'}
   function markers(){var h='';for(var i=0;i<stops.length;i++)h+=dotc(i);h+='<div class="car" data-bx="'+PCT[S.lastAt][0]+'" data-by="'+PCT[S.lastAt][1]+'" style="left:'+PCT[S.lastAt][0]+'%;top:'+PCT[S.lastAt][1]+'%">'+carSVG()+'</div>';return '<div class="mklayer">'+h+'</div>'}
   function driveMarkers(){var i=nextArmed();return '<div class="mklayer">'+dotc(i)+'<div class="car" data-bx="'+PCT[S.lastAt][0]+'" data-by="'+PCT[S.lastAt][1]+'" style="left:'+PCT[S.lastAt][0]+'%;top:'+PCT[S.lastAt][1]+'%">'+carSVG()+'</div></div>';}
   /* 지도 fit-bounds (우버·구글맵 표준): 핀 아이콘은 상수 크기, 표시 핀들의 bbox를
@@ -224,7 +225,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
   function bubbles(pay){var h='';if(pay)h+='<div class="bub pay"><div class="bin">결제</div></div>';h+='<span class="bubw"><div class="bub grad">예약</div><span class="bubdot">3</span></span><div class="bub chg">경로<br>변경</div><div class="bub nav">'+IC.navi+'<span>내비</span></div>';return '<div class="bubs">'+h+'</div>'}
   function cardHTML(s,o){var bicon=(o.btnCls==='go')?'<span class="cbi">'+NAV+'</span>':'';var nameBlock=o.nav?('<div class="cnavrow" onclick="'+o.navClick+'"><div class="cname">'+s.name+'</div><span class="cnav">'+NAV+'</span></div>'):('<div class="cname">'+s.name+'</div>');return '<div class="crd"><div class="crd-top"><span class="badge '+bcls(s,true)+'">'+bt(s)+'</span><div class="cinfo">'+nameBlock+'<div class="caddr">'+s.addr+'</div></div></div><div class="cbtn '+o.btnCls+'" onclick="'+o.btnClick+'">'+bicon+o.label+'</div></div>'}
   function goCard(i){return cardHTML(stops[i],{btnCls:'go',label:'경로 안내받기',btnClick:'P.startNav()',nav:false})}
-  function doneTag(){return '<span style="color:var(--green);font-size:calc(16px*var(--fs,1));font-weight:700;white-space:nowrap">✓ 완료</span>'}
+  function doneTag(){return '<span style="color:var(--green);font-size:calc(16px*var(--fs,1));font-weight:700;white-space:nowrap">완료</span>'}
   function irow(i,navigable){var s=stops[i];var focus=(i===nextArmed());var done=(i===0)||isDone(i);var oc=navigable?('P.askGo('+i+')'):"P.toast('아직 안내할 수 없습니다')";var st=done?doneTag():'';return '<div class="irow tap'+(focus?' on':'')+'" onclick="'+oc+'"><span class="badge '+bcls(s,focus)+'">'+bt(s)+'</span><div class="nm">'+s.name+'</div><span style="display:inline-flex;align-items:center;gap:10px">'+st+'<span class="rnav">'+NAV+'</span></span></div>'}
   function mfExit(){return '<div class="mfexit" onclick="P.mapExit()"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4v5H4M20 9h-5V4M15 20v-5h5M4 15h5v5"/></svg><span class="mfx-txt"><span class="mfx-cap">지도 확대함</span><span class="mfx-act">지도 축소하기</span></span></div>'}
   function shell(mapInner,bottomInner,resv){return sb()+appbar(resv)+'<div class="body"><div class="map" onclick="P.mapTap(event)">'+mapInner+'</div><div class="bottom">'+bottomInner+'</div>'+mfExit()+'</div>'}
