@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>타다 드라이버 v2 · 실시간 경유지 개발 핸드오프</title>
+<style>
+  :root{
+    --paper:#F3F5FB; --surface:#FFFFFF; --surface-2:#EDF1F9; --surface-3:#E6EBF6;
+    --ink:#111827; --ink-soft:#48526A; --ink-faint:#8A93A8;
+    --line:#DCE2EF; --line-strong:#C7D0E2;
+    --accent:#0064C0; --accent-ink:#0064C0; --accent-soft:rgba(0,116,215,.10);
+    --navy:#293F71; --navy-soft:rgba(41,63,113,.10);
+    --good:#1E8C2C; --good-soft:rgba(48,162,52,.13);
+    --event:#B7550F; --event-soft:rgba(200,90,18,.13);
+    --tmap:#CE1622; --tmap-soft:rgba(206,22,34,.11);
+    --cm:#5F7A66;
+    --sans:'Pretendard Variable',Pretendard,'Apple SD Gothic Neo','Malgun Gothic',system-ui,sans-serif;
+    --mono:'SF Mono',ui-monospace,'JetBrains Mono',Menlo,Consolas,'D2Coding',monospace;
+    --wrap:74ch;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#0A101C; --surface:#111A2B; --surface-2:#172236; --surface-3:#1E2B44;
+      --ink:#E9EDF7; --ink-soft:#A7B1C7; --ink-faint:#6D7893;
+      --line:#243149; --line-strong:#334365;
+      --accent:#57A4EC; --accent-ink:#7CB8F1; --accent-soft:rgba(76,157,234,.15);
+      --navy:#93A4CC; --navy-soft:rgba(147,164,204,.14);
+      --good:#54BA61; --good-soft:rgba(79,182,92,.16);
+      --event:#E4924F; --event-soft:rgba(229,138,74,.16);
+      --tmap:#F0555F; --tmap-soft:rgba(240,85,95,.15);
+      --cm:#7E9A85;
+    }
+  }
+  :root[data-theme="light"]{
+    --paper:#F3F5FB; --surface:#FFFFFF; --surface-2:#EDF1F9; --surface-3:#E6EBF6;
+    --ink:#111827; --ink-soft:#48526A; --ink-faint:#8A93A8;
+    --line:#DCE2EF; --line-strong:#C7D0E2;
+    --accent:#0064C0; --accent-ink:#0064C0; --accent-soft:rgba(0,116,215,.10);
+    --navy:#293F71; --navy-soft:rgba(41,63,113,.10);
+    --good:#1E8C2C; --good-soft:rgba(48,162,52,.13);
+    --event:#B7550F; --event-soft:rgba(200,90,18,.13);
+    --tmap:#CE1622; --tmap-soft:rgba(206,22,34,.11); --cm:#5F7A66;
+  }
+  :root[data-theme="dark"]{
+    --paper:#0A101C; --surface:#111A2B; --surface-2:#172236; --surface-3:#1E2B44;
+    --ink:#E9EDF7; --ink-soft:#A7B1C7; --ink-faint:#6D7893;
+    --line:#243149; --line-strong:#334365;
+    --accent:#57A4EC; --accent-ink:#7CB8F1; --accent-soft:rgba(76,157,234,.15);
+    --navy:#93A4CC; --navy-soft:rgba(147,164,204,.14);
+    --good:#54BA61; --good-soft:rgba(79,182,92,.16);
+    --event:#E4924F; --event-soft:rgba(229,138,74,.16);
+    --tmap:#F0555F; --tmap-soft:rgba(240,85,95,.15); --cm:#7E9A85;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    font-size:15.5px;line-height:1.75;-webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;font-feature-settings:"tnum" 0;}
+  .shell{max-width:940px;margin:0 auto;padding:0 22px 96px}
+
+  /* ---- masthead ---- */
+  .mast{padding:52px 0 26px;border-bottom:1px solid var(--line)}
+  .eyebrow{font-family:var(--mono);font-size:11.5px;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--accent-ink);font-weight:600;margin:0 0 14px}
+  h1{font-size:clamp(27px,4.6vw,37px);line-height:1.14;letter-spacing:-.015em;margin:0;
+    font-weight:760;text-wrap:balance;max-width:20ch}
+  .lede{color:var(--ink-soft);margin:16px 0 0;max-width:60ch;font-size:16px}
+  .metarow{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:22px;
+    font-family:var(--mono);font-size:12px;color:var(--ink-faint)}
+  .metarow b{color:var(--ink-soft);font-weight:500}
+  .links{display:flex;flex-wrap:wrap;gap:11px;margin-top:26px}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:9px;
+    font-size:14px;font-weight:600;text-decoration:none;border:1px solid var(--line-strong);
+    color:var(--ink);background:var(--surface);transition:border-color .15s,transform .11s,background .15s}
+  .btn .arw{font-family:var(--mono);color:var(--ink-faint);font-weight:400}
+  .btn:hover{border-color:var(--accent);transform:translateY(-1px)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+  .btn.primary .arw{color:rgba(255,255,255,.75)}
+  .btn.primary:hover{filter:brightness(1.06)}
+
+  /* ---- sticky nav ---- */
+  nav.toc{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper) 88%,transparent);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  nav.toc ul{display:flex;gap:4px;list-style:none;margin:0 auto;padding:9px 22px;overflow-x:auto;
+    max-width:940px;scrollbar-width:none}
+  nav.toc ul::-webkit-scrollbar{display:none}
+  nav.toc a{font-family:var(--mono);font-size:12.5px;color:var(--ink-soft);text-decoration:none;
+    padding:6px 11px;border-radius:7px;white-space:nowrap;transition:color .15s,background .15s}
+  nav.toc a:hover{background:var(--surface-2);color:var(--ink)}
+
+  /* ---- sections ---- */
+  section{padding-top:56px;scroll-margin-top:60px}
+  .snum{font-family:var(--mono);font-size:12px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--accent-ink);font-weight:600;display:block;margin-bottom:9px}
+  h2{font-size:23px;line-height:1.2;letter-spacing:-.01em;margin:0 0 6px;font-weight:720;text-wrap:balance}
+  .sdesc{color:var(--ink-soft);max-width:var(--wrap);margin:0 0 22px}
+  h3{font-size:15.5px;margin:30px 0 10px;font-weight:680;letter-spacing:-.005em}
+  p{max-width:var(--wrap)}
+  a.inline{color:var(--accent-ink);text-decoration:none;border-bottom:1px solid var(--accent-soft)}
+  a.inline:hover{border-bottom-color:var(--accent)}
+  code.k{font-family:var(--mono);font-size:.88em;background:var(--surface-2);
+    padding:1px 6px;border-radius:5px;color:var(--ink);border:1px solid var(--line)}
+
+  /* ---- flow cards ---- */
+  .flowgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:13px}
+  .fcard{background:var(--surface);border:1px solid var(--line);border-radius:13px;padding:18px 18px 15px;
+    display:flex;flex-direction:column;gap:9px;transition:border-color .15s,transform .12s}
+  .fcard:hover{border-color:var(--line-strong);transform:translateY(-2px)}
+  .fcard .no{font-size:26px;line-height:1;color:var(--accent-ink);font-weight:700}
+  .fcard h4{margin:0;font-size:16px;font-weight:700}
+  .fcard p{margin:0;font-size:13.5px;color:var(--ink-soft);line-height:1.6;flex:1}
+  .fcard .fig{font-family:var(--mono);font-size:11.5px;color:var(--accent-ink);text-decoration:none;
+    display:inline-flex;align-items:center;gap:6px;margin-top:3px}
+  .fcard .fig:hover{text-decoration:underline}
+
+  /* ---- table ---- */
+  .tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+  table{border-collapse:collapse;width:100%;min-width:640px;font-size:13.5px}
+  thead th{font-family:var(--mono);font-size:11px;letter-spacing:.07em;text-transform:uppercase;
+    color:var(--ink-faint);text-align:left;font-weight:600;padding:12px 14px;
+    background:var(--surface-2);border-bottom:1px solid var(--line);white-space:nowrap}
+  tbody td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.5}
+  tbody tr:last-child td{border-bottom:none}
+  tbody tr:hover{background:var(--surface-2)}
+  td .st{font-family:var(--mono);font-size:12.5px;color:var(--ink);white-space:nowrap}
+  td .side{color:var(--ink-soft);font-size:12.5px}
+  td.motion{font-family:var(--mono);font-size:12px;color:var(--ink);white-space:nowrap}
+  td.num{font-variant-numeric:tabular-nums}
+
+  .chip{display:inline-flex;align-items:center;gap:5px;font-family:var(--mono);font-size:11.5px;
+    font-weight:600;padding:2.5px 8px;border-radius:20px;white-space:nowrap;line-height:1.5}
+  .chip::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;opacity:.9}
+  .chip.tap{color:var(--accent-ink);background:var(--accent-soft)}
+  .chip.evt{color:var(--event);background:var(--event-soft)}
+  .chip.done{color:var(--good);background:var(--good-soft)}
+  .chip.ext{color:var(--tmap);background:var(--tmap-soft)}
+  .legend{display:flex;flex-wrap:wrap;gap:8px 14px;margin:0 0 18px;font-size:12.5px;color:var(--ink-soft)}
+  .legend .chip{margin-right:2px}
+
+  /* ---- code ---- */
+  .code{background:var(--surface);border:1px solid var(--line);border-radius:12px;overflow:hidden;margin:14px 0}
+  .code .bar{display:flex;align-items:center;gap:9px;padding:9px 14px;background:var(--surface-2);
+    border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11.5px;color:var(--ink-faint)}
+  .code .bar .dot{width:8px;height:8px;border-radius:50%;background:var(--line-strong)}
+  .code .bar b{color:var(--ink-soft);font-weight:600}
+  .code .bar .tag{margin-left:auto;color:var(--accent-ink);font-weight:600}
+  .code pre{margin:0;overflow-x:auto;padding:16px 16px 18px}
+  .code code{font-family:var(--mono);font-size:12.8px;line-height:1.65;color:var(--ink);white-space:pre;
+    font-feature-settings:"tnum" 0}
+  .cm{color:var(--cm)}
+  .v{color:var(--accent-ink)}
+
+  /* ---- callout ---- */
+  .call{border-left:3px solid var(--tmap);background:var(--tmap-soft);border-radius:0 10px 10px 0;
+    padding:14px 18px;margin:16px 0;font-size:14px;max-width:var(--wrap)}
+  .call.warn{border-left-color:var(--event);background:var(--event-soft)}
+  .call b{font-weight:700}
+  ul.tick{list-style:none;padding:0;margin:14px 0;max-width:var(--wrap)}
+  ul.tick li{position:relative;padding-left:22px;margin:9px 0;color:var(--ink-soft)}
+  ul.tick li::before{content:"";position:absolute;left:2px;top:9px;width:7px;height:7px;
+    border-radius:2px;background:var(--accent);opacity:.8}
+  ul.tick li b{color:var(--ink);font-weight:650}
+
+  /* ---- footer ---- */
+  footer{margin-top:70px;padding-top:26px;border-top:1px solid var(--line);
+    display:flex;flex-wrap:wrap;gap:26px;justify-content:space-between;align-items:flex-start}
+  footer .col{max-width:46ch}
+  footer h5{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+    color:var(--ink-faint);margin:0 0 10px;font-weight:600}
+  footer a{color:var(--accent-ink);text-decoration:none;display:block;margin:5px 0;font-size:13.5px}
+  footer a:hover{text-decoration:underline}
+  footer .note{font-size:12.5px;color:var(--ink-faint);line-height:1.6}
+  footer .mono{font-family:var(--mono)}
+  :where(a,.btn):focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+  @media (max-width:560px){.mast{padding:38px 0 22px}.links{flex-direction:column}.btn{justify-content:center}}
+</style>
+</head>
+<body>
+<nav class="toc" aria-label="섹션">
+  <ul>
+    <li><a href="#flow">플로우</a></li>
+    <li><a href="#states">상태머신</a></li>
+    <li><a href="#motion">인터랙션·모션</a></li>
+    <li><a href="#responsive">반응형</a></li>
+    <li><a href="#map">지도 fit-bounds</a></li>
+    <li><a href="#edge">엣지·안전</a></li>
+  </ul>
+</nav>
+
+<div class="shell">
+  <header class="mast">
+    <p class="eyebrow">Dev Handoff · Android</p>
+    <h1>실시간 경유지 도착 인식 v2</h1>
+    <p class="lede">타다 드라이버앱. 정적 화면에는 드러나지 않는 <b>상태머신·인터랙션·모션</b>을 개발자에게 전달하는 허브. Figma(시각·측정)와 라이브 프로토타입(동작) 사이를 잇고, Android/Compose 참고 구현을 함께 둔다.</p>
+    <div class="metarow">
+      <span><b>대상</b> Android 전용</span>
+      <span><b>fileKey</b> x5oUpLvM1zTBBwUi3wVAlP</span>
+      <span><b>기준</b> 2026-07-16</span>
+      <span><b>SoT</b> prototype-share/index.html</span>
+    </div>
+    <div class="links">
+      <a class="btn primary" href="https://www.figma.com/design/x5oUpLvM1zTBBwUi3wVAlP?node-id=28244-67234" target="_blank" rel="noopener">Figma 핸드오프 페이지 <span class="arw">↗</span></a>
+      <a class="btn" href="https://jonghyun-glitch.github.io/tada-driver-v2-prototype/" target="_blank" rel="noopener">라이브 프로토타입 <span class="arw">↗</span></a>
+    </div>
+  </header>
+
+  <section id="flow">
+    <span class="snum">Map · 플로우 5구간</span>
+    <h2>화면 플로우</h2>
+    <p class="sdesc">전체 여정은 Figma 핸드오프 페이지에 구간별로 랩되어 있다. 각 구간은 매 지점의 T맵 화면까지 실제 인라인으로 그려져 있어, 처음 보는 사람도 애매한 지점 없이 따라갈 수 있다.</p>
+    <div class="flowgrid">
+      <div class="fcard"><span class="no">①</span><h4>픽업</h4><p>고객 위치로 출발 → T맵 경로선택·내비 → 도착 알림 → 운행 시작 전(preview).</p><a class="fig" href="https://www.figma.com/design/x5oUpLvM1zTBBwUi3wVAlP?node-id=28257-1797" target="_blank" rel="noopener">Figma ↗</a></div>
+      <div class="fcard"><span class="no">②</span><h4>운행 · 경유</h4><p>경유1…N을 <b>반복</b>: 경로 안내받기 → T맵 → 경유지 도착 완료. 결제 직전까지.</p><a class="fig" href="https://www.figma.com/design/x5oUpLvM1zTBBwUi3wVAlP?node-id=28275-3249" target="_blank" rel="noopener">Figma ↗</a></div>
+      <div class="fcard"><span class="no">③</span><h4>마무리</h4><p>도착지 도착 → 요금 결제하기 → 결제 → 완료.</p><a class="fig" href="https://www.figma.com/design/x5oUpLvM1zTBBwUi3wVAlP?node-id=28252-1581" target="_blank" rel="noopener">Figma ↗</a></div>
+      <div class="fcard"><span class="no">④</span><h4>지도 · 전체 경로</h4><p>fit-bounds 줌, 전체 경로 대시보드, 전체 경로에서 내비 안내 진입.</p><a class="fig" href="https://www.figma.com/design/x5oUpLvM1zTBBwUi3wVAlP?node-id=28278-3249" target="_blank" rel="noopener">Figma ↗</a></div>
+      <div class="fcard"><span class="no">⑤</span><h4>인터랙션 · 모션</h4><p>프레스·화면전환·스태거·모프·핸드오프·지도 fit 요약 카드.</p><a class="fig" href="https://www.figma.com/design/x5oUpLvM1zTBBwUi3wVAlP?node-id=28279-3672" target="_blank" rel="noopener">Figma ↗</a></div>
+    </div>
+  </section>
+
+  <section id="states">
+    <span class="snum">Logic · 상태 전이</span>
+    <h2>상태머신</h2>
+    <p class="sdesc">트리거는 딱 2종 — <b>탭</b>(사용자가 우리 버튼을 누름)과 <b>도착 시</b>(외부 T맵에서 앱으로 돌아오는 이벤트). 핵심 규칙: <b>버튼 탭이 곧 전진 확정</b>이다. 외부 T맵의 ‘안내’ 완료를 기다리지 않는다.</p>
+    <div class="legend">
+      <span><span class="chip tap">탭</span> 사용자 버튼</span>
+      <span><span class="chip evt">도착 시</span> T맵 복귀 이벤트</span>
+      <span><span class="chip ext">외부</span> T맵(딥링크/Intent)</span>
+      <span><span class="chip done">완료</span> done 누적</span>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>상태 / 화면</th><th>트리거</th><th>→ 다음</th><th>사이드이펙트</th></tr></thead>
+        <tbody>
+          <tr><td><span class="st">01 pickup-go</span></td><td><span class="chip tap">탭</span> 고객 위치로 출발하기</td><td><span class="st">06 tmapsel</span></td><td class="side">target=0, T맵 딥링크(고객위치)</td></tr>
+          <tr><td><span class="st">06 tmapsel</span> <span class="chip ext">외부</span></td><td><span class="chip tap">탭</span> 안내</td><td><span class="st">ptmap / tmap</span></td><td class="side">픽업/트립 구간에 따라 분기</td></tr>
+          <tr><td><span class="st">ptmap</span> · T맵(결제X)</td><td><span class="chip evt">도착 시</span></td><td><span class="st">03 pickup-arrived</span></td><td class="side">—</td></tr>
+          <tr><td><span class="st">03 pickup-arrived</span></td><td><span class="chip tap">탭</span> 고객에게 도착 알리기</td><td><span class="st">04 preview</span></td><td class="side">토스트 “고객에게 도착을 알렸어요”</td></tr>
+          <tr><td><span class="st">04 preview</span></td><td><span class="chip tap">탭</span> 운행 시작하기</td><td><span class="st">05 drive-go</span></td><td class="side"><b>직행</b>(tmapsel 안 거침) · 카드 모프</td></tr>
+          <tr><td><span class="st">05 drive-go</span></td><td><span class="chip tap">탭</span> 경로 안내받기</td><td><span class="st">06 → tmap</span></td><td class="side">target=다음경유, navProgress=true, T맵 딥링크</td></tr>
+          <tr><td><span class="st">tmap</span> · T맵(결제O)</td><td><span class="chip evt">도착 시</span></td><td><span class="st">08 drive-arrived</span></td><td class="side">done += target</td></tr>
+          <tr><td><span class="st">08 drive-arrived</span></td><td><span class="chip tap">탭</span> 경유지 도착 완료</td><td><span class="st">05 drive-go</span> <span class="chip done">↩</span></td><td class="side">다음 경유로 <b>반복</b> (advance)</td></tr>
+          <tr><td><span class="st">08</span> (도착지)</td><td><span class="chip tap">탭</span> 요금 결제하기</td><td><span class="st">11 pay</span></td><td class="side">마지막 스톱일 때</td></tr>
+          <tr><td><span class="st">11 pay</span></td><td><span class="chip tap">탭</span> 결제하기</td><td><span class="st">12 done</span></td><td class="side">—</td></tr>
+          <tr><td><span class="st">(분기) drive</span></td><td><span class="chip tap">탭</span> 전체 보기</td><td><span class="st">full</span></td><td class="side">닫기 → drive 복귀</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>참고 구현 — reduce()</h3>
+    <p style="font-size:13.5px;color:var(--ink-soft)">구조는 팀 아키텍처(MVI/ViewModel 등)에 맞게 조정. 이름·분기·순서는 프로토 상태머신을 그대로 옮긴 것.</p>
+    <div class="code">
+      <div class="bar"><span class="dot"></span><b>RideStateMachine.kt</b><span class="tag">Kotlin</span></div>
+<pre><code>enum class Screen { PickupGo, TmapSel, PtmapNav, PickupArrived,
+                    Preview, DriveGo, TmapNav, DriveArrived, Pay, Done, FullRoute }
+
+data class Ride(
+  val screen: Screen,
+  val target: Int,                 <span class="cm">// 현재 포커스 스톱 (0=고객, 1=경유1 … last=도착지)</span>
+  val done: Set&lt;Int&gt; = emptySet(),
+  val onTrip: Boolean = false,     <span class="cm">// 픽업 완료 후 '운행' 구간 여부</span>
+)
+
+sealed interface Ev {
+  data object DepartToCustomer : Ev  <span class="cm">// 고객 위치로 출발하기</span>
+  data object Guide : Ev             <span class="cm">// 안내 (T맵 딥링크 실행)</span>
+  data object ArrivedBack : Ev       <span class="cm">// T맵에서 도착 후 앱 복귀</span>
+  data object NotifyArrived : Ev     <span class="cm">// 고객에게 도착 알리기</span>
+  data object StartDrive : Ev        <span class="cm">// 운행 시작하기</span>
+  data object GetRoute : Ev          <span class="cm">// 경로 안내받기</span>
+  data object StopDone : Ev          <span class="cm">// 경유지 도착 완료</span>
+  data object Pay : Ev               <span class="cm">// 요금 결제 / 결제하기</span>
+  data object ViewAll : Ev           <span class="cm">// 전체 보기</span>
+}
+
+<span class="cm">// 버튼 탭 = 전진 확정. 외부 T맵의 '안내'를 기다리지 않는다.</span>
+fun Ride.reduce(e: Ev): Ride = when (e) {
+  Ev.DepartToCustomer -&gt; copy(screen = Screen.TmapSel, target = <span class="v">0</span>, onTrip = false)
+  Ev.Guide            -&gt; copy(screen = if (onTrip) Screen.TmapNav else Screen.PtmapNav)
+  Ev.ArrivedBack      -&gt; if (onTrip) copy(screen = Screen.DriveArrived, done = done + target)
+                         else        copy(screen = Screen.PickupArrived)
+  Ev.NotifyArrived    -&gt; copy(screen = Screen.Preview)
+  Ev.StartDrive       -&gt; copy(screen = Screen.DriveGo, target = <span class="v">1</span>, onTrip = true) <span class="cm">// 경유1 직행</span>
+  Ev.GetRoute         -&gt; copy(screen = Screen.TmapSel)          <span class="cm">// onTrip 유지 → Guide가 TmapNav로</span>
+  Ev.StopDone         -&gt; copy(screen = Screen.DriveGo, target = target + <span class="v">1</span>) <span class="cm">// 다음 스톱</span>
+  Ev.Pay              -&gt; if (screen == Screen.Pay) copy(screen = Screen.Done)
+                         else copy(screen = Screen.Pay)
+  Ev.ViewAll          -&gt; copy(screen = Screen.FullRoute)
+}</code></pre>
+    </div>
+    <div class="call warn"><b>T맵 핸드오프 = 복원 불가.</b> T맵은 딥링크/Intent로 여는 외부 앱이라 콜백이 없다. “취소 시 이전 상태 복원”은 불가 — 전진은 우리 버튼 탭 기준으로만 확정한다.</div>
+  </section>
+
+  <section id="motion">
+    <span class="snum">Motion · 값은 프로토 확정치</span>
+    <h2>인터랙션 · 모션</h2>
+    <p class="sdesc">정적 화면에 안 보이는 프레스 피드백과 전환 애니메이션. 타이밍·이징은 프로토 소스에서 뽑은 확정값이고, Android 매핑은 참고 구현이다.</p>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>모션</th><th>값</th><th>이징</th><th>Android</th></tr></thead>
+        <tbody>
+          <tr><td>버튼 프레스</td><td class="motion num">scale 0.98 · 밝기 ×0.9 · ≈.11s</td><td class="motion">ease</td><td class="side">ripple + stateListAnimator / scaleX·Y</td></tr>
+          <tr><td>화면 전환</td><td class="motion num">opacity .2s</td><td class="motion">ease</td><td class="side">Fragment transition fade 200</td></tr>
+          <tr><td>도착알림 → preview</td><td class="motion num">translateY 16→0 · .035s 지연 · .3s</td><td class="motion">(.2,.7,.3,1)</td><td class="side">startDelay = index×35ms · Decelerate</td></tr>
+          <tr><td>preview → drive 모프</td><td class="motion num">name scale 0.769 · ≈580ms</td><td class="motion">(.65,0,.35,1)</td><td class="side">MotionLayout / shared-element</td></tr>
+          <tr><td>T맵 핸드오프</td><td class="motion num">열기 .42s(440) · 닫기 .44s(460)</td><td class="motion">(.2,0,0,1)</td><td class="side"><b>실제=외부 Intent</b> · 시스템 애니</td></tr>
+          <tr><td>지도 마커 fit</td><td class="motion num">left/top .44s · 크기 불변</td><td class="motion">(.5,0,0,1)</td><td class="side">animateCamera(newLatLngBounds)</td></tr>
+          <tr><td>바텀시트 확장/축소</td><td class="motion num">.4~.5s + 지도 fit 콜백</td><td class="motion">(.65,0,.35,1)</td><td class="side">BottomSheetBehavior</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <h3>프레스 · 스태거 · 모프</h3>
+    <div class="code">
+      <div class="bar"><span class="dot"></span><b>Motion.kt</b><span class="tag">Compose</span></div>
+<pre><code><span class="cm">// 프레스: scale + ripple, transition ≈ 110ms. scale 값만 바꿔 요소별 대응.</span>
+@Composable
+fun PressScale(scale: Float = <span class="v">0.98f</span>, onClick: () -&gt; Unit, content: @Composable () -&gt; Unit) {
+  val interaction = remember { MutableInteractionSource() }
+  val pressed by interaction.collectIsPressedAsState()
+  val s by animateFloatAsState(if (pressed) scale else 1f, tween(<span class="v">110</span>), label = "press")
+  Box(
+    Modifier
+      .graphicsLayer { scaleX = s; scaleY = s }
+      .clickable(interaction, indication = ripple(), onClick = onClick),
+    content = { content() },
+  )
+} <span class="cm">// 큰 버튼 0.97 · 배지/버블 0.91 · 내비 화살표 0.74 · 닫기(✕) 0.86</span>
+
+val Emphasized = CubicBezierEasing(<span class="v">0.2f, 0.7f, 0.3f, 1f</span>)
+
+<span class="cm">// 도착 알림 → preview: 항목이 아래(16dp)에서 순차 등장. 지연 = index × 35ms.</span>
+@Composable
+fun StaggerIn(index: Int, content: @Composable () -&gt; Unit) {
+  var shown by remember { mutableStateOf(false) }
+  LaunchedEffect(Unit) { delay(index * <span class="v">35L</span>); shown = true }
+  val p by animateFloatAsState(
+    if (shown) 1f else 0f, tween(<span class="v">300</span>, easing = Emphasized), label = "stagger",
+  )
+  Box(Modifier.graphicsLayer { alpha = p; translationY = (1f - p) * <span class="v">16</span>.dp.toPx() }) {
+    content()
+  }
+}
+
+val Standard = CubicBezierEasing(<span class="v">0.65f, 0f, 0.35f, 1f</span>)
+
+<span class="cm">// preview → drive 카드 모프: 이름 축소 + 색 dim + 높이 변화 동시(≈580ms).</span>
+<span class="cm">// max-height/scale/opacity 를 함께 다루므로 MotionLayout 권장.</span>
+val t = updateTransition(ride.screen, label = "morph")
+val nameScale by t.animateFloat(
+  transitionSpec = { tween(<span class="v">580</span>, easing = Standard) }, label = "nameScale",
+) { if (it == Screen.DriveGo) <span class="v">0.769f</span> else 1f }</code></pre>
+    </div>
+  </section>
+
+  <section id="responsive">
+    <span class="snum">Responsive · 큰 글씨 대응</span>
+    <h2>반응형 (sp/dp 댐핑)</h2>
+    <p class="sdesc">콘텐츠 텍스트는 <b>sp</b>(base 18sp), OS·외부(T맵)는 dp. 큰 글씨 접근성 설정에서 레이아웃이 깨지지 않도록, 내부 패딩·갭은 폰트배율을 <b>완만히(댐핑)</b> 따라가고 요소 간 마진은 dp로 고정한다.</p>
+    <div class="code">
+      <div class="bar"><span class="dot"></span><b>Scaling.kt</b><span class="tag">Compose</span></div>
+<pre><code><span class="cm">// 콘텐츠 = sp. 내부 패딩·갭은 폰트배율 '댐핑', 요소 간 마진은 dp 고정.</span>
+val fs  = LocalConfiguration.current.fontScale     <span class="cm">// 1.0 = 기본</span>
+val fsx = 1f + (fs - 1f) * <span class="v">0.4f</span>                     <span class="cm">// 패딩·갭 댐핑 계수</span>
+val innerPadding     = (<span class="v">16</span> * fsx).dp                 <span class="cm">// 내부 패딩: sp 비례로 완만히</span>
+val elementMargin    = <span class="v">12</span>.dp                          <span class="cm">// 요소 간 마진: 고정 dp</span>
+val sheetMaxFraction = <span class="v">0.66f</span> + (fs - 1f) * <span class="v">0.22f</span>    <span class="cm">// 바텀시트 상한(글씨 클수록 ↑)</span></code></pre>
+    </div>
+    <p style="font-size:13.5px;color:var(--ink-soft)">위계 스케일 26/24/20/18/15/13 · 디스플레이 배율 <code class="k">fsd = 1+(fs-1)×0.6</code>. 상세 수치는 레포 스펙 <code class="k">handoff-realtime-spec.md §3</code>.</p>
+  </section>
+
+  <section id="map">
+    <span class="snum">Map · fit-bounds</span>
+    <h2>지도 / 마커</h2>
+    <p class="sdesc">마커는 <b>상수 크기</b>(줌에 따라 커지거나 작아지지 않음). 표시할 핀들의 bounding box를 가시영역(시트 제외) 안에 맞춰 <b>줌만</b> 조정한다 — 우버/구글맵 스펙. 바텀시트가 내려가면 넓어진 지도영역 기준으로 재-fit.</p>
+    <div class="code">
+      <div class="bar"><span class="dot"></span><b>MapFit.kt</b><span class="tag">Maps SDK</span></div>
+<pre><code><span class="cm">// 마커는 상수 크기(줌 무관). 표시 핀 bounding box를 가시영역에 맞춰 '줌만' 조정.</span>
+val bounds = LatLngBounds.builder().apply { pins.forEach { include(it) } }.build()
+val padding = with(density) { <span class="v">20</span>.dp.roundToPx() }        <span class="cm">// 상하좌우 20dp</span>
+map.animateCamera(
+  CameraUpdateFactory.newLatLngBounds(bounds, padding), <span class="cm">// + 최대 줌 클램프</span>
+  <span class="cm">/* durationMs = */</span> <span class="v">440</span>, null,
+)
+<span class="cm">// 운행 시작 후 = 다음 포커스 핀 + 현재 차량 위치만.</span></code></pre>
+    </div>
+  </section>
+
+  <section id="edge">
+    <span class="snum">Edge · 잊지 말 것</span>
+    <h2>엣지케이스 · 안전</h2>
+    <ul class="tick">
+      <li><b>경유 N개</b> — <code class="k">05 drive-go ↔ 08 drive-arrived</code>를 경유 수만큼 반복. 남은 경로 카운트는 동적.</li>
+      <li><b>장소명 줄바꿈 = 문자 단위</b> (keep-all 아님). T맵 데이터엔 띄어쓰기 없는 긴 이름이 잦다 (예 “한양대학교사법대학부속고등학교”).</li>
+      <li><b>배지 = 지도 마커 상태색 통일</b> — 완료=navy(물러남) · 현재 타깃=파랑(경유/출발)·빨강(도착) · 대기=navy. 리스트와 지도가 항상 같은 상태색.</li>
+      <li><b>완료 = 물러남</b> — 리스트는 초록 “완료”(체크 없이), 지도핀은 opacity 50%. 현재 타깃만 시선을 독점한다.</li>
+    </ul>
+    <div class="call"><b>안전 카피(필수 유지).</b> 결제 화면의 “절대 카드/현금을 직접 받지 마세요” 문구는 어떤 경우에도 유지한다.</div>
+  </section>
+
+  <footer>
+    <div class="col">
+      <h5>연결된 산출물</h5>
+      <a href="https://www.figma.com/design/x5oUpLvM1zTBBwUi3wVAlP?node-id=28244-67234" target="_blank" rel="noopener">Figma — 🤝 Dev Handoff 페이지 (시각·측정·Dev Mode) ↗</a>
+      <a href="https://jonghyun-glitch.github.io/tada-driver-v2-prototype/" target="_blank" rel="noopener">라이브 프로토타입 (실제 동작·인터랙션) ↗</a>
+      <span class="note mono">docs/superpowers/specs/handoff-realtime-spec.md — 원본 행동/모션 스펙(SoT)</span>
+    </div>
+    <div class="col">
+      <h5>이 페이지의 역할</h5>
+      <p class="note">Figma는 <b>시각·측정·토큰</b>(Dev Mode), 프로토는 <b>인터랙티브 동작</b>, 이 허브는 <b>로직·모션·코드</b>를 담는다. 세 층이 짝을 이뤄 하나의 핸드오프를 이룬다. 코드 스니펫은 값(타이밍·이징·배율)이 프로토 확정치이며, 구조는 팀 아키텍처에 맞게 조정한다.</p>
+    </div>
+  </footer>
+</div>
+</body>
+</html>
