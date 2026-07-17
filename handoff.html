@@ -245,6 +245,7 @@
           <tr><td><span class="st">08</span> (도착지)</td><td><span class="chip tap">탭</span> 요금 결제하기</td><td><span class="st">11 pay</span></td><td class="side">마지막 스톱일 때</td></tr>
           <tr><td><span class="st">11 pay</span></td><td><span class="chip tap">탭</span> 결제하기</td><td><span class="st">12 done</span></td><td class="side">—</td></tr>
           <tr><td><span class="st">(분기) drive</span></td><td><span class="chip tap">탭</span> 전체 보기</td><td><span class="st">full</span></td><td class="side">닫기 → drive 복귀</td></tr>
+          <tr><td><span class="st">full</span> 전체 경로</td><td><span class="chip tap">탭</span> 정류장 내비 안내</td><td><span class="st">tmap → drive</span></td><td class="side">전체 경로 <b>닫힘</b> · 복귀=메인(full 아님)</td></tr>
         </tbody>
       </table>
     </div>
@@ -272,6 +273,7 @@ sealed interface Ev {
   data object StopDone : Ev          <span class="cm">// 경유지 도착 완료</span>
   data object Pay : Ev               <span class="cm">// 요금 결제 / 결제하기</span>
   data object ViewAll : Ev           <span class="cm">// 전체 보기</span>
+  data object NavFromFull : Ev       <span class="cm">// 전체 경로에서 정류장 내비 안내</span>
 }
 
 <span class="cm">// 버튼 탭 = 전진 확정. 외부 T맵의 '안내'를 기다리지 않는다.</span>
@@ -287,9 +289,11 @@ fun Ride.reduce(e: Ev): Ride = when (e) {
   Ev.Pay              -&gt; if (screen == Screen.Pay) copy(screen = Screen.Done)
                          else copy(screen = Screen.Pay)
   Ev.ViewAll          -&gt; copy(screen = Screen.FullRoute)
+  Ev.NavFromFull      -&gt; copy(screen = Screen.TmapSel)     <span class="cm">// 전체 경로 닫힘 · 복귀 navReturn=drive</span>
 }</code></pre>
     </div>
     <div class="call warn"><b>T맵 핸드오프 = 복원 불가.</b> T맵은 딥링크/Intent로 여는 외부 앱이라 콜백이 없다. “취소 시 이전 상태 복원”은 불가 — 전진은 우리 버튼 탭 기준으로만 확정한다.</div>
+    <div class="call"><b>전체 경로 = 일시적 오버레이.</b> 전체 경로(full)에서 정류장 내비 안내를 탭하면 전체 경로가 <b>닫히고</b> T맵으로 전환. T맵 복귀(도착·취소)는 전체 경로가 아닌 드라이버 메인(<code class="k">drive</code>)으로 돌아온다. (프로토: <code class="k">peekGo</code>의 <code class="k">navReturn='drive'</code>)</div>
   </section>
 
   <section id="motion">
