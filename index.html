@@ -365,7 +365,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
     full:function(){S.screen='full';render()},
     closeFull:function(){S.screen='drive';render()},
     askGo:function(i){if(S.busy)return;var a=nextArmed();if(i>a){P.toast('아직 안내할 수 없습니다');return}S.target=i;S.navReturn=S.screen;S.navProgress=(i===a);appOpen(tmapsel(),function(){S.screen='tmapsel';S._last='tmapsel';render()})},
-    peekGo:function(i){if(S.busy)return;S.target=i;S.navReturn=S.screen;S.navProgress=false;appOpen(tmapsel(),function(){S.screen='tmapsel';S._last='tmapsel';render()})},
+    peekGo:function(i){if(S.busy)return;S.target=i;S.navReturn='drive';S.navProgress=false;appOpen(tmapsel(),function(){S.screen='tmapsel';S._last='tmapsel';render()})},
     confirmNo:function(){S.confirm=null;render()},
     confirmYes:function(){var i=S.confirm;S.confirm=null;var a=nextArmed();if(i>a){for(var j=a;j<i;j++){if(stops[j].t==='way'&&!isDone(j)&&!isUnc(j))S.uncertain.push(j)}}S.target=i;appOpen(tmapsel(),function(){S.screen='tmapsel';S._last='tmapsel';render()})},
     finish:function(){S.screen='done';render()},
