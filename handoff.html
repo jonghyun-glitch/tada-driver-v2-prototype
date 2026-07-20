@@ -306,31 +306,30 @@ override fun onResume() {
 }</code></pre>
     </div>
 
-    <h3>참고 구현 — 상태별 색 (배지 · 마커)</h3>
-    <p style="font-size:13.5px;color:var(--ink-soft)">완료=물러남, 현재 타깃만 시선 독점. 배지(리스트)·마커(지도)가 <b>같은 규칙</b>을 써서 상태색이 항상 일치한다. Figma엔 색만 있고 “언제 어떤 색”인지 분기 로직은 없다.</p>
+    <h3>참고 구현 — 상태 색 (리스트 배지)</h3>
+    <p style="font-size:13.5px;color:var(--ink-soft)">리스트 배지가 상태→색을 담당(완료·대기=navy · 현재=파랑/빨강). <b>지도는 현재 포커스 핀만 표시</b>(완료·대기 핀 없음). 색은 항상 <b>최신 Figma 기준</b>.</p>
     <div class="code">
       <div class="bar"><span class="dot"></span><b>StopColors.kt</b><span class="tag">Compose</span></div>
-<pre><code><span class="cm">// 상태 → 색. 배지(리스트)·마커(지도) 공통 → 항상 일치.</span>
+<pre><code><span class="cm">// 리스트 배지: 상태 → 색 (Figma 기준).</span>
 enum class StopVisual { Pending, Focus, Done }
 
-val Navy700 = Color(<span class="v">0xFF293F71</span>)   <span class="cm">// 대기·완료</span>
+val Navy700 = Color(<span class="v">0xFF293F71</span>)   <span class="cm">// 대기·완료 배지</span>
 val Blue700 = Color(<span class="v">0xFF0074D7</span>)   <span class="cm">// 현재 타깃(경유·출발)</span>
 val TadaRed = Color(<span class="v">0xFFFE4C00</span>)   <span class="cm">// 현재 타깃(도착지)</span>
-val DoneGrn = Color(<span class="v">0xFF3CCB41</span>)   <span class="cm">// 완료 초록: 리스트 "완료" + 지도 핀 ✓ 공통 (proto --green)</span>
-<span class="cm">// ⚠ Figma는 Green/800=#30A234 (다른 초록) — 정본 확정 필요</span>
+val DoneGrn = Color(<span class="v">0xFF30A234</span>)   <span class="cm">// 리스트 "완료" 텍스트 (Green/800)</span>
 
-fun stopColor(v: StopVisual, isDest: Boolean): Color = when (v) {
+fun badgeColor(v: StopVisual, isDest: Boolean): Color = when (v) {
   StopVisual.Focus -&gt; if (isDest) TadaRed else Blue700   <span class="cm">// 현재만 파랑/빨강</span>
   StopVisual.Pending, StopVisual.Done -&gt; Navy700         <span class="cm">// 대기·완료 = navy</span>
 }
+<span class="cm">// 완료 행 = 초록 "완료"(DoneGrn) + 배지 navy로 물러남.</span>
 
-<span class="cm">// 완료 = 물러남: 지도 핀 dim(alpha .5)+✓, 리스트는 초록 "완료".</span>
+<span class="cm">// 지도 = 현재 포커스 핀 + 차량만 (완료·대기 핀은 지도에 없음).</span>
 @Composable
-fun MapPin(v: StopVisual, isDest: Boolean) = Pin(
-  tint  = stopColor(v, isDest),
-  alpha = if (v == StopVisual.Done) <span class="v">0.5f</span> else 1f,
-  check = v == StopVisual.Done,
-)</code></pre>
+fun MapMarkers(focus: Stop, car: LatLng) {
+  FocusPin(tint = if (focus.isDest) TadaRed else Blue700)   <span class="cm">// 파랑/빨강</span>
+  CarMarker(car)
+}</code></pre>
     </div>
   </section>
 
@@ -474,8 +473,8 @@ LaunchedEffect(expanded) {
     <ul class="tick">
       <li><b>경유 N개</b> — <code class="k">05 drive-go ↔ 08 drive-arrived</code>를 경유 수만큼 반복. 남은 경로 카운트는 동적.</li>
       <li><b>장소명 줄바꿈 = 문자 단위</b> (keep-all 아님). T맵 데이터엔 띄어쓰기 없는 긴 이름이 잦다 (예 “한양대학교사법대학부속고등학교”).</li>
-      <li><b>배지 = 지도 마커 상태색 통일</b> — 완료=navy(물러남) · 현재 타깃=파랑(경유/출발)·빨강(도착) · 대기=navy. 리스트와 지도가 항상 같은 상태색.</li>
-      <li><b>완료 = 물러남</b> — 리스트는 초록 “완료”(체크 없이), 지도핀은 opacity 50%. 현재 타깃만 시선을 독점한다.</li>
+      <li><b>상태 색</b> — 완료·대기=navy · 현재 타깃=파랑(경유/출발)·빨강(도착). <b>리스트 배지</b>는 전체 상태색, <b>지도는 현재 포커스 핀만</b> 표시(완료·대기 핀 없음). 색은 항상 최신 Figma 기준.</li>
+      <li><b>완료 = 물러남</b> — 리스트는 초록 “완료”(체크 없이) + 배지 navy. 지도엔 완료 핀 자체가 없다(현재 포커스만 표시). 현재 타깃만 시선을 독점.</li>
     </ul>
     <div class="call"><b>안전 카피(필수 유지).</b> 결제 화면의 “절대 카드/현금을 직접 받지 마세요” 문구는 어떤 경우에도 유지한다.</div>
   </section>
