@@ -316,7 +316,8 @@ enum class StopVisual { Pending, Focus, Done }
 val Navy700 = Color(<span class="v">0xFF293F71</span>)   <span class="cm">// 대기·완료</span>
 val Blue700 = Color(<span class="v">0xFF0074D7</span>)   <span class="cm">// 현재 타깃(경유·출발)</span>
 val TadaRed = Color(<span class="v">0xFFFE4C00</span>)   <span class="cm">// 현재 타깃(도착지)</span>
-val DoneGrn = Color(<span class="v">0xFF30A234</span>)   <span class="cm">// 리스트 "완료" 텍스트</span>
+val DoneGrn = Color(<span class="v">0xFF3CCB41</span>)   <span class="cm">// 완료 초록: 리스트 "완료" + 지도 핀 ✓ 공통 (proto --green)</span>
+<span class="cm">// ⚠ Figma는 Green/800=#30A234 (다른 초록) — 정본 확정 필요</span>
 
 fun stopColor(v: StopVisual, isDest: Boolean): Color = when (v) {
   StopVisual.Focus -&gt; if (isDest) TadaRed else Blue700   <span class="cm">// 현재만 파랑/빨강</span>
