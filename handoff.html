@@ -305,6 +305,32 @@ override fun onResume() {
     viewModel.onReturnedFromTmap()
 }</code></pre>
     </div>
+
+    <h3>참고 구현 — 상태별 색 (배지 · 마커)</h3>
+    <p style="font-size:13.5px;color:var(--ink-soft)">완료=물러남, 현재 타깃만 시선 독점. 배지(리스트)·마커(지도)가 <b>같은 규칙</b>을 써서 상태색이 항상 일치한다. Figma엔 색만 있고 “언제 어떤 색”인지 분기 로직은 없다.</p>
+    <div class="code">
+      <div class="bar"><span class="dot"></span><b>StopColors.kt</b><span class="tag">Compose</span></div>
+<pre><code><span class="cm">// 상태 → 색. 배지(리스트)·마커(지도) 공통 → 항상 일치.</span>
+enum class StopVisual { Pending, Focus, Done }
+
+val Navy700 = Color(<span class="v">0xFF293F71</span>)   <span class="cm">// 대기·완료</span>
+val Blue700 = Color(<span class="v">0xFF0074D7</span>)   <span class="cm">// 현재 타깃(경유·출발)</span>
+val TadaRed = Color(<span class="v">0xFFFE4C00</span>)   <span class="cm">// 현재 타깃(도착지)</span>
+val DoneGrn = Color(<span class="v">0xFF30A234</span>)   <span class="cm">// 리스트 "완료" 텍스트</span>
+
+fun stopColor(v: StopVisual, isDest: Boolean): Color = when (v) {
+  StopVisual.Focus -&gt; if (isDest) TadaRed else Blue700   <span class="cm">// 현재만 파랑/빨강</span>
+  StopVisual.Pending, StopVisual.Done -&gt; Navy700         <span class="cm">// 대기·완료 = navy</span>
+}
+
+<span class="cm">// 완료 = 물러남: 지도 핀 dim(alpha .5)+✓, 리스트는 초록 "완료".</span>
+@Composable
+fun MapPin(v: StopVisual, isDest: Boolean) = Pin(
+  tint  = stopColor(v, isDest),
+  alpha = if (v == StopVisual.Done) <span class="v">0.5f</span> else 1f,
+  check = v == StopVisual.Done,
+)</code></pre>
+    </div>
   </section>
 
   <section id="motion">
@@ -359,12 +385,31 @@ fun StaggerIn(index: Int, content: @Composable () -&gt; Unit) {
 
 val Standard = CubicBezierEasing(<span class="v">0.65f, 0f, 0.35f, 1f</span>)
 
-<span class="cm">// preview → drive 카드 모프: 이름 축소 + 색 dim + 높이 변화 동시(≈580ms).</span>
-<span class="cm">// max-height/scale/opacity 를 함께 다루므로 MotionLayout 권장.</span>
-val t = updateTransition(ride.screen, label = "morph")
-val nameScale by t.animateFloat(
-  transitionSpec = { tween(<span class="v">580</span>, easing = Standard) }, label = "nameScale",
-) { if (it == Screen.DriveGo) <span class="v">0.769f</span> else 1f }</code></pre>
+<span class="cm">// preview → drive 카드 모프: 이름 축소 + 색 dim + 높이 동시(≈580ms).</span>
+<span class="cm">// 여러 속성 동시 → MotionLayout(ConstraintSet 2개) 권장. 아래는 updateTransition 대안.</span>
+val t = updateTransition(ride.screen, label = "cardMorph")
+val nameScale by t.animateFloat({ tween(<span class="v">580</span>, easing = Standard) }, label = "scale") {
+  if (it == Screen.DriveGo) <span class="v">0.769f</span> else 1f          <span class="cm">// 이름 축소</span>
+}
+val nameColor by t.animateColor({ tween(<span class="v">580</span>, easing = Standard) }, label = "color") {
+  if (it == Screen.DriveGo) NavyDim else White      <span class="cm">// 색 dim</span>
+}
+val cardHeight by t.animateDp({ tween(<span class="v">580</span>, easing = Standard) }, label = "height") {
+  if (it == Screen.DriveGo) driveCardH else previewCardH  <span class="cm">// 높이 변화</span>
+}</code></pre>
+    </div>
+
+    <h3>화면 전환</h3>
+    <div class="code">
+      <div class="bar"><span class="dot"></span><b>ScreenTransition.kt</b><span class="tag">Compose</span></div>
+<pre><code><span class="cm">// 화면 전환 = opacity 페이드 .2s (프로토 확정치).</span>
+AnimatedContent(
+  targetState = ride.screen,
+  transitionSpec = {
+    fadeIn(tween(<span class="v">200</span>)) togetherWith fadeOut(tween(<span class="v">200</span>))
+  },
+  label = "screen",
+) { screen -&gt; ScreenContent(screen) }</code></pre>
     </div>
   </section>
 
