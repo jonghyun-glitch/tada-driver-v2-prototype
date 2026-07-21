@@ -426,6 +426,20 @@ val innerPadding     = (<span class="v">16</span> * fsx).dp                 <spa
 val elementMargin    = <span class="v">12</span>.dp                          <span class="cm">// 요소 간 마진: 고정 dp</span>
 val sheetMaxFraction = <span class="v">0.66f</span> + (fs - 1f) * <span class="v">0.22f</span>    <span class="cm">// 바텀시트 상한(글씨 클수록 ↑)</span></code></pre>
     </div>
+    <h3>지도 / 바텀시트 높이 = 스크린 비율</h3>
+    <p class="sdesc">지도는 화면 전체를 채우고(뒤에 깔림), 바텀시트가 하단을 <code class="k">sheetMaxFraction</code>까지 덮는다. 가시 지도영역 = 화면 − 시트. (프로토 <code class="k">--sheet-max: calc(66% + (fs-1)×22%)</code>)</p>
+    <div class="code">
+      <div class="bar"><span class="dot"></span><b>MapSheetLayout.kt</b><span class="tag">Compose</span></div>
+<pre><code><span class="cm">// 지도 = 화면 전체(뒤). 바텀시트 = 하단 오버레이, 상한 = sheetMaxFraction.</span>
+BoxWithConstraints(Modifier.fillMaxSize()) {
+  NaverMap(Modifier.fillMaxSize())                        <span class="cm">// 지도: 화면 전체</span>
+  BottomSheet(
+    Modifier.align(Alignment.BottomCenter)
+      .heightIn(max = maxHeight * sheetMaxFraction),      <span class="cm">// 66% + (fs-1)×22%</span>
+  )                                                       <span class="cm">// 실제 높이 = 콘텐츠(상한까지)</span>
+}
+<span class="cm">// 가시 지도영역 = 화면 − 시트 높이 → fit-bounds는 이 영역 기준 (§지도).</span></code></pre>
+    </div>
     <p style="font-size:13.5px;color:var(--ink-soft)">위계 스케일 26/24/20/18/15/13 · 디스플레이 배율 <code class="k">fsd = 1+(fs-1)×0.6</code>. 상세 수치는 레포 스펙 <code class="k">handoff-realtime-spec.md §3</code>.</p>
   </section>
 
