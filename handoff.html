@@ -416,7 +416,7 @@ AnimatedContent(
   <section id="responsive">
     <span class="snum">Responsive · 큰 글씨 대응</span>
     <h2>반응형 (sp/dp 댐핑)</h2>
-    <p class="sdesc">콘텐츠 텍스트는 <b>sp</b>(base 18sp), OS·외부(T맵)는 dp. 큰 글씨 접근성 설정에서 레이아웃이 깨지지 않도록, 내부 패딩·갭은 폰트배율을 <b>완만히(댐핑)</b> 따라가고 요소 간 마진은 dp로 고정한다.</p>
+    <p class="sdesc">콘텐츠 텍스트는 <b>sp</b>(base 18sp), OS·외부(T맵)는 dp. 큰 글씨 접근성 설정에서 레이아웃이 깨지지 않도록, 내부 패딩·갭은 폰트배율을 <b>완만히(댐핑)</b> 따라가고 요소 간 마진은 dp로 고정한다. <b>전 플로우 공통</b> — 실시간·예약·현장결제가 동일 컴포넌트를 써 스펙 동일.</p>
     <div class="code">
       <div class="bar"><span class="dot"></span><b>Scaling.kt</b><span class="tag">Compose</span></div>
 <pre><code><span class="cm">// 콘텐츠 = sp. 내부 패딩·갭은 폰트배율 '댐핑', 요소 간 마진은 dp 고정.</span>
@@ -446,7 +446,7 @@ map.animateCamera(
     </div>
 
     <h3>지도 확대/축소 — 탭·버튼 토글 (드래그 아님)</h3>
-    <p class="sdesc">기본(지도+시트) ⇄ 확대(시트 숨김·풀 지도). 프로토는 지도 탭으로 토글하지만, <b>실앱은 지도 탭이 네이티브 팬/핀치와 충돌</b> → 전용 확대/축소 버튼 권장. 지도 자체 줌은 네이티브 핀치·더블탭. (Figma ④ A 참조)</p>
+    <p class="sdesc">기본(지도+시트) ⇄ 확대(시트 숨김·풀 지도). 프로토는 지도 탭으로 토글하지만, <b>실앱은 지도 탭이 네이티브 팬/핀치와 충돌</b> → 전용 확대/축소 버튼 권장. 지도 자체 줌은 네이티브 핀치·더블탭. <b>전 플로우 공통</b>(동일 컴포넌트).</p>
     <div class="code">
       <div class="bar"><span class="dot"></span><b>MapExpand.kt</b><span class="tag">Compose</span></div>
 <pre><code><span class="cm">// 지도 확대/축소 = 상태 토글 (드래그 아님 — 전용 버튼 1탭).</span>
