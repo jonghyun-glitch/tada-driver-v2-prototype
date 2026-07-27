@@ -411,6 +411,40 @@ AnimatedContent(
   label = "screen",
 ) { screen -&gt; ScreenContent(screen) }</code></pre>
     </div>
+
+    <h3>오버레이 · 다이얼로그 (신규 플로우 · 도착·경로·대기·결제)</h3>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th>오버레이 / 다이얼로그</th><th>트리거</th><th>타이밍 · 동작</th></tr></thead>
+        <tbody>
+          <tr><td>경유지 도착 임박 오버레이</td><td class="side">경유지 반경 <b>500m</b> 진입</td><td class="side">등장 → <b>3초 자동 퇴장</b> (확인 탭·오버레이 영역 터치도 닫힘)</td></tr>
+          <tr><td>경로 변경 오버레이</td><td class="side">고객이 목적지/경유지 변경</td><td class="side">음성 “경로가 변경되었어요” + <b>8초</b> 오버레이 → 경로 자동 업데이트</td></tr>
+          <tr><td>먼 거리 도착 확인 다이얼로그</td><td class="side">도착 버튼 위치가 경유지서 멂</td><td class="side">“경유지가 멀리 있습니다 / [장소]에 도착하셨나요?” (취소 / 도착 완료)</td></tr>
+          <tr><td>예약 추가 대기 요청</td><td class="side">고객이 라이더앱서 요청</td><td class="side"><b>8초 미응답 자동수락</b> · 인앱에서만 노출 · 버튼 탭해야 닫힘</td></tr>
+          <tr><td>현장결제 목적지 임박</td><td class="side">목적지 반경 <b>200m</b> 진입</td><td class="side">음성(Direct_Payment_Notification.mp3) + 배너 “단말기 결제 요청” · X 탭 시 닫고 재노출 안 함</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="code">
+      <div class="bar"><span class="dot"></span><b>Overlays.kt</b><span class="tag">Compose</span></div>
+<pre><code><span class="cm">// 오버레이·다이얼로그 = 타이머 자동 퇴장/자동수락 패턴 (값은 ENc2 확정)</span>
+<span class="cm">// ① 경유지 도착 임박 — 반경 500m 진입 → 3초 자동 퇴장</span>
+LaunchedEffect(within500m) {
+  if (within500m) { arrival = true; delay(<span class="v">3_000</span>); arrival = false }   <span class="cm">// 탭/영역 터치도 닫힘</span>
+}
+<span class="cm">// ② 경로 변경 — 음성 + 8초 오버레이 → 경로 자동 업데이트</span>
+LaunchedEffect(routeChanged) {
+  if (routeChanged) { tts("경로가 변경되었어요"); routeOverlay = true; delay(<span class="v">8_000</span>); routeOverlay = false }
+}
+<span class="cm">// ③ 예약 추가 대기 요청 — 8초 미응답 자동수락 (인앱에서만 노출)</span>
+LaunchedEffect(waitRequest) {
+  if (waitRequest) autoAccept = launch { delay(<span class="v">8_000</span>); acceptWait() }   <span class="cm">// 수락/거절 시 cancel</span>
+}
+<span class="cm">// ④ 현장결제 목적지 임박 — 반경 200m → 음성 + 배너 (X 탭 시 재노출 안 함)</span>
+LaunchedEffect(within200mDest) {
+  if (within200mDest &amp;&amp; !dismissed) { tts(DIRECT_PAYMENT_MP3); paymentBanner = true }
+}</code></pre>
+    </div>
   </section>
 
   <section id="responsive">
