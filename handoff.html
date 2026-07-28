@@ -333,15 +333,15 @@ fun MapMarkers(focus: Stop, car: LatLng) {
     </div>
 
     <h3>경로 행 내비 가능/불가 (화면별)</h3>
-    <p style="font-size:13.5px;color:var(--ink-soft)">스톱 행을 탭해 T맵 안내를 시작할 수 있는지(ListRow 활성 상태). <b>메인(운행) 화면 = 완료된 장소만</b> · <b>전체 경로 화면 = 모든 장소 언제든</b>. 시각: 가능=밝은 화살표 / 불가=흐린 화살표(행 전체 딤).</p>
+    <p style="font-size:13.5px;color:var(--ink-soft)">스톱 행을 탭해 T맵 안내를 시작할 수 있는지(ListRow 활성 상태). <b>메인(운행) 화면 = (노출되는) 완료 스톱만</b> — 실질적으로 운행 시작 전 출발지 하나(운행 중 완료 스톱 복귀는 ‘전체 보기’에서). <b>전체 경로 화면 = 모든 장소 언제든</b>. 시각: 가능=밝은 화살표 / 불가=흐린 화살표(행 전체 딤).</p>
     <div class="code">
       <div class="bar"><span class="dot"></span><b>RowNavigable.kt</b><span class="tag">Compose</span></div>
 <pre><code><span class="cm">// 스톱 행 탭 → 그 스톱으로 내비 시작 가능 여부 (ListRow 활성 상태).</span>
 fun rowNavigable(v: StopVisual, screen: Screen): Boolean = when (screen) {
   Screen.FullRoute -&gt; <span class="v">true</span>                 <span class="cm">// 전체 경로: 완료·현재·미래 전부 (앞뒤 자유·되돌아가기)</span>
-  else             -&gt; v == StopVisual.Done  <span class="cm">// 메인(운행): 완료된 장소만 (현재=버튼, 미래=불가 → 순서 강제)</span>
+  else             -&gt; v == StopVisual.Done  <span class="cm">// 메인(운행): 완료된 장소만 (실질=운행 시작 전 출발지)·현재=버튼·미래=불가</span>
 }
-<span class="cm">// 시각: 가능 = 밝은 화살표 / 불가 = 흐린 화살표(행 전체 딤). ListRow = (완료/현재/다음) × (가능/불가).</span></code></pre>
+<span class="cm">// 운행 중엔 완료 스톱이 메인에 없음 → 복귀는 전체 보기(FullRoute). 시각: 가능=밝은 화살표 / 불가=흐린 화살표(행 딤).</span></code></pre>
     </div>
   </section>
 
