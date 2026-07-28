@@ -360,6 +360,7 @@ fun rowNavigable(v: StopVisual, screen: Screen): Boolean = when (screen) {
           <tr><td>T맵 핸드오프</td><td class="motion num">열기 .42s(440) · 닫기 .44s(460)</td><td class="motion">(.2,0,0,1)</td><td class="side"><b>실제=외부 Intent</b> · 시스템 애니</td></tr>
           <tr><td>지도 마커 fit</td><td class="motion num">left/top .44s · 크기 불변</td><td class="motion">(.5,0,0,1)</td><td class="side">animateCamera(newLatLngBounds)</td></tr>
           <tr><td>바텀시트 확장/축소</td><td class="motion num">.4~.5s + 지도 fit 콜백</td><td class="motion">(.65,0,.35,1)</td><td class="side">BottomSheetBehavior</td></tr>
+          <tr><td>전체 경로 리스트 수정</td><td class="motion num">추가 스태거 35ms·.3s · 삭제 페이드+콜랩스 · 순서 트윈</td><td class="motion">(.2,.7,.3,1)</td><td class="side">animateItemPlacement / ItemTouchHelper</td></tr>
         </tbody>
       </table>
     </div>
@@ -525,6 +526,12 @@ LaunchedEffect(expanded) {
 }
 <span class="cm">// 지도 자체 줌(핀치·더블탭)은 지도 SDK가 처리 — 위 토글과 별개.</span></code></pre>
     </div>
+    <h3>경로 변경 반영 (고객이 스톱 수정 시)</h3>
+    <ul class="tick">
+      <li><b>지도</b> — 메인 지도는 현재 포커스+차량만 → <b>미래 스톱 수정은 지도에 즉시 안 뜸</b>(리스트·전체보기 + “경로 변경됨” 오버레이). 현재 타깃 변경·앞 삽입 시 포커스 핀 갱신 + 재fit(.44s).</li>
+      <li><b>지도 확대 중 수정</b> — <b>확대 유지</b> + 마커 재fit(.44s) + 상단 “경로 변경됨” 오버레이(자동 축소 안 함).</li>
+      <li><b>통행료·주차비 addon</b> — 확대해도 <b>상단 안전영역 유지</b>(액션 버블 레이어), fit-bounds가 영역 확보.</li>
+    </ul>
   </section>
 
   <section id="edge">
