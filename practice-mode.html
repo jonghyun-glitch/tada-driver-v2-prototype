@@ -162,14 +162,16 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 @media (max-width:599px){.sb{display:none}}
 @property --pdeg{syntax:'<angle>';inherits:false;initial-value:0deg}
 .pframe{position:absolute;inset:0;border-radius:36px;pointer-events:none;z-index:60}
-.pframe.f-soft{box-shadow:inset 0 0 0 2.5px rgba(255,183,74,.95),inset 0 0 30px rgba(255,183,74,.32);animation:pbrz 3.4s ease-in-out infinite}
+.pframe.f-soft{box-shadow:inset 0 0 46px rgba(255,166,50,.46);animation:pbrz 3s ease-in-out infinite}
 .pframe.f-soft .pring{display:none}
-.pframe.f-ring{box-shadow:inset 0 0 34px rgba(255,160,54,.26)}
-@keyframes pbrz{0%,100%{box-shadow:inset 0 0 0 2.5px rgba(255,183,74,.82),inset 0 0 22px rgba(255,183,74,.20)}50%{box-shadow:inset 0 0 0 2.5px rgba(255,183,74,1),inset 0 0 38px rgba(255,183,74,.38)}}
-.pring{position:absolute;inset:0;border-radius:36px;padding:2.5px;background:conic-gradient(from var(--pdeg),#FF9330,#FFE1A6,#FFB74A,#fff4e0,#FFB74A,#FF9330,#FFE1A6,#FF9330);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:pspin 7s linear infinite}
+.pframe.f-ring{box-shadow:inset 0 0 15px rgba(255,150,40,.16)}
+@keyframes pbrz{0%,100%{box-shadow:inset 0 0 36px rgba(255,166,50,.34)}50%{box-shadow:inset 0 0 60px rgba(255,166,50,.56)}}
+.pring{position:absolute;inset:0;border-radius:36px;padding:3.5px;background:conic-gradient(from var(--pdeg),#FF7A1A,#FFCF7A,#FFF6DD,#FFB74A,#FF8A20,#FFE1A6,#FF9330,#FF7A1A);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:pspin 4.5s linear infinite;box-shadow:0 0 0 .5px rgba(255,150,40,.4)}
 @keyframes pspin{to{--pdeg:360deg}}
-.ppill{position:absolute;top:32px;left:50%;transform:translateX(-50%);background:rgba(14,18,30,.74);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,183,74,.6);color:#FFD79A;font-size:calc(11.5px*var(--fs,1));font-weight:600;padding:6px 13px 6px 11px;border-radius:22px;display:flex;align-items:center;gap:7px;box-shadow:0 5px 18px rgba(0,0,0,.4);z-index:62;white-space:nowrap;pointer-events:none}
+.ppill{position:absolute;top:32px;left:50%;transform:translateX(-50%);background:rgba(14,18,30,.74);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,183,74,.6);color:#FFD79A;font-size:calc(11.5px*var(--fs,1));font-weight:600;padding:6px 13px 6px 11px;border-radius:22px;display:flex;align-items:center;gap:7px;box-shadow:0 5px 18px rgba(0,0,0,.4);z-index:62;white-space:nowrap;pointer-events:auto;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.ppill:active{transform:translateX(-50%) scale(.96)}
 .ppill svg{width:14px;height:14px;fill:#FFE1A6}
+.ppill .pexit{margin-left:4px;padding-left:8px;border-left:1px solid rgba(255,183,74,.35);font-size:13px;line-height:1;color:#FFD79A;opacity:.9}
 .ppill .pdot{width:6px;height:6px;border-radius:50%;background:#FFB74A;box-shadow:0 0 9px #FFB74A;animation:ppls 1.7s ease-in-out infinite}
 @keyframes ppls{0%,100%{opacity:.5;transform:scale(.85)}50%{opacity:1;transform:scale(1.15)}}
 .ftoggle{position:absolute;bottom:16px;left:16px;z-index:63;background:rgba(14,18,30,.85);border:1px solid rgba(255,183,74,.5);color:#FFD79A;font-size:11px;font-weight:600;padding:7px 12px;border-radius:20px;cursor:pointer;-webkit-tap-highlight-color:transparent}
@@ -212,7 +214,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 </head>
 <body>
 <h2 class="sr-only">타다 드라이버앱 v2 프로토타입 — 운행중 화면. 모바일에서 화면 전체에 반응형으로 표시되고, 프로토타입 설정(경유 개수·글씨 크기)은 우하단 톱니 버튼에 숨겨져 있습니다.</h2>
-<div id="ph" style="--fs:1"><div id="app"></div><div class="pframe f-soft" id="pframe"><div class="pring"></div></div><div class="ppill"><svg viewBox="0 0 24 24"><path d="M12 3 1 8l11 5 9-4.1V15h2V8L12 3zM5 13.2V17c0 1.4 3.1 3 7 3s7-1.6 7-3v-3.8l-7 3.2-7-3.2z"/></svg><span>예습 모드</span><span class="pdot"></span></div><div class="ftoggle" id="ftoggle" onclick="P.toggleFrame()">프레임 ① 글로우</div></div>
+<div id="ph" style="--fs:1"><div id="app"></div><div class="pframe f-soft" id="pframe"><div class="pring"></div></div><div class="ppill" onclick="P.pExit()"><svg viewBox="0 0 24 24"><path d="M12 3 1 8l11 5 9-4.1V15h2V8L12 3zM5 13.2V17c0 1.4 3.1 3 7 3s7-1.6 7-3v-3.8l-7 3.2-7-3.2z"/></svg><span>예습 모드</span><span class="pdot"></span><span class="pexit">✕</span></div><div class="ftoggle" id="ftoggle" onclick="P.toggleFrame()">프레임 ① 글로우</div></div>
 <button class="devbtn" id="devbtn" aria-label="프로토타입 설정 열기">⚙</button>
 <div class="devscrim" id="devscrim"></div>
 <div class="devpanel" id="devpanel">
@@ -439,6 +441,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
     pRejectCall:function(){S.pRej=(S.pRej||0)+1;P.toast('거절했어요 · 다시 콜이 전달돼요');render()},
     pAccept:function(){build(3);resetState();S.screen='pickup';render()},
     pToList:function(){S.screen='plist';render()},
+    pExit:function(){if(S.screen==='phome')return;clearNavCd();clearMF();S.busy=false;var toList=(S.screen!=='plist');S.screen=toList?'plist':'phome';S._last='';render();if(toList)P.toast('예습 목록으로 나왔어요')},
     toggleFrame:function(){var r=(pFrame()==='ring');try{localStorage.setItem('practice_frame',r?'soft':'ring')}catch(e){}applyFrame()},
     toast:function(msg){var ph=document.getElementById('ph');var old=document.getElementById('toast');if(old&&old.parentNode)old.parentNode.removeChild(old);var t=document.createElement('div');t.id='toast';t.className='toast';t.textContent=msg;ph.appendChild(t);requestAnimationFrame(function(){requestAnimationFrame(function(){t.classList.add('on')})});clearTimeout(P._tt);P._tt=setTimeout(function(){t.classList.remove('on');setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t)},260)},1700)},
     reset:function(){clearNavCd();resetState();S.screen='phome';applyFrame();render()},
