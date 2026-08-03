@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover"/>
+<meta name="theme-color" content="#101A3D"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="타다 드라이버 v2"/>
+<title>타다 드라이버앱 v2 · 예습 모드</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/spoqa/spoqa-han-sans@latest/css/SpoqaHanSansNeo.css"/>
+<style>
+:root{--font-sans:'Spoqa Han Sans Neo','Noto Sans KR',sans-serif;--color-background-primary:#12151b;--color-background-secondary:#171a21;--color-text-primary:#e8eaed;--color-text-secondary:#9aa3b2;--color-border-secondary:#2a3140;--color-text-info:#32A2FA;}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;height:100%;background:#101A3D;font-family:var(--font-sans);-webkit-font-smoothing:antialiased;overflow:hidden;overscroll-behavior:none;}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+/* ===== 기기(반응형): 모바일은 화면 꽉 채움 ===== */
+#ph{--navy:#101A3D;--navy2:#19254D;--navyL:#283873;--navy700:#293F71;--blue700:#0074D7;--cobalt:#0055FF;--blue:#32A2FA;--b300:#5CB4FA;--red:#FE4C00;--lemon:#EEFF00;--e6:#E6E9EF;--ef:#EFEFF1;--dim:#99A5C0;--n1:#C0C8D9;--green:#30A234;--amber:#FFA825;--off:#F5F6F7;--ink:#171A24;--bd:#E3E4E8;--ok:#2FA76A;--fs:1;--fsd:calc(1 + (var(--fs,1) - 1)*.6);--fsx:calc(1 + (var(--fs,1) - 1)*.4);--sheet-max:calc(66% + (var(--fs,1) - 1) * 22%);position:fixed;inset:0;width:100%;height:100dvh;background:var(--navy);overflow:hidden;}
+#app{height:100%;display:flex;flex-direction:column;overflow:hidden}
+/* ===== 데스크톱: 가운데 폰 프레임 ===== */
+@media (min-width:600px){
+  html,body{background:#0a0d12;}
+  body{display:flex;align-items:center;justify-content:center;}
+  #ph{position:relative;inset:auto;flex:none;width:min(392px,96vw);height:min(848px,94dvh);border:9px solid #05070c;border-radius:44px;box-shadow:0 26px 72px rgba(0,0,0,.6);}
+  /* ⚙ 조정버튼·패널을 뷰포트가 아닌 가운데 폰 프레임 우하단에 앵커 */
+  body .devbtn{left:calc(50% - 174px);top:calc(50% - min(424px,47dvh) + 96px);right:auto;bottom:auto;}
+  body .devpanel{left:calc(50% - 174px);top:calc(50% - min(424px,47dvh) + 148px);right:auto;bottom:auto;}
+}
+/* ===== 프로토타입 설정(햄버거) ===== */
+.devbtn{position:fixed;left:14px;top:calc(env(safe-area-inset-top,0px) + 88px);width:44px;height:44px;border-radius:50%;background:rgba(16,26,45,.72);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.18);color:#dfe6f2;display:flex;align-items:center;justify-content:center;font-size:21px;z-index:120;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.45);user-select:none;}
+.devbtn:active{filter:brightness(1.18)}
+.devscrim{position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:118;opacity:0;pointer-events:none;transition:opacity .2s ease;}
+.devscrim.open{opacity:1;pointer-events:auto;}
+.devpanel{position:fixed;left:14px;top:calc(env(safe-area-inset-top,0px) + 140px);width:min(292px,86vw);background:var(--color-background-secondary);border:1px solid var(--color-border-secondary);border-radius:16px;padding:14px;z-index:121;display:flex;flex-direction:column;gap:12px;box-shadow:0 16px 44px rgba(0,0,0,.55);transform:translateY(-8px) scale(.98);opacity:0;pointer-events:none;transform-origin:top left;transition:opacity .18s ease,transform .18s ease;}
+.devpanel.open{opacity:1;pointer-events:auto;transform:none;}
+.devhd{display:flex;justify-content:space-between;align-items:center;color:var(--color-text-primary);font-size:13px;font-weight:700;}
+.devx{color:var(--color-text-secondary);cursor:pointer;font-size:15px;padding:2px 8px;margin:-2px -6px;}
+.ctl{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.ctl .lbl{font-size:12px;color:var(--color-text-secondary);min-width:62px;}
+.fb{font-size:13px;padding:7px 13px;border-radius:9px;border:0.5px solid var(--color-border-secondary);color:var(--color-text-secondary);cursor:pointer;background:var(--color-background-primary)}.fb.on{background:#32A2FA;color:#fff;border-color:transparent}
+/* ===== 앱 내부 UI =====
+   타입 체계: 콘텐츠=SP(calc * --fs, base 18sp) / OS·외부(상태바·T맵)=DP(고정).
+   스케일: Display 26 · Title 24 · Headline 20 · Body 18(base) · Label 15 · Caption 13, Weight Reg400/Bold700 */
+.sb{flex:none;display:flex;justify-content:space-between;align-items:center;padding:9px 18px 3px;color:#fff;font-size:11px;background:#000}
+.appbar{flex:none;display:flex;gap:8px;align-items:center;justify-content:space-between;padding:calc(6px + env(safe-area-inset-top,0px)) 10px 6px;background:var(--navy)}
+.mbtn{width:calc(40px * var(--fsx));height:calc(40px * var(--fsx));display:flex;align-items:center;justify-content:center;color:var(--n1);cursor:pointer;flex:0 0 auto}
+.abr{display:flex;gap:8px;align-items:center}
+.achip{display:flex;align-items:center;gap:6px;background:rgba(35,53,101,.8);color:var(--ef);font-size:calc(16px * var(--fsx));font-weight:700;padding:8px 10px;border-radius:8px;white-space:nowrap}
+.achip.lm{color:var(--lemon)}.achip .ld{width:8px;height:8px;border-radius:50%;background:var(--lemon)}
+.body{flex:1 1 auto;position:relative;min-height:0;overflow:hidden;background:#E7ECF0}
+.map{position:absolute;inset:0;background:#E7ECF0;cursor:pointer}
+.pin{position:absolute;transform:translate(-50%,-88%);z-index:1}
+.pin.done{opacity:.5;z-index:0}
+.mklayer{position:absolute;inset:0;transform-origin:0 0;will-change:transform;z-index:1}
+.mk{width:38px;height:39.5px;display:block;filter:drop-shadow(0 2px 2px rgba(10,16,36,.32))}
+.tmk{width:34px;height:42.5px;display:block;filter:drop-shadow(0 2px 3px rgba(10,16,36,.35))}
+.carsvg{width:24px;height:31px;display:block;filter:drop-shadow(0 2px 3px rgba(10,16,36,.3))}
+svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
+.mbtn svg{width:calc(22px * var(--fsx));height:calc(22px * var(--fsx))}
+.achip svg{width:calc(17px * var(--fsx));height:calc(17px * var(--fsx));flex:none}
+.dot{min-width:44px;height:30px;padding:0 7px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;border:2px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.35)}
+.dot.org{background:var(--blue700)}.dot.way{background:var(--navyL)}.dot.cur{background:var(--blue700);box-shadow:0 0 0 3px rgba(0,116,215,.35),0 1px 3px rgba(0,0,0,.35)}.dot.dest{background:var(--red)}.dot.done{background:#1f6d3e}
+.car{position:absolute;transform:translate(-50%,-50%);z-index:2}
+.bubs{position:absolute;right:10px;top:10px;display:flex;gap:8px;z-index:4}
+.bub{width:calc(52px * var(--fsx));height:calc(52px * var(--fsx));border-radius:13px;border:1px solid rgba(255,255,255,.22);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:calc(14px * var(--fsx));font-weight:700;color:#fff;line-height:1.1;cursor:pointer;gap:1px}
+.bub svg{width:calc(20px * var(--fsx));height:calc(20px * var(--fsx))}
+.bub.pay{background:var(--navy700)}.bub.pay .bin{background:transparent;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.bubw{position:relative;display:flex}
+.bubdot{position:absolute;top:calc(-7px * var(--fsx));right:calc(-7px * var(--fsx));min-width:calc(20px * var(--fsx));height:calc(20px * var(--fsx));padding:0 calc(5px * var(--fsx));box-sizing:border-box;border-radius:999px;background:var(--red);color:#fff;font-size:calc(12px * var(--fsx));font-weight:700;line-height:1;display:flex;align-items:center;justify-content:center;box-shadow:0 1px 4px rgba(0,0,0,.4);z-index:6}
+.bub.grad{background:var(--navy700)}.bub.chg{background:var(--navy700)}.bub.nav{background:var(--blue700)}
+.toast{position:absolute;left:50%;bottom:16%;transform:translate(-50%,10px);max-width:90%;white-space:nowrap;background:rgba(13,20,44,.96);color:#fff;font-size:calc(15px * var(--fs,1));font-weight:600;line-height:1.35;text-align:center;padding:calc(11px * var(--fs,1)) 22px;border-radius:24px;box-shadow:0 12px 32px rgba(0,0,0,.5);border:1px solid rgba(255,255,255,.1);z-index:45;opacity:0;transition:opacity .2s ease,transform .24s ease;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.bottom{position:absolute;left:0;right:0;bottom:0;max-height:var(--sheet-max);display:flex;flex-direction:column;z-index:3;min-height:0}
+.pinfo{flex:0 0 auto;padding:calc(15px * var(--fsx))}
+.pcard{background:var(--navy);border-radius:10px;padding:calc(10px * var(--fsx));box-shadow:0 6px 30px 5px rgba(0,0,0,.12),0 16px 24px 2px rgba(0,0,0,.14),0 8px 10px -5px rgba(0,0,0,.2);display:flex;flex-direction:column;gap:calc(10px * var(--fsx))}
+.prow{display:flex;align-items:center;gap:calc(10px * var(--fsx));padding:0 calc(6px * var(--fsx))}
+.pav{width:calc(28px * var(--fsx));height:calc(28px * var(--fsx));flex:0 0 auto}.pav svg{width:100%;height:100%;display:block}
+.pnm{flex:1;min-width:0;font-size:calc(22px * var(--fsd));font-weight:700;color:var(--ef);word-break:keep-all;overflow-wrap:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pcall{color:var(--e6);padding:0 8px 0 25px;cursor:pointer;display:flex;align-items:center}.pcall svg{width:calc(24px * var(--fsx));height:calc(24px * var(--fsx));display:block}
+.preq{background:rgba(255,255,255,.06);border-radius:8px;padding:8px 10px;display:flex;align-items:center;justify-content:center;gap:8px;color:var(--dim);font-size:calc(16px * var(--fsx));cursor:pointer}.preq .chev{display:inline-flex;color:var(--dim)}.preq .chev svg{width:calc(8px * var(--fsx));height:calc(13px * var(--fsx));display:block}
+/* 확대(tight) 시 승객카드 축약: 요청사항 행 접기(정체성 행=이름·전화만 유지). 케이스 무관—행이 없으면 자동으로 이미 컴팩트 */
+#ph.tight .preq{display:none}
+.route{flex:1 1 auto;background:var(--navy);border-radius:12px 12px 0 0;box-shadow:0 -8px 24px rgba(0,0,0,.28);display:flex;flex-direction:column;gap:0;padding:calc(6px * var(--fsx)) 0 calc(14px * var(--fsx));min-height:0;overflow:hidden}
+.route.lead{padding-top:calc(6px * var(--fsx))}
+.rhd{flex:0 0 auto;display:flex;align-items:center;gap:calc(12px * var(--fsx));padding:calc(16px * var(--fsx)) calc(16px * var(--fsx)) 0}
+.rhd .t{font-size:calc(15px * var(--fsx));font-weight:400;color:var(--dim);white-space:nowrap}
+.rhd .see{margin-left:auto;color:var(--b300);font-size:calc(15px * var(--fsx));white-space:nowrap;cursor:pointer}
+.plist{flex:1 1 auto;display:flex;flex-direction:column;gap:4px;overflow-y:auto;min-height:0}
+.badge{width:calc(56px * var(--fsx));min-height:calc(32px * var(--fsx));border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:calc(16px * var(--fsx));font-weight:700;color:var(--ef);flex:0 0 auto;white-space:nowrap}
+.badge.org{background:var(--blue700)}.badge.way{background:var(--navy700)}.badge.dest{background:var(--red)}
+.irow{flex:0 0 auto;display:flex;align-items:flex-start;gap:calc(16px * var(--fsx));padding:calc(12px * var(--fsx)) calc(20px * var(--fsx));overflow:hidden}
+.irow .nm{flex:1;min-width:0;font-size:calc(20px * var(--fs,1));font-weight:700;line-height:calc(30px * var(--fsx));color:var(--dim);word-break:normal;overflow-wrap:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;cursor:pointer}
+.irow.tap{cursor:pointer;transition:background .1s ease}.irow.tap:active{background:rgba(255,255,255,.09)}
+.irow.on .nm{color:#fff}
+.rnav{width:calc(24px * var(--fsx));height:calc(32px * var(--fsx));flex:0 0 auto;opacity:.4;padding:0;display:flex;align-items:center;justify-content:center}
+.rnav svg{width:calc(24px * var(--fsx));height:calc(24px * var(--fsx));fill:var(--n1)}
+.irow.nav .nm{color:#fff}
+.irow.nav .rnav{opacity:1}
+.irow.nav .rnav svg{fill:#fff}
+.crd{flex:0 0 auto;border:1px solid var(--bd);border-radius:8px;overflow:hidden;display:flex;flex-direction:column;margin:14px 14px 14px;will-change:transform,opacity,max-height}
+.crd-top{display:flex;align-items:flex-start;gap:calc(15px * var(--fsx));padding:calc(16px * var(--fsx)) calc(16px * var(--fsx)) calc(24px * var(--fsx));background:var(--navy)}
+.crd-top .badge{margin-top:4px}
+.cinfo{flex:1;min-width:0;display:flex;flex-direction:column;gap:calc(8px * var(--fsx))}
+.cname{font-size:calc(24px * var(--fsd));font-weight:700;color:#fff;line-height:1.28;word-break:normal;overflow-wrap:break-word;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.caddr{font-size:calc(15px * var(--fs,1));color:var(--n1);line-height:1.35;word-break:keep-all;overflow-wrap:break-word}
+.cnav{width:calc(32px * var(--fsx));height:calc(32px * var(--fsx));flex:0 0 auto;margin-top:2px;cursor:pointer}.cnav svg{width:100%;height:100%;fill:#fff}
+.cnavrow{display:flex;align-items:flex-start;gap:15px;cursor:pointer;-webkit-tap-highlight-color:transparent;border-radius:8px;padding:2px 6px;margin:-2px -6px;transition:background .1s ease}.cnavrow .cname{flex:1;transition:filter .1s ease}.cnavrow:active{background:rgba(255,255,255,.07)}.cnavrow:active .cname{filter:brightness(1.2)}.cnavrow:active .cnav{transform:scale(.74);filter:brightness(1.4)}
+.cbtn{flex:0 0 auto;min-height:clamp(68px, calc(48px + 20px * var(--fs,1)), 78px);display:flex;align-items:center;justify-content:center;gap:calc(10px * var(--fsx));padding:calc(10px * var(--fsx)) calc(16px * var(--fsx));font-size:calc(20px * var(--fs,1));font-weight:700;cursor:pointer;white-space:nowrap;position:relative;overflow:hidden;transition:filter .12s ease;-webkit-tap-highlight-color:transparent;user-select:none}.cbtn:active{filter:brightness(.86)}
+.cbtn.go{background:var(--off);color:var(--ink)}.cbi{display:inline-flex;align-items:center}.cbi svg{width:calc(32px * var(--fsx));height:calc(32px * var(--fsx));fill:currentColor;display:block}
+.bico{display:inline-flex;align-items:center;flex:0 0 auto}
+.bico svg{width:calc(24px * var(--fsx));height:calc(24px * var(--fsx));display:block}
+.cbtn.done{background:var(--blue);color:#fff}
+.cbtn.ok{background:var(--ok);color:#fff}
+.barfull{flex:none;display:flex;align-items:center;justify-content:center;gap:calc(10px * var(--fsx));width:100%;min-height:clamp(68px, calc(48px + 20px * var(--fs,1)), 78px);padding:calc(10px * var(--fsx)) calc(16px * var(--fsx));background:var(--blue);color:#fff;font-size:calc(20px * var(--fs,1));font-weight:700;white-space:nowrap;cursor:pointer;position:relative;overflow:hidden;transition:transform .11s ease,filter .11s ease;-webkit-tap-highlight-color:transparent;user-select:none}.barfull:active{filter:brightness(.86)}.barfull.round:active{transform:scale(.98);filter:brightness(.9)}
+/* ── 탭 피드백(차량 거치용: 명확한 프레스 + 리플 + 햅틱) ── */
+.tsel-go,.tsel-go2,.tovb,.tov-tada,.tov-act,.bub,.fb,.rnav,.cnav,.preq,.mbtn,.pcall,.see,.tb-x,.tsel-back{-webkit-tap-highlight-color:transparent;transition:transform .1s ease,filter .1s ease}
+.tsel-go,.tsel-go2,.tovb,.tov-tada,.tov-act,.bub,.fb,.preq,.mbtn,.pcall,.see,.tb-x,.tsel-back{position:relative;overflow:hidden}
+.tovb:active,.bub:active{transform:scale(.91);filter:brightness(.88)}
+.tsel-go:active,.tsel-go2:active,.tov-tada:active,.tov-act:active,.fb:active{transform:scale(.95);filter:brightness(.89)}
+.rnav:active,.cnav:active{transform:scale(.74);filter:brightness(1.4)}
+.mbtn:active,.pcall:active,.tb-x:active,.tsel-back:active{transform:scale(.86);filter:brightness(1.2)}
+.see:active,.preq:active{filter:brightness(1.22)}
+.rip{position:absolute;border-radius:50%;transform:scale(0);pointer-events:none;will-change:transform,opacity;animation:rippleFx .5s cubic-bezier(.2,.55,.3,1) forwards}
+@keyframes rippleFx{0%{transform:scale(0);opacity:.85}100%{transform:scale(2.5);opacity:0}}
+.barfull.round{width:auto;border-radius:4px;margin:14px 14px 0}
+.tbt{flex:none;display:flex;align-items:center;gap:13px;padding:16px 18px 15px;background:#0B6E4E;color:#fff}.tbt-a{flex:none;width:37px;height:37px}.tbt-a svg{width:100%;height:100%;display:block}.tbt-m{flex:1;min-width:0}.tbt-d{font-size:32px;font-weight:800;line-height:1}.tbt-d em{font-size:18px;font-weight:600;font-style:normal;margin-left:2px}.tbt-r{font-size:15px;opacity:.92;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tbt-n{flex:none;display:flex;flex-direction:column;align-items:center;gap:1px;padding-left:13px;margin-left:2px;border-left:1px solid rgba(255,255,255,.28)}.tbt-ni{font-size:16px;line-height:1;opacity:.9}.tbt-n b{font-size:14px;font-weight:700;opacity:.95}
+.tmapmap{flex:1 1 auto;min-height:0;position:relative;background:#ECEFF2}
+.navp{position:absolute;transform:translate(-50%,-50%);z-index:2}.navp .nv{display:block;transform:rotate(16deg)}.navarr{width:36px;height:36px;display:block;filter:drop-shadow(0 2px 5px rgba(10,16,36,.4))}
+.tspeed{position:absolute;left:14px;bottom:14px;z-index:3;display:flex;align-items:center;gap:8px}.tsl{width:44px;height:44px;border-radius:50%;background:#fff;border:4px solid #E4002B;color:#1a1a1a;font-size:19px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,.22)}.tcur{background:rgba(20,24,33,.82);color:#fff;border-radius:11px;padding:5px 10px;font-size:17px;font-weight:800;line-height:1;display:flex;align-items:baseline;gap:3px}.tcur em{font-size:10px;font-weight:600;font-style:normal;opacity:.85}
+.tbar{flex:none;display:flex;align-items:center;gap:12px;padding:14px 18px calc(14px + env(safe-area-inset-bottom,0px));background:#fff;color:#191c22;box-shadow:0 -2px 12px rgba(0,0,0,.08)}.tb-info{flex:1;min-width:0;display:flex;align-items:baseline;gap:8px}.tb-info b{font-size:20px;font-weight:800;color:#0B6E4E}.tb-info span{font-size:13px;color:#8a8f9c;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tb-x{flex:none;width:34px;height:34px;border-radius:50%;background:#F1F2F4;color:#5a5f6a;display:flex;align-items:center;justify-content:center;font-size:15px}
+.tovr{position:absolute;right:10px;top:12px;display:flex;flex-direction:column;gap:8px;z-index:4;align-items:flex-end}.tovb{width:62px;height:62px;border-radius:15px;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;cursor:pointer;box-shadow:0 4px 13px rgba(10,16,36,.3)}.tovb.tada{background:#19254D;border:2px solid #5CB4FA;gap:5px}.tovb.tada .tlogo{font-size:17px;font-weight:800;letter-spacing:-.5px;color:#fff;line-height:1}.tovb.tada .trun{font-size:12px;font-weight:500;color:#E6E9EF;letter-spacing:.4px;line-height:1}.tovb.chg{background:#283873;border:2px solid #fff;font-size:18px;font-weight:700;color:#fff;line-height:1.16}.tovb.pay{background:#19254D;border:2px solid #5CB4FA;padding:6px}.tovb.pay .ppin{width:100%;height:100%;background:#0055FF;border:1px solid #3385FF;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff}
+.ttip{position:absolute;left:50%;top:14px;transform:translateX(-50%);background:rgba(16,26,61,.95);color:#cdd6e6;font-size:11px;padding:6px 12px;border-radius:20px;white-space:nowrap;z-index:3}.ttip b{color:var(--b300)}
+.tsel-hd{flex:none;display:flex;align-items:center;gap:12px;padding:14px 16px;background:#fff;color:#20232B}
+.tsel-back{font-size:22px;line-height:1;color:#3a3f4a;cursor:pointer;flex:none}
+.tsel-dst{flex:1;min-width:0}.tsel-dst .d1{font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.tsel-dst .d2{font-size:12px;color:#8a8f9c;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tsel-logo{flex:none;font-size:12px;font-weight:800;color:#0064FF;letter-spacing:.3px}
+.tsel-sheet{flex:none;background:#fff;border-top:1px solid #eef0f2}
+.tsel-opt{display:flex;align-items:center;gap:12px;padding:14px 18px;cursor:pointer}.tsel-opt+.tsel-opt{border-top:1px solid #f0f1f3}
+.tsel-oi{flex:1;min-width:0}.tsel-oi b{display:block;font-size:16px;font-weight:700;color:#20232B}.tsel-oi span{display:block;font-size:12.5px;color:#8a8f9c;margin-top:3px}
+.tsel-go{flex:none;display:flex;align-items:center;gap:6px;background:#0064FF;color:#fff;font-size:16px;font-weight:700;padding:11px 17px;border-radius:24px}
+.tsel-cd{display:inline-flex;align-items:center;justify-content:center;min-width:20px;height:20px;padding:0 5px;border-radius:10px;background:rgba(255,255,255,.26);font-size:12px;font-weight:700}
+.tsel-go2{flex:none;background:#fff;color:#4a4f5a;font-size:16px;font-weight:700;padding:10px 19px;border-radius:24px;border:1.5px solid #d5d8de}
+.full{flex:1;display:flex;flex-direction:column;background:var(--navy);min-height:0}
+.fhd{flex:none;display:flex;align-items:center;justify-content:space-between;padding:calc(16px + env(safe-area-inset-top,0px)) 14px 12px;color:#fff;font-size:calc(20px * var(--fs,1));font-weight:700}
+.fsum{display:flex;gap:8px;padding:12px 16px}
+.fsc{flex:1;background:var(--navy2);border-radius:8px;padding:10px;text-align:center}.fsc .n{font-size:calc(24px * var(--fs,1));font-weight:700;color:#fff}.fsc .l{font-size:calc(14px * var(--fs,1));color:var(--dim);margin-top:2px}
+.fsc.done .n{color:var(--green)}
+.paywrap{flex:1;display:flex;flex-direction:column;padding:8px 16px 8px;color:#fff}.payhd{font-size:calc(18px * var(--fs,1));font-weight:700;padding:12px 4px 16px;color:var(--ef)}.payrow{display:flex;justify-content:space-between;align-items:center;padding:15px 4px;border-bottom:1px solid var(--navyL);font-size:calc(18px * var(--fs,1));color:var(--dim)}.payrow b{color:#fff;font-size:calc(20px * var(--fs,1))}.paywarn{display:flex;gap:6px;color:#FE6F59;font-size:calc(14px * var(--fs,1));margin-top:16px}
+.donew{flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:24px;color:#fff;text-align:center}.dok{color:var(--green);font-size:calc(14px * var(--fs,1));margin-bottom:14px}.dbig{font-size:calc(24px * var(--fs,1));font-weight:700;margin-bottom:6px}.dsub{font-size:calc(14px * var(--fs,1));color:var(--dim);margin-bottom:26px}.dcirc{width:150px;height:150px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:calc(20px * var(--fs,1));font-weight:700;margin-bottom:24px;line-height:1.3}.drest{color:var(--dim);font-size:calc(14px * var(--fs,1));border:1px solid var(--navyL);padding:10px 18px;border-radius:20px;cursor:pointer}
+.cov{position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;z-index:40}.cbox{background:var(--navy2);border-radius:16px;padding:22px;width:264px;text-align:center}.ctit{color:#fff;font-size:calc(18px * var(--fs,1));font-weight:700;margin-bottom:9px;line-height:1.35}.cdsc{color:var(--dim);font-size:calc(13px * var(--fs,1));margin-bottom:18px;line-height:1.5}.cdsc b{color:var(--amber)}.cbs{display:flex;gap:10px}.cb{flex:1;padding:13px;border-radius:8px;font-size:calc(15px * var(--fs,1));font-weight:700;cursor:pointer}.cb.no{background:var(--navyL);color:var(--ef)}.cb.yes{background:var(--blue);color:#fff}
+/* ── 지도 탭 → 전체 지도(포커스): 시트를 아래로 슬라이드, 앱 상태 변화 시 자동 복귀 ── */
+.bottom{transition:transform .42s cubic-bezier(.5,0,0,1)}
+#ph.mf .bottom{transform:translateY(106%);pointer-events:none}
+.mfexit{position:absolute;bottom:calc(16px + env(safe-area-inset-bottom,0px));left:16px;right:16px;z-index:7;display:flex;align-items:center;justify-content:center;gap:8px;height:clamp(60px, calc(52px + 16px * var(--fs,1)), 68px);border-radius:14px;background:var(--blue);color:#fff;font-size:calc(17px * var(--fs,1));font-weight:700;white-space:nowrap;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.4);user-select:none;-webkit-tap-highlight-color:transparent;opacity:0;pointer-events:none;transform:translateY(130px);transition:opacity .24s ease,transform .44s cubic-bezier(.18,.84,.3,1) .04s,filter .11s ease}
+.mfexit svg{width:calc(22px * var(--fs,1));height:calc(22px * var(--fs,1));stroke:#fff;fill:none}
+#ph.mf .mfexit{opacity:1;pointer-events:auto;transform:translateY(0)}
+#ph.mf .mfexit:active{transform:translateY(0) scale(.985);filter:brightness(1.06)}
+.mfexit .mfx-txt{display:flex;flex-direction:column;align-items:flex-start;line-height:1.15;gap:1px}
+.mfexit .mfx-cap{font-size:calc(12px * var(--fsx));font-weight:600;color:var(--b300);letter-spacing:.2px}
+.mfexit .mfx-act{font-size:calc(17px * var(--fs,1));font-weight:700;color:#fff}
+/* 실기기(모바일): 가짜 상태바 숨김 — 실제 OS 상태바가 상단을 담당, appbar가 세이프에어리어(노치·아일랜드) 비켜 자리잡음 */
+@media (max-width:599px){.sb{display:none}}
+@property --pdeg{syntax:'<angle>';inherits:false;initial-value:0deg}
+.pframe{position:absolute;inset:0;border-radius:36px;pointer-events:none;z-index:60}
+.pframe.f-soft{box-shadow:inset 0 0 0 2.5px rgba(255,183,74,.95),inset 0 0 30px rgba(255,183,74,.32);animation:pbrz 3.4s ease-in-out infinite}
+.pframe.f-soft .pring{display:none}
+.pframe.f-ring{box-shadow:inset 0 0 34px rgba(255,160,54,.26)}
+@keyframes pbrz{0%,100%{box-shadow:inset 0 0 0 2.5px rgba(255,183,74,.82),inset 0 0 22px rgba(255,183,74,.20)}50%{box-shadow:inset 0 0 0 2.5px rgba(255,183,74,1),inset 0 0 38px rgba(255,183,74,.38)}}
+.pring{position:absolute;inset:0;border-radius:36px;padding:2.5px;background:conic-gradient(from var(--pdeg),#FF9330,#FFE1A6,#FFB74A,#fff4e0,#FFB74A,#FF9330,#FFE1A6,#FF9330);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:pspin 7s linear infinite}
+@keyframes pspin{to{--pdeg:360deg}}
+.ppill{position:absolute;top:32px;left:50%;transform:translateX(-50%);background:rgba(14,18,30,.74);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border:1px solid rgba(255,183,74,.6);color:#FFD79A;font-size:calc(11.5px*var(--fs,1));font-weight:600;padding:6px 13px 6px 11px;border-radius:22px;display:flex;align-items:center;gap:7px;box-shadow:0 5px 18px rgba(0,0,0,.4);z-index:62;white-space:nowrap;pointer-events:none}
+.ppill svg{width:14px;height:14px;fill:#FFE1A6}
+.ppill .pdot{width:6px;height:6px;border-radius:50%;background:#FFB74A;box-shadow:0 0 9px #FFB74A;animation:ppls 1.7s ease-in-out infinite}
+@keyframes ppls{0%,100%{opacity:.5;transform:scale(.85)}50%{opacity:1;transform:scale(1.15)}}
+.ftoggle{position:absolute;bottom:16px;left:16px;z-index:63;background:rgba(14,18,30,.85);border:1px solid rgba(255,183,74,.5);color:#FFD79A;font-size:11px;font-weight:600;padding:7px 12px;border-radius:20px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pshell{flex:1;display:flex;flex-direction:column;min-height:0;background:var(--navy);color:#fff;overflow:hidden}
+.phome,.pdone{align-items:center;justify-content:center;text-align:center;padding:0 30px}
+.phinner{display:flex;flex-direction:column;align-items:center;gap:14px;max-width:300px}
+.phico{font-size:52px;line-height:1}
+.phinner h1{font-size:26px;font-weight:700}
+.phinner p{font-size:15px;color:var(--n1);line-height:1.6}
+.phnote{font-size:13px;color:#FFD79A;background:rgba(255,183,74,.12);border:1px solid rgba(255,183,74,.32);padding:9px 15px;border-radius:10px}
+.pl-hd{display:flex;align-items:baseline;justify-content:space-between;padding:22px 20px 8px;font-size:22px;font-weight:700}
+.pl-rate{font-size:14px;color:#FFD79A;font-weight:600}
+.pl-bar{height:6px;background:#1e2a4d;border-radius:3px;margin:0 20px 14px;overflow:hidden}
+.pl-bar i{display:block;height:100%;background:#FFB74A;border-radius:3px;transition:width .45s cubic-bezier(.5,0,0,1)}
+.pl-body{flex:1;overflow-y:auto;padding:0 16px 24px;display:flex;flex-direction:column;gap:10px}
+.tcard{display:flex;align-items:center;gap:12px;background:#16213D;border:1px solid #263352;border-radius:12px;padding:15px 14px;-webkit-tap-highlight-color:transparent}
+.tcard.active{border-color:rgba(255,183,74,.55);cursor:pointer}
+.tcard.active:active{background:#1b2947}
+.tcard.done{border-color:#2c7a4a;background:#13251c}
+.tcard.lock{opacity:.5}
+.tc-n{font-size:13px;font-weight:700;color:#8ea0c8;width:22px;flex:none}
+.tc-t{flex:1;font-size:15px;font-weight:600}
+.tc-go{font-size:13px;color:#FFD79A;font-weight:700}
+.tc-done{font-size:13px;color:#4ec06a;font-weight:700}
+.tc-lock{font-size:12px;color:#7885a8}
+.pdisp{padding:6px 0}
+.pd-rej{text-align:center;font-size:12px;color:#ff9f6b;margin:0 0 8px}
+.pd-card{background:#16213D;border-radius:14px;padding:15px;margin:0 2px}
+.pd-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.pd-tag{background:var(--blue700);color:#fff;font-size:12px;font-weight:700;padding:4px 10px;border-radius:6px}
+.pd-eta{font-size:13px;color:var(--n1)}
+.pd-row{font-size:15px;color:#fff;margin:6px 0}
+.pd-row b{color:#8ea0c8;font-weight:600;margin-right:8px}
+.pd-fare{font-size:14px;color:#FFD79A;margin-top:9px;font-weight:600}
+.pd-btns{display:flex;gap:10px;margin-top:15px}
+.pd-no,.pd-yes{flex:1;text-align:center;padding:14px;border-radius:10px;font-size:16px;font-weight:700;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pd-no{background:#222f4d;color:#c0c8d9}
+.pd-yes{background:var(--blue);color:#fff}
+</style>
+</head>
+<body>
+<h2 class="sr-only">타다 드라이버앱 v2 프로토타입 — 운행중 화면. 모바일에서 화면 전체에 반응형으로 표시되고, 프로토타입 설정(경유 개수·글씨 크기)은 우하단 톱니 버튼에 숨겨져 있습니다.</h2>
+<div id="ph" style="--fs:1"><div id="app"></div><div class="pframe f-soft" id="pframe"><div class="pring"></div></div><div class="ppill"><svg viewBox="0 0 24 24"><path d="M12 3 1 8l11 5 9-4.1V15h2V8L12 3zM5 13.2V17c0 1.4 3.1 3 7 3s7-1.6 7-3v-3.8l-7 3.2-7-3.2z"/></svg><span>예습 모드</span><span class="pdot"></span></div><div class="ftoggle" id="ftoggle" onclick="P.toggleFrame()">프레임 ① 글로우</div></div>
+<button class="devbtn" id="devbtn" aria-label="프로토타입 설정 열기">⚙</button>
+<div class="devscrim" id="devscrim"></div>
+<div class="devpanel" id="devpanel">
+  <div class="devhd"><span>프로토타입 설정</span><span class="devx" id="devx">✕</span></div>
+  <div class="ctl"><span class="lbl">경유 개수</span><span class="fb" onclick="P.setWays(0,this)">0</span><span class="fb" onclick="P.setWays(2,this)">2</span><span class="fb on" onclick="P.setWays(3,this)">3</span><span class="fb" onclick="P.setWays(5,this)">5</span></div>
+  <div class="ctl"><span class="lbl">글씨(sp)</span><span class="fb on" onclick="P.setFont(1,this)">보통</span><span class="fb" onclick="P.setFont(1.25,this)">크게</span><span class="fb" onclick="P.setFont(1.5,this)">아주 크게</span></div>
+  <div class="ctl"><span class="lbl">자동 복귀 데모</span><span class="fb" onclick="P.simEvent()">🔔 알림 수신 시뮬레이션</span></div>
+  <div class="ctl"><span class="lbl">화면</span><span class="fb" onclick="P.reset()">↺ 처음부터</span></div>
+</div>
+<script>
+(function(){
+  var IC={
+    menu:'<svg class="i" viewBox="0 0 24 24"><path d="M0 3H24V5.5H0V3Z"/><path d="M0 10.75H24V13.25H0V10.75Z"/><path d="M24 18.5H0V21H24V18.5Z"/></svg>',
+    reserv:'<svg class="is" viewBox="0 0 24 24"><path d="M8.5 7V1.5M15.5 1.5V7M8.67 11.51L10.82 14L15.38 10.59M3.25 4.25H20.75V19.75H3.25V4.25Z" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+    navi:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="12" fill="#F9F9F9"/><path d="M13.9 19.72L10.65 14.77L4.83 13.66L4.62 12.59L17.36 4.74L14.97 19.51L13.9 19.72Z" fill="#0074D7"/></svg>',
+    navarrow:'<svg viewBox="0 0 24 24"><path d="M15 6V1L24 7.5L15 14V10H14C11.19 10 10 11.39 10 15V23H6V15C6 9.3 8.83 6 14 6H15Z"/></svg>',
+    wheel:'<svg viewBox="0 0 24 24" style="fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="2.4"/><path d="M12 4.6v5M5.3 15.9l4.3-2.5M18.7 15.9l-4.3-2.5"/></svg>',
+    send:'<svg viewBox="0 0 24 24" style="fill:currentColor"><path d="M2 21 23 12 2 3 2 10 17 12 2 14Z"/></svg>',
+    coin:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" style="fill:none;stroke:currentColor;stroke-width:1.7"/><text x="12" y="16.4" text-anchor="middle" style="font:800 12px sans-serif;fill:currentColor">₩</text></svg>',
+    person:'<svg viewBox="0 0 28 28"><path fill-rule="evenodd" clip-rule="evenodd" d="M14 28C21.732 28 28 21.732 28 14C28 6.26801 21.732 0 14 0C6.26801 0 0 6.26801 0 14C0 21.732 6.26801 28 14 28ZM16.8039 9.18737C16.8039 10.879 15.4785 12.2497 13.844 12.2497C12.2095 12.2497 10.8842 10.879 10.8842 9.18737C10.8842 7.49578 12.2095 6.125 13.844 6.125C15.4785 6.125 16.8039 7.49578 16.8039 9.18737ZM7 20.125L7.56467 14.5591C7.56467 14.5591 14.1575 13.8218 20.5613 14.4926L21 20.0573L7 20.125Z" fill="#C2CADB"/></svg>',
+    phone:'<svg class="i" viewBox="0 0 28 28"><path d="M17.83 17.9L17.19 21.8C17.19 21.8 13.98 20.52 11.44 17.25C8.91 13.98 7.61 9.45 7.61 9.45L11.44 8.8V1H2.5V9.21C2.5 9.8 2.58 10.39 2.77 10.94C3.34 12.62 4.85 16.5 7.61 19.85C9.81 22.52 12.15 24.57 13.66 25.78C14.69 26.61 15.98 27 17.3 27H25.5V17.9H17.83Z"/></svg>',
+    next:'<svg class="i" viewBox="0 0 10 16"><path d="M0.625 1.78L7.33 7.89L0.74 13.9L2.07 15.11L9.99 7.89L1.95 0.57L0.625 1.78Z"/></svg>'
+  };
+  var NAV=IC.navarrow;
+  function pinSVG(label,fill,tc){var fs=(label==='✓')?19:(label.length>=3?11:13);return '<svg class="mk" viewBox="0 0 50 52"><ellipse cx="25" cy="46" rx="14" ry="4.5" fill="#0a1024" opacity="0.22"/><path d="M4 0.5H46C47.933 0.5 49.5 2.067 49.5 4V27C49.5 28.933 47.933 30.5 46 30.5H26V45C26 45.55 25.55 46 25 46C24.45 46 24 45.55 24 45V30.5H4C2.067 30.5 0.5 28.933 0.5 27V4C0.5 2.067 2.067 0.5 4 0.5Z" fill="'+fill+'" stroke="rgba(0,0,0,.14)"/><text x="25" y="15.8" text-anchor="middle" dominant-baseline="central" font-family="SpoqaHanSans,sans-serif" font-weight="700" font-size="'+fs+'" fill="'+tc+'">'+label+'</text></svg>';}
+  function pinFor(i){var s=stops[i],done=(i===0)||isDone(i),focus=(i===nextArmed()&&!done),lab=(s.t==='origin'?'출발':s.t==='dest'?'도착':'경유'+s.n),fill,tc='#fff';if(done){fill='#293F71';lab='✓';tc='#3CCB41';}else if(focus){fill=(s.t==='dest'?'#FE4C00':'#0074D7');}else{fill='#293F71';}return pinSVG(lab,fill,tc);}
+  function carSVG(){return '<svg class="carsvg" viewBox="0 0 26 34"><ellipse cx="13" cy="30.5" rx="8.5" ry="2.8" fill="#0a1024" opacity="0.2"/><rect x="3.5" y="1.5" width="19" height="29" rx="7.5" fill="#fff" stroke="rgba(0,0,0,.15)"/><path d="M6.6 10.6C10.4 8.5 15.6 8.5 19.4 10.6L18.3 15C15 13.5 11 13.5 7.7 15L6.6 10.6Z" fill="#26365F"/><rect x="7.6" y="18" width="10.8" height="8.5" rx="2.5" fill="#3C4E77"/></svg>';}
+  var origin={t:'origin',name:'위워크 삼성역점',addr:'서울 강남구 청담동 92-18',short:'삼성역'};
+  var dest={t:'dest',name:'뚝섬역 1번 출구',addr:'서울 성동구 성수동1가 685',short:'뚝섬역'};
+  var POOL=[
+    {name:'AUCOMMERCE',addr:'서울 성동구 성수동 2가 301-94',short:'AUCOMMERCE'},
+    {name:'성수역 4번 출구',addr:'서울 성동구 성수동 1가',short:'성수역'},
+    {name:'갤러리아 포레',addr:'서울 성동구 성수동1가 685',short:'갤러리아'},
+    {name:'아크로 서울포레스트',addr:'서울 성동구 성수동1가 547',short:'아크로'},
+    {name:'성수연방',addr:'서울 성동구 성수동2가 333-13',short:'성수연방'}
+  ];
+  var stops,PCT,WAYS,S;
+  function build(n){WAYS=n;stops=[origin];for(var i=0;i<n;i++){var p=POOL[i];stops.push({t:'way',n:i+1,name:p.name,addr:p.addr,short:p.short})}stops.push(dest);var K=stops.length;PCT=[];for(var i=0;i<K;i++){var t=(K<=1)?0:i/(K-1);PCT.push([Math.round(14+(88-14)*t),Math.round(64-(64-16)*t)])}}
+  function resetState(){S={screen:'pickup',pphase:'go',phase:'go',done:[],uncertain:[],target:null,lastAt:0,confirm:null,busy:false,collapsed:false,pRej:0,_last:''}}
+  var TUTS=[{n:'01',t:'콜 종류 알아보기'},{n:'02',t:'콜리스트 확인하기'},{n:'03',t:'실시간 콜 운행하기',active:true},{n:'04',t:'예약 콜 운행하기'},{n:'05',t:'시간대절 콜 운행하기'},{n:'06',t:'셔틀 콜 (DRT)'},{n:'07',t:'셔틀 콜 (노선형)'},{n:'08',t:'현장결제 콜 운행하기'},{n:'09',t:'분실물 대처하기'}];
+  function pGetDone(){try{return JSON.parse(localStorage.getItem('practice_done')||'[]')}catch(e){return[]}}
+  function pMark(n){var d=pGetDone();if(d.indexOf(n)<0){d.push(n);try{localStorage.setItem('practice_done',JSON.stringify(d))}catch(e){}}}
+  function pFrame(){return localStorage.getItem('practice_frame')||'soft'}
+  function applyFrame(){var f=document.getElementById('pframe'),t=document.getElementById('ftoggle'),r=(pFrame()==='ring');if(f)f.className='pframe '+(r?'f-ring':'f-soft');if(t)t.textContent=r?'프레임 ② 링':'프레임 ① 글로우'}
+  function phome(){return sb()+'<div class="pshell phome"><div class="phinner"><div class="phico">🎓</div><h1>예습 모드</h1><p>실제 운행이 아니어도 앱을 미리 체험해 보세요. 여기서 하는 모든 활동은 연습용이에요.</p><div class="phnote">운행 전 필수 완료 항목이에요</div><div class="barfull round" onclick="P.pStart()">튜토리얼 시작하기</div></div></div>'}
+  function plist(){var dn=pGetDone();var rows=TUTS.map(function(t){var d=dn.indexOf(t.n)>=0;var cls=t.active?(d?'done':'active'):'lock';var oc=t.active?' onclick="P.pOpen(\''+t.n+'\')"':'';var rt=t.active?(d?'<span class="tc-done">✓ 완료</span>':'<span class="tc-go">시작 ›</span>'):'<span class="tc-lock">준비중</span>';return '<div class="tcard '+cls+'"'+oc+'><span class="tc-n">'+t.n+'</span><span class="tc-t">'+t.t+'</span>'+rt+'</div>'}).join('');var c=dn.length;return sb()+'<div class="pshell"><div class="pl-hd"><span>튜토리얼</span><span class="pl-rate">'+c+' / 9 완료</span></div><div class="pl-bar"><i style="width:'+(c/9*100).toFixed(0)+'%"></i></div><div class="pl-body">'+rows+'</div></div>'}
+  function pdispatch(){var rc=S.pRej||0;return shell(mapBg(),(rc>0?'<div class="pd-rej">거절 '+rc+'회 · 다시 콜이 전달됐어요</div>':'')+'<div class="pdisp"><div class="pd-card"><div class="pd-hd"><span class="pd-tag">실시간 콜</span><span class="pd-eta">예상 20분 · 3.4km</span></div><div class="pd-row"><b>출발</b>위워크 삼성역점</div><div class="pd-row"><b>도착</b>뚝섬역 1번 출구 · 경유 3</div><div class="pd-fare">예상 요금 24,600원</div><div class="pd-btns"><div class="pd-no" onclick="P.pRejectCall()">거절</div><div class="pd-yes" onclick="P.pAccept()">수락</div></div></div></div>')}
+  function pcomplete(){return sb()+'<div class="pshell pdone"><div class="phinner"><div class="phico">🎉</div><h1>예습 완료!</h1><p>03. 실시간 콜 운행하기를 마쳤어요.<br>실제 운행·정산과는 무관해요.</p><div class="barfull round" onclick="P.pToList()">목록으로 돌아가기</div></div></div>'}
+  function clearMF(){S.collapsed=false;var ph=document.getElementById('ph');if(ph)ph.classList.remove('mf')}
+  function isDone(i){return S.done.indexOf(i)>-1}
+  function isUnc(i){return S.uncertain.indexOf(i)>-1}
+  function nextArmed(){for(var i=1;i<stops.length;i++){if(!isDone(i)&&!isUnc(i))return i}return stops.length-1}
+  function bt(s){return s.t==='origin'?'출발지':s.t==='dest'?'도착지':('경유'+s.n)}
+  function bcls(s,focus){return focus?(s.t==='dest'?'dest':'org'):'way'}
+  function routePath(){var d='M'+PCT[0][0]+' '+PCT[0][1];for(var i=1;i<PCT.length;i++)d+=' L'+PCT[i][0]+' '+PCT[i][1];return d}
+  function mapBg(){return '<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%"><rect width="100" height="100" fill="#E7ECF0"/><rect x="0" y="30" width="100" height="7" fill="#fff" opacity="0.85"/><rect x="44" y="0" width="5" height="100" fill="#fff" opacity="0.8"/><rect x="10" y="40" width="26" height="18" fill="#DCEAD7" opacity="0.7"/></svg>'}
+  function sb(){return '<div class="sb"><span>12:45</span><span>· · · ·  100%</span></div>'}
+  function appbar(resv){return '<div class="appbar"><div class="mbtn">'+IC.menu+'</div><div class="abr"><span class="achip lm"><span class="ld"></span> 미리배차 켜짐</span></div></div>'}
+  function passenger(basic){var req=basic?'':'<div class="preq">고객 요청사항 보기 <span class="chev">'+IC.next+'</span></div>';return '<div class="pinfo"><div class="pcard"><div class="prow"><span class="pav">'+IC.person+'</span><span class="pnm">김지혜</span><span class="pcall">'+IC.phone+'</span></div>'+req+'</div></div>'}
+  function dotc(i){var done=(i===0)||isDone(i);return '<div class="pin'+(done?' done':'')+'" data-bx="'+PCT[i][0]+'" data-by="'+PCT[i][1]+'" style="left:'+PCT[i][0]+'%;top:'+PCT[i][1]+'%">'+pinFor(i)+'</div>'}
+  function markers(){var h='';for(var i=0;i<stops.length;i++)h+=dotc(i);h+='<div class="car" data-bx="'+PCT[S.lastAt][0]+'" data-by="'+PCT[S.lastAt][1]+'" style="left:'+PCT[S.lastAt][0]+'%;top:'+PCT[S.lastAt][1]+'%">'+carSVG()+'</div>';return '<div class="mklayer">'+h+'</div>'}
+  function driveMarkers(){var i=nextArmed();return '<div class="mklayer">'+dotc(i)+'<div class="car" data-bx="'+PCT[S.lastAt][0]+'" data-by="'+PCT[S.lastAt][1]+'" style="left:'+PCT[S.lastAt][0]+'%;top:'+PCT[S.lastAt][1]+'%">'+carSVG()+'</div></div>';}
+  /* 지도 fit-bounds (우버·구글맵 표준): 핀 아이콘은 상수 크기, 표시 핀들의 bbox를
+     (바텀시트 제외한) 보이는 영역에서 상하좌우 20dp 뺀 가운데 영역에 맞추도록 위치(=줌)만 조정.
+     s≤1 캡: bbox가 영역보다 작으면 자연 스프레드 유지(과도 줌인 방지=최대줌 클램프). */
+  function fitMarkers(animate){var map=document.querySelector('.map');if(!map)return;var layer=map.querySelector('.mklayer');if(!layer)return;layer.style.transform='none';var kids=layer.querySelectorAll('.pin,.car');if(!kids.length)return;var mr=map.getBoundingClientRect(),mapH=mr.height,mapW=mr.width;if(mapH<10||mapW<10)return;var pts=[];for(var i=0;i<kids.length;i++){var el=kids[i],bx=parseFloat(el.getAttribute('data-bx')),by=parseFloat(el.getAttribute('data-by'));if(isNaN(bx)||isNaN(by))continue;pts.push({el:el,x:bx/100*mapW,y:by/100*mapH})}if(!pts.length)return;var minX=1e9,minY=1e9,maxX=-1e9,maxY=-1e9;pts.forEach(function(p){if(p.x<minX)minX=p.x;if(p.x>maxX)maxX=p.x;if(p.y<minY)minY=p.y;if(p.y>maxY)maxY=p.y});var ph=document.getElementById('ph'),mf=ph&&ph.classList.contains('mf'),sheet=document.querySelector('.bottom'),visTop=0,visBottom=mapH;if(!mf&&sheet){var sh=sheet.offsetHeight;if(sh>0&&sh<mapH)visBottom=mapH-sh}var regionH=visBottom-visTop,PAD=20,UP=40,DOWN=18,SIDE=22,bubs=map.querySelector('.bubs'),bubBot=bubs?Math.max(0,bubs.getBoundingClientRect().bottom-mr.top):0,insTop=Math.max(PAD+UP,bubBot>0?bubBot+UP+8:0),availW=Math.max(20,mapW-2*(PAD+SIDE)),availH=Math.max(20,regionH-insTop-(PAD+DOWN)),boxW=maxX-minX,boxH=maxY-minY,s=Math.min(availW/Math.max(boxW,1),availH/Math.max(boxH,1),1),boxCX=(minX+maxX)/2,boxCY=(minY+maxY)/2,areaCX=mapW/2,areaCY=visTop+insTop+availH/2,TR='left .44s cubic-bezier(.5,0,0,1),top .44s cubic-bezier(.5,0,0,1)';pts.forEach(function(p){p.el.style.transition=animate?TR:'none';p.el.style.left=((areaCX+(p.x-boxCX)*s)/mapW*100).toFixed(2)+'%';p.el.style.top=((areaCY+(p.y-boxCY)*s)/mapH*100).toFixed(2)+'%'});if(!animate){void map.offsetWidth;pts.forEach(function(p){p.el.style.transition=TR})}}
+  function navArrowSVG(){return '<svg class="navarr" viewBox="0 0 40 40"><circle cx="20" cy="21" r="17" fill="#3B8BEA" opacity="0.16"/><path d="M20 5 L31 32 Q20 26 9 32 Z" fill="#1E6FE0" stroke="#fff" stroke-width="2.4" stroke-linejoin="round"/></svg>';}
+  function tmapGoal(){return '<svg class="tmk" viewBox="0 0 40 50"><ellipse cx="20" cy="47" rx="6.5" ry="2.2" fill="#0a1024" opacity="0.2"/><path d="M20 3C12.3 3 6 9.3 6 17C6 26.5 20 44 20 44C20 44 34 26.5 34 17C34 9.3 27.7 3 20 3Z" fill="#EA1F2D" stroke="#fff" stroke-width="2"/><rect x="15.4" y="9.3" width="1.5" height="16" rx="0.7" fill="#fff"/><path d="M16.9 9.7H26.3V16.3H16.9Z" fill="#fff"/><path d="M16.9 9.7H20.03V13H16.9Z" fill="#1a1a1a"/><path d="M23.17 9.7H26.3V13H23.17Z" fill="#1a1a1a"/><path d="M20.03 13H23.17V16.3H20.03Z" fill="#1a1a1a"/></svg>';}
+  function tmapMap(d){var cx=34,cy=76,px=50,py=20;return '<svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%"><rect width="100" height="100" fill="#E7ECF0"/><rect x="0" y="33" width="100" height="7" fill="#fff" opacity="0.85"/><rect x="46" y="0" width="5" height="100" fill="#fff" opacity="0.8"/><rect x="8" y="46" width="26" height="18" fill="#DCEAD7" opacity="0.7"/><path d="M'+cx+' '+cy+' L'+px+' '+py+'" stroke="#2E7CE0" stroke-width="6" vector-effect="non-scaling-stroke" fill="none" stroke-linecap="round" opacity="0.92"/></svg><div class="pin" style="left:'+px+'%;top:'+py+'%">'+tmapGoal()+'</div><div class="navp" style="left:'+cx+'%;top:'+cy+'%"><span class="nv">'+navArrowSVG()+'</span></div>';}
+  function turnArrowSVG(){return '<svg viewBox="0 0 32 32" fill="none"><path d="M8 27 V15.5 A4.5 4.5 0 0 1 12.5 11 H20 M15.5 6.5 L21 11 L15.5 15.5" stroke="#fff" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';}
+  function tbt(dist,road,next){return '<div class="tbt"><div class="tbt-a">'+turnArrowSVG()+'</div><div class="tbt-m"><div class="tbt-d">'+dist+'<em>m</em></div><div class="tbt-r">'+road+'</div></div><div class="tbt-n"><span class="tbt-ni">↑</span><b>'+next+'m</b></div></div>';}
+  function tovr(retCall,pay){return '<div class="tovr"><div class="tovb tada" onclick="'+retCall+'"><span class="tlogo">tada</span><span class="trun">운행중</span></div><div class="tovb chg" onclick="P.changeRoute()">경로<br>변경</div>'+(pay?'<div class="tovb pay" onclick="P.pay()"><span class="ppin">결제</span></div>':'')+'</div>';}
+  function tspeed(){return '<div class="tspeed"><div class="tsl">50</div><div class="tcur">48<em>km/h</em></div></div>';}
+  function tbar(eta,dist,arr,name,back){return '<div class="tbar"><div class="tb-info"><b>'+eta+'</b><span>'+dist+' · '+arr+' · '+name+'</span></div><div class="tb-x" onclick="'+(back||'')+'">✕</div></div>';}
+  function bubbles(pay){var h='';if(pay)h+='<div class="bub pay"><div class="bin">결제</div></div>';h+='<span class="bubw"><div class="bub grad">예약</div><span class="bubdot">3</span></span><div class="bub chg">경로<br>변경</div><div class="bub nav">'+IC.navi+'<span>내비</span></div>';return '<div class="bubs">'+h+'</div>'}
+  function cardHTML(s,o){var bicon=(o.btnCls==='go')?'<span class="cbi">'+NAV+'</span>':(o.icon?'<span class="bico">'+o.icon+'</span>':'');var nameBlock=o.nav?('<div class="cnavrow" onclick="'+o.navClick+'"><div class="cname">'+s.name+'</div><span class="cnav">'+NAV+'</span></div>'):('<div class="cname">'+s.name+'</div>');return '<div class="crd"><div class="crd-top"><span class="badge '+bcls(s,true)+'">'+bt(s)+'</span><div class="cinfo">'+nameBlock+'<div class="caddr">'+s.addr+'</div></div></div><div class="cbtn '+o.btnCls+'" onclick="'+o.btnClick+'">'+bicon+o.label+'</div></div>'}
+  function goCard(i){return cardHTML(stops[i],{btnCls:'go',label:'경로 안내받기',btnClick:'P.startNav()',nav:false})}
+  function doneTag(){return '<span style="color:var(--green);font-size:calc(16px*var(--fs,1));font-weight:700;white-space:nowrap">완료</span>'}
+  function irow(i,navigable){var s=stops[i];var focus=false;var done=(i===0)||isDone(i);var oc=navigable?('P.askGo('+i+')'):"P.toast('아직 안내할 수 없습니다')";var st=done?doneTag():'';return '<div class="irow tap'+(navigable?' nav':'')+(focus?' on':'')+'" onclick="'+oc+'"><span class="badge '+bcls(s,focus)+'">'+bt(s)+'</span><div class="nm">'+s.name+'</div><span style="display:inline-flex;align-items:center;gap:10px">'+st+'<span class="rnav">'+NAV+'</span></span></div>'}
+  function mfExit(){return '<div class="mfexit" onclick="P.mapExit()"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/><polyline points="23 4 23 10 17 10"/></svg><span class="mfx-act">지도 축소하기</span></div>'}
+  function shell(mapInner,bottomInner,resv){return sb()+appbar(resv)+'<div class="body"><div class="map" onclick="P.mapTap(event)">'+mapInner+'</div><div class="bottom">'+bottomInner+'</div>'+mfExit()+'</div>'}
+  function pickup(){var s=stops[0];var go=(S.pphase==='go');var c=cardHTML(s,go?{btnCls:'go',label:'고객 위치로 출발하기',btnClick:'P.goPickupNav()',nav:false}:{btnCls:'done',label:'고객에게 도착 알리기',btnClick:'P.notifyArrived()',nav:true,navClick:'P.goPickupNav()',icon:IC.send});var mapInner=mapBg()+'<div class="mklayer"><div class="pin" data-bx="60" data-by="26" style="left:60%;top:26%">'+pinSVG('출발','#0074D7','#fff')+'</div><div class="car" data-bx="33" data-by="54" style="left:33%;top:54%">'+carSVG()+'</div></div>'+bubbles(false);var route='<div class="route'+(go?' lead':'')+'">'+(go?'':'<div class="rhd"><span class="t">고객 위치로 이동 중</span></div>')+'<div class="plist">'+c+'</div></div>';return shell(mapInner,passenger()+route,false)}
+  function ptmap(){var s=stops[0];return sb()+tbt('320',s.short+' 방면','120')+'<div class="tmapmap">'+tmapMap(0)+tspeed()+tovr('P.backPickup()',false)+'</div>'+tbar('9분','1.2km','오후 3:52',s.name,'P.backPickup()');}
+  function preview(){var rows='';for(var i=0;i<stops.length;i++){rows+=irow(i,i===0)}var mapInner=mapBg()+markers()+bubbles(false);var route='<div class="route"><div class="rhd"><span class="t">남은 경로 '+(WAYS+1)+'개</span></div><div class="plist">'+rows+'</div><div class="barfull round" onclick="P.start()"><span class="bico">'+IC.wheel+'</span>운행 시작하기</div></div>';return shell(mapInner,passenger()+route)}
+  function driveRoute(){var cur=nextArmed();var rem=stops.length-cur;var go=(S.phase==='go');var s=stops[cur];var dest=(s.t==='dest');var c;if(go){c=goCard(cur)}else{c=cardHTML(s,{btnCls:'done',label:dest?'요금 결제하기':'경유지 도착 완료',btnClick:dest?'P.pay()':'P.complete()',nav:true,navClick:'P.startNav()',icon:dest?IC.coin:null})}var up='';for(var i=cur+1;i<stops.length;i++)up+=irow(i,false);return '<div class="route"><div class="rhd"><span class="t">남은 경로 '+rem+'개</span><span class="see" onclick="P.full()">전체 보기 ›</span></div><div class="plist">'+c+up+'</div></div>'}
+  function drive(){var mapInner=mapBg()+driveMarkers()+bubbles(true);return shell(mapInner,passenger(true)+driveRoute())}
+  function full(){var rows='';for(var i=0;i<stops.length;i++){var s=stops[i],done=(i===0)||isDone(i),cur=(i===nextArmed()&&!done);var st=done?doneTag():'';var right='<span style="display:inline-flex;align-items:center;gap:10px">'+st+'<span class="rnav">'+NAV+'</span></span>';rows+='<div class="irow tap nav'+(cur?' on':'')+'" onclick="P.peekGo('+i+')"><span class="badge '+bcls(s,cur)+'">'+bt(s)+'</span><div class="nm">'+s.name+'</div>'+right+'</div>'}var dn=S.done.length+1;return sb()+'<div class="full"><div class="fhd"><span onclick="P.closeFull()" style="cursor:pointer">← 전체 경로</span><span style="font-size:calc(14px*var(--fs,1));color:var(--dim)">경유 '+WAYS+'</span></div><div class="fsum"><div class="fsc"><div class="n">'+stops.length+'</div><div class="l">전체</div></div><div class="fsc done"><div class="n">'+dn+'</div><div class="l">도착 완료</div></div></div><div class="plist" style="flex:1">'+rows+'</div></div>'}
+  function tmap(){var s=stops[S.target];return sb()+tbt('137',s.short+' 방면','68')+'<div class="tmapmap">'+tmapMap(S.target)+tspeed()+tovr('P.backTmap()',true)+'</div>'+tbar('13분','4.1km','오후 4:07',s.name,'P.backTmap()');}
+  function tmapsel(){var s=stops[S.target];return sb()+'<div class="tsel-hd"><span class="tsel-back" onclick="P.cancelNav()">←</span><div class="tsel-dst"><div class="d1">'+s.name+'</div><div class="d2">'+s.addr+'</div></div><span class="tsel-logo">T map</span></div><div class="tmapmap">'+tmapMap(S.target)+tovr('P.cancelNav()',false)+'</div><div class="tsel-sheet"><div class="tsel-opt reco" onclick="P.startGuide()"><div class="tsel-oi"><b>티맵 추천</b><span>13분 · 4.1km · 0원</span></div><div class="tsel-go">안내<span class="tsel-cd" id="navcd">15</span></div></div><div class="tsel-opt" onclick="P.startGuide()"><div class="tsel-oi"><b>최소시간</b><span>12분 · 5.2km · 통행료 1,200원</span></div><div class="tsel-go2">안내</div></div></div>'}
+  function clearNavCd(){if(S._navcd){clearInterval(S._navcd);S._navcd=null}}
+  function startNavCd(){clearNavCd();var n=15;var id=setInterval(function(){var e=document.getElementById('navcd');if(!e){clearInterval(id);return}n--;if(n<0)n=0;e.textContent=n;if(n<=0){clearInterval(id);if(S._navcd===id)S._navcd=null;P.startGuide()}},1000);S._navcd=id}
+  function pay(){return sb()+'<div class="paywrap"><div class="payhd" onclick="P.backPay()" style="cursor:pointer">← 최종 요금 결제</div><div class="payrow"><span>운행요금</span><b>24,600원</b></div><div class="payrow"><span>통행료</span><b>+0원</b></div><div class="paywarn">⚠ 절대 카드/현금을 직접 받지 마세요.</div></div><div class="barfull" onclick="P.finish()">24,600원 결제하기</div>'}
+  function done(){return sb()+'<div class="donew"><div class="dok">✓ 결제 완료</div><div class="dbig">운행 완료</div><div class="dsub">8초 뒤 콜 수신이 자동 진행됩니다.</div><div class="dcirc">콜 바로<br>수신하기</div><div class="drest" onclick="P.reset()">↺ 처음부터 다시</div></div>'}
+  function html(){return S.screen==='phome'?phome():S.screen==='plist'?plist():S.screen==='pdispatch'?pdispatch():S.screen==='pcomplete'?pcomplete():S.screen==='pickup'?pickup():S.screen==='ptmap'?ptmap():S.screen==='preview'?preview():S.screen==='drive'?drive():S.screen==='full'?full():S.screen==='tmapsel'?tmapsel():S.screen==='tmap'?tmap():S.screen==='pay'?pay():done()}
+  function render(){var h=html();var app=document.getElementById('app');var ph=document.getElementById('ph');var ch=(S._last!==S.screen);if(ch){S.collapsed=false;if(ph)ph.classList.remove('mf')}app.innerHTML=h;if(ch){app.style.transition='none';app.style.opacity='0';void app.offsetWidth;app.style.transition='opacity .2s ease';app.style.opacity='1'}S._last=S.screen;if(S.screen==='tmapsel'){startNavCd()}else{clearNavCd()}fitMarkers(false)}
+  function advance(cur){
+    var app=document.getElementById('app');var plist=app.querySelector('.plist');
+    var oldCard=plist?plist.querySelector('.crd'):null;var oldRow=plist?plist.querySelector('.irow'):null;
+    if(!plist||!oldCard||!oldRow){if(S.done.indexOf(cur)<0)S.done.push(cur);S.lastAt=cur;S.phase='go';render();S.busy=false;return}
+    var E='cubic-bezier(.65,0,.35,1)';
+    var obtn=oldCard.querySelector('.cbtn');if(obtn){obtn.className='cbtn ok';obtn.textContent='✓ 경유지 도착 완료'}
+    oldCard.style.overflow='hidden';oldCard.style.maxHeight=oldCard.offsetHeight+'px';
+    setTimeout(function(){
+      oldCard.style.transition='opacity .32s ease,transform .38s '+E;oldCard.style.opacity='0';oldCard.style.transform='translateY(-14px)';
+    },70);
+    setTimeout(function(){
+      if(S.done.indexOf(cur)<0)S.done.push(cur);S.lastAt=cur;S.phase='go';
+      var ncur=nextArmed();
+      var holder=document.createElement('div');holder.innerHTML=goCard(ncur);var nextCard=holder.firstChild;
+      oldRow.parentNode.insertBefore(nextCard,oldRow);
+      var H_full=nextCard.offsetHeight;var H_row=oldRow.offsetHeight;
+      nextCard.style.overflow='hidden';nextCard.style.maxHeight=H_row+'px';nextCard.style.borderColor='transparent';
+      var nm=nextCard.querySelector('.cname');if(nm){nm.style.transformOrigin='left center';nm.style.transform='scale(.769)';nm.style.color='var(--dim)'}
+      var ad=nextCard.querySelector('.caddr');if(ad)ad.style.opacity='0';
+      var btn=nextCard.querySelector('.cbtn');if(btn)btn.style.opacity='0';
+      oldRow.style.display='none';
+      var cel=app.querySelector('.rhd .t');if(cel)cel.textContent='남은 경로 '+(stops.length-ncur)+'개';
+      void app.offsetWidth;
+      requestAnimationFrame(function(){requestAnimationFrame(function(){
+        oldCard.style.transition='max-height .46s '+E+',margin-bottom .46s '+E;oldCard.style.maxHeight='0px';oldCard.style.marginBottom='-2px';
+        nextCard.style.transition='max-height .46s '+E+',border-color .4s ease .05s';nextCard.style.maxHeight=H_full+'px';nextCard.style.borderColor='var(--bd)';
+        if(nm){nm.style.transition='transform .44s '+E+',color .4s ease';nm.style.transform='scale(1)';nm.style.color='#fff'}
+        if(ad){ad.style.transition='opacity .32s ease .12s';ad.style.opacity='1'}
+        if(btn){btn.style.transition='opacity .34s ease .22s';btn.style.opacity='1'}
+        setTimeout(function(){render();S.busy=false},500);
+      })});
+    },350);
+  }
+  function startMorph(){
+    if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches){S.phase='go';S.screen='drive';render();S.busy=false;return}
+    var app=document.getElementById('app');var plist=app.querySelector('.plist');
+    var rows=plist?plist.querySelectorAll('.irow'):[];var barfull=app.querySelector('.barfull');var preq=app.querySelector('.preq');var bottom=app.querySelector('.bottom');
+    var cur=nextArmed();
+    if(!plist||rows.length<2||!rows[cur]){S.phase='go';S.screen='drive';render();S.busy=false;return}
+    var E='cubic-bezier(.65,0,.35,1)';var startRow=rows[0],curRow=rows[cur];plist.style.overflow='hidden';
+    if(barfull){barfull.style.overflow='hidden';barfull.style.maxHeight=barfull.offsetHeight+'px'}
+    if(preq){preq.style.overflow='hidden';preq.style.maxHeight=preq.offsetHeight+'px'}
+    startRow.style.overflow='hidden';startRow.style.maxHeight=startRow.offsetHeight+'px';
+    var holder=document.createElement('div');holder.innerHTML=goCard(cur);var newCard=holder.firstChild;
+    curRow.parentNode.insertBefore(newCard,curRow);
+    var H_full=newCard.offsetHeight,H_row=curRow.offsetHeight;
+    newCard.style.overflow='hidden';newCard.style.maxHeight=H_row+'px';newCard.style.borderColor='transparent';
+    var nm=newCard.querySelector('.cname');if(nm){nm.style.transformOrigin='left center';nm.style.transform='scale(.769)';nm.style.color='var(--dim)'}
+    var ad=newCard.querySelector('.caddr');if(ad)ad.style.opacity='0';
+    var btn=newCard.querySelector('.cbtn');if(btn)btn.style.opacity='0';
+    curRow.style.display='none';
+    var rhd=app.querySelector('.rhd'),see=null;
+    if(rhd&&!rhd.querySelector('.see')){see=document.createElement('span');see.className='see';see.setAttribute('onclick','P.full()');see.textContent='전체 보기 ›';see.style.opacity='0';rhd.appendChild(see)}
+    var bubs=app.querySelector('.bubs'),pb=null;
+    if(bubs&&!bubs.querySelector('.bub.pay')){pb=document.createElement('div');pb.className='bub pay';pb.innerHTML='<div class="bin">결제</div>';pb.style.opacity='0';bubs.insertBefore(pb,bubs.firstChild)}
+    var H0=0,H1=0;
+    if(bottom){
+      H0=bottom.offsetHeight;
+      var _bf=barfull?barfull.style.maxHeight:'',_bfm=barfull?barfull.style.marginTop:'',_pq=preq?preq.style.maxHeight:'',_pqm=preq?preq.style.marginTop:'',_sr=startRow.style.maxHeight,_srm=startRow.style.marginBottom;
+      if(barfull){barfull.style.maxHeight='0px';barfull.style.marginTop='-8px';barfull.style.paddingTop='0';barfull.style.paddingBottom='0'}
+      if(preq){preq.style.maxHeight='0px';preq.style.marginTop='-10px';preq.style.paddingTop='0';preq.style.paddingBottom='0'}
+      startRow.style.maxHeight='0px';startRow.style.marginBottom='-2px';newCard.style.maxHeight=H_full+'px';
+      bottom.style.maxHeight='none';H1=bottom.offsetHeight;
+      if(barfull){barfull.style.maxHeight=_bf;barfull.style.marginTop=_bfm;barfull.style.paddingTop='';barfull.style.paddingBottom=''}
+      if(preq){preq.style.maxHeight=_pq;preq.style.marginTop=_pqm;preq.style.paddingTop='';preq.style.paddingBottom=''}
+      startRow.style.maxHeight=_sr;startRow.style.marginBottom=_srm;newCard.style.maxHeight=H_row+'px';
+      bottom.style.maxHeight=H0+'px';
+    }
+    void app.offsetWidth;
+    requestAnimationFrame(function(){requestAnimationFrame(function(){
+      if(bottom&&H1&&H1<H0){bottom.style.transition='max-height .5s '+E;bottom.style.maxHeight=H1+'px'}
+      if(barfull){barfull.style.transition='opacity .3s ease,transform .34s '+E+',max-height .42s '+E+' .05s,margin .42s '+E+' .05s,padding .42s '+E+' .05s';barfull.style.opacity='0';barfull.style.transform='translateY(18px)';barfull.style.maxHeight='0px';barfull.style.marginTop='-8px';barfull.style.marginBottom='0';barfull.style.paddingTop='0';barfull.style.paddingBottom='0'}
+      if(preq){preq.style.transition='max-height .4s '+E+',opacity .26s ease,margin-top .4s '+E+',padding .4s '+E;preq.style.maxHeight='0px';preq.style.opacity='0';preq.style.marginTop='-10px';preq.style.paddingTop='0';preq.style.paddingBottom='0'}
+      startRow.style.transition='max-height .44s '+E+',opacity .3s ease,transform .36s '+E+',margin-bottom .44s '+E;startRow.style.opacity='0';startRow.style.transform='translateY(-12px)';startRow.style.maxHeight='0px';startRow.style.marginBottom='-2px';
+      newCard.style.transition='max-height .5s '+E+',border-color .42s ease .06s';newCard.style.maxHeight=H_full+'px';newCard.style.borderColor='var(--bd)';
+      if(nm){nm.style.transition='transform .48s '+E+',color .42s ease';nm.style.transform='scale(1)';nm.style.color='#fff'}
+      if(ad){ad.style.transition='opacity .34s ease .16s';ad.style.opacity='1'}
+      if(btn){btn.style.transition='opacity .36s ease .26s';btn.style.opacity='1'}
+      if(see){see.style.transition='opacity .3s ease .3s';see.style.opacity='1'}
+      if(pb){pb.style.transition='opacity .34s ease .22s';pb.style.opacity='1'}
+      setTimeout(function(){S.phase='go';S.screen='drive';S._last='drive';render();S.busy=false},580);
+    })});
+  }
+  function screenLayer(html){var d=document.createElement('div');d.style.cssText='position:absolute;inset:0;display:flex;flex-direction:column;overflow:hidden;background:var(--navy);will-change:transform';d.innerHTML=html;return d}
+  function appOpen(foreHtml,after){
+    S.busy=true;var ph=document.getElementById('ph'),app=document.getElementById('app');
+    var sw=document.createElement('div');sw.style.cssText='position:absolute;inset:0;z-index:25;overflow:hidden;background:#000';
+    var bw=document.createElement('div');bw.style.cssText='position:absolute;inset:0;transform-origin:50% 50%;overflow:hidden;z-index:1';
+    var back=screenLayer(app.innerHTML);bw.appendChild(back);
+    var scr=document.createElement('div');scr.style.cssText='position:absolute;inset:0;background:#000;opacity:0;z-index:2;pointer-events:none';bw.appendChild(scr);
+    var fore=screenLayer(foreHtml);fore.style.transform='translateX(100%)';fore.style.zIndex='3';fore.style.boxShadow='-16px 0 46px rgba(0,0,0,.55)';
+    sw.appendChild(bw);sw.appendChild(fore);ph.appendChild(sw);
+    requestAnimationFrame(function(){requestAnimationFrame(function(){var E='cubic-bezier(.2,0,0,1)';bw.style.transition='transform .42s '+E+',border-radius .42s '+E;bw.style.transform='translateX(-16%) scale(.9)';bw.style.borderRadius='24px';scr.style.transition='opacity .42s';scr.style.opacity='.46';fore.style.transition='transform .42s '+E;fore.style.transform='translateX(0)';setTimeout(function(){if(after)after();if(sw.parentNode)sw.parentNode.removeChild(sw);S.busy=false},440)})});
+  }
+  function appClose(backHtml,after){
+    S.busy=true;var ph=document.getElementById('ph'),app=document.getElementById('app');
+    var sw=document.createElement('div');sw.style.cssText='position:absolute;inset:0;z-index:25;overflow:hidden;background:#000';
+    var bw=document.createElement('div');bw.style.cssText='position:absolute;inset:0;transform-origin:50% 50%;overflow:hidden;z-index:1;transform:translateX(-16%) scale(.9);border-radius:24px';
+    var back=screenLayer(backHtml);bw.appendChild(back);
+    var scr=document.createElement('div');scr.style.cssText='position:absolute;inset:0;background:#000;opacity:.46;z-index:2;pointer-events:none';bw.appendChild(scr);
+    var fore=screenLayer(app.innerHTML);fore.style.transform='translateX(0)';fore.style.zIndex='3';fore.style.boxShadow='-16px 0 46px rgba(0,0,0,.55)';
+    sw.appendChild(bw);sw.appendChild(fore);ph.appendChild(sw);
+    requestAnimationFrame(function(){requestAnimationFrame(function(){var E='cubic-bezier(.2,0,0,1)';bw.style.transition='transform .44s '+E+',border-radius .44s '+E;bw.style.transform='translateX(0) scale(1)';bw.style.borderRadius='0px';scr.style.transition='opacity .44s';scr.style.opacity='0';fore.style.transition='transform .44s '+E;fore.style.transform='translateX(100%)';setTimeout(function(){if(after)after();if(sw.parentNode)sw.parentNode.removeChild(sw);S.busy=false},460)})});
+  }
+  window.P={
+    setFont:function(v,el){var ph=document.getElementById('ph');ph.style.setProperty('--fs',v);ph.classList.toggle('tight',v>=1.25);var b=el.parentNode.querySelectorAll('.fb');for(var i=0;i<b.length;i++)b[i].classList.remove('on');el.classList.add('on')},
+    setWays:function(n,el){build(n);resetState();var b=el.parentNode.querySelectorAll('.fb');for(var i=0;i<b.length;i++)b[i].classList.remove('on');el.classList.add('on');render()},
+    goPickupNav:function(){if(S.busy)return;S.target=0;S.pphase='arrived';S.navReturn='pickup';appOpen(tmapsel(),function(){S.screen='tmapsel';S._last='tmapsel';render()})},
+    backPickup:function(){if(S.busy)return;S.pphase='arrived';appClose(pickup(),function(){S.screen='pickup';S._last='pickup';render()})},
+    notifyArrived:function(){P.toast('고객에게 도착을 알렸어요');var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;S.screen='preview';if(reduce){render();return}S._last='preview';render();var ap=document.getElementById('app');var it=ap.querySelectorAll('.route .rhd, .route .irow, .route .barfull');for(var k=0;k<it.length;k++){var e=it[k];e.style.opacity='0';e.style.transform='translateY(16px)';e.style.transition='none'}void ap.offsetWidth;for(var k=0;k<it.length;k++){(function(e,i){e.style.transition='opacity .3s ease, transform .3s cubic-bezier(.2,.7,.3,1)';e.style.transitionDelay=(i*0.035)+'s';requestAnimationFrame(function(){e.style.opacity='';e.style.transform=''})})(it[k],k)}},
+    start:function(){if(S.busy)return;if(S.collapsed){clearMF();S.phase='go';S.screen='drive';S._last='';render();return}S.busy=true;startMorph()},
+    startNav:function(){if(S.busy)return;S.target=nextArmed();S.lastAt=S.target;S.phase='arrived';S.navReturn='drive';S.navProgress=true;appOpen(tmapsel(),function(){S.screen='tmapsel';S._last='tmapsel';render()})},
+    startGuide:function(){if(S.busy)return;clearNavCd();S.screen=(S.navReturn==='pickup')?'ptmap':'tmap';render()},
+    cancelNav:function(){if(S.busy)return;clearNavCd();var r=S.navReturn||'drive';var h=(r==='pickup')?pickup():(r==='preview')?preview():(r==='full')?full():drive();appClose(h,function(){S.screen=r;S._last=r;render()})},
+    changeRoute:function(){if(S.busy)return;S.screen='tmapsel';render()},
+    backTmap:function(){if(S.busy)return;if(S.navProgress){S.lastAt=S.target;S.phase='arrived';appClose(drive(),function(){S.screen='drive';S._last='drive';render()})}else{var ret=S.navReturn||'drive';var h=(ret==='preview')?preview():(ret==='full')?full():drive();appClose(h,function(){S.screen=ret;S._last=ret;render()})}},
+    complete:function(){if(S.busy)return;var cur=nextArmed();if(S.collapsed){clearMF();if(S.done.indexOf(cur)<0)S.done.push(cur);S.lastAt=cur;S.phase='go';S._last='';render();return}S.busy=true;advance(cur)},
+    pay:function(){S.screen='pay';render()},
+    backPay:function(){if(S.busy)return;S.screen='drive';render()},
+    full:function(){S.screen='full';render()},
+    closeFull:function(){S.screen='drive';render()},
+    askGo:function(i){if(S.busy)return;var a=nextArmed();if(i>a){P.toast('아직 안내할 수 없습니다');return}S.target=i;S.navReturn=S.screen;S.navProgress=(i===a);appOpen(tmapsel(),function(){S.screen='tmapsel';S._last='tmapsel';render()})},
+    peekGo:function(i){if(S.busy)return;S.target=i;S.navReturn='drive';S.navProgress=false;appOpen(tmapsel(),function(){S.screen='tmapsel';S._last='tmapsel';render()})},
+    confirmNo:function(){S.confirm=null;render()},
+    confirmYes:function(){var i=S.confirm;S.confirm=null;var a=nextArmed();if(i>a){for(var j=a;j<i;j++){if(stops[j].t==='way'&&!isDone(j)&&!isUnc(j))S.uncertain.push(j)}}S.target=i;appOpen(tmapsel(),function(){S.screen='tmapsel';S._last='tmapsel';render()})},
+    finish:function(){pMark('03');S.screen='pcomplete';S._last='';render()},
+    pStart:function(){S.screen='plist';render()},
+    pOpen:function(n){if(n!=='03'){P.toast('준비 중이에요');return}S.pRej=0;S.screen='pdispatch';render()},
+    pRejectCall:function(){S.pRej=(S.pRej||0)+1;P.toast('거절했어요 · 다시 콜이 전달돼요');render()},
+    pAccept:function(){build(3);resetState();S.screen='pickup';render()},
+    pToList:function(){S.screen='plist';render()},
+    toggleFrame:function(){var r=(pFrame()==='ring');try{localStorage.setItem('practice_frame',r?'soft':'ring')}catch(e){}applyFrame()},
+    toast:function(msg){var ph=document.getElementById('ph');var old=document.getElementById('toast');if(old&&old.parentNode)old.parentNode.removeChild(old);var t=document.createElement('div');t.id='toast';t.className='toast';t.textContent=msg;ph.appendChild(t);requestAnimationFrame(function(){requestAnimationFrame(function(){t.classList.add('on')})});clearTimeout(P._tt);P._tt=setTimeout(function(){t.classList.remove('on');setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t)},260)},1700)},
+    reset:function(){clearNavCd();resetState();S.screen='phome';applyFrame();render()},
+    mapTap:function(e){if(S.busy||S.collapsed)return;if(e&&e.target&&e.target.closest&&e.target.closest('.bubs'))return;S.collapsed=true;var ph=document.getElementById('ph');if(ph)ph.classList.add('mf');fitMarkers(true);try{if(navigator.vibrate)navigator.vibrate(11)}catch(_){}},
+    mapExit:function(){if(S.busy)return;S.collapsed=false;var ph=document.getElementById('ph');if(ph)ph.classList.remove('mf');fitMarkers(true);try{if(navigator.vibrate)navigator.vibrate(11)}catch(_){}},
+    simEvent:function(){var p=document.getElementById('devpanel'),s=document.getElementById('devscrim');if(p){p.classList.remove('open');if(s)s.classList.remove('open')}S.collapsed=true;var ph=document.getElementById('ph');if(ph)ph.classList.add('mf');fitMarkers(true);P.toast('지도 확대 상태 · 2.5초 뒤 알림 수신');setTimeout(function(){clearMF();fitMarkers(true);P.toast('🔔 새 배차 알림 · 경로 화면 복귀')},2500)}
+  };
+  build(3);resetState();S.screen='phome';applyFrame();render();
+  document.addEventListener('visibilitychange',function(){if(!document.hidden&&S&&S.collapsed){clearMF();fitMarkers(true);if(window.P&&P.toast)P.toast('앱 복귀 · 경로 화면으로 돌아왔어요')}});
+  window.addEventListener('resize',function(){try{fitMarkers(false)}catch(_){}});
+  (function(){var SEL='.cbtn,.barfull,.tsel-go,.tsel-go2,.tovb,.tov-tada,.tov-act,.bub,.fb,.preq,.mbtn,.pcall,.see,.tb-x,.tsel-back,.mfh';(document.getElementById('ph')||document).addEventListener('pointerdown',function(e){var t=e.target.closest&&e.target.closest(SEL);if(!t)return;try{if(navigator.vibrate)navigator.vibrate(t.matches('.cbtn,.barfull')?18:10)}catch(_){}var rc=t.getBoundingClientRect();var d=Math.max(rc.width,rc.height)*1.15;var cx=(e.clientX==null?rc.left+rc.width/2:e.clientX),cy=(e.clientY==null?rc.top+rc.height/2:e.clientY);var r=document.createElement('span');r.className='rip';r.style.width=r.style.height=d+'px';r.style.left=(cx-rc.left-d/2)+'px';r.style.top=(cy-rc.top-d/2)+'px';var bg=(getComputedStyle(t).backgroundColor.match(/[0-9.]+/g)||['0','0','0','0']);var lum=0.299*(+bg[0])+0.587*(+bg[1])+0.114*(+bg[2]);var solid=(bg[3]==null||(+bg[3])>0.35);r.style.background=(solid&&lum>95)?'rgba(14,18,38,.3)':'rgba(255,255,255,.55)';t.appendChild(r);setTimeout(function(){if(r.parentNode)r.parentNode.removeChild(r)},520)},true)})();
+})();
+</script>
+<script>
+(function(){var p=document.getElementById('devpanel'),s=document.getElementById('devscrim');function t(){var o=!p.classList.contains('open');p.classList.toggle('open',o);s.classList.toggle('open',o);}document.getElementById('devbtn').addEventListener('click',t);document.getElementById('devx').addEventListener('click',t);s.addEventListener('click',t);})();
+</script>
+</body>
+</html>
