@@ -171,6 +171,52 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 #ph.appscreen .ppill{display:flex;top:62px}
 /* 개발 기어(경유수·글씨크기)는 연습 홈/완료에선 숨김(콘텐츠 가림 방지), 앱 화면에서만 노출 */
 #ph:not(.appscreen)+.devbtn{display:none}
+/* ===== 실제 앱 화면(출근 전·서랍) — 연습 표시(프레임/필/워터마크) 없음 ===== */
+#ph.realapp .pframe{display:none}
+#ph.realapp .sb{background:#0b0f1a;color:#fff}
+.rapp{flex:1;display:flex;flex-direction:column;min-height:0;background:#fff;color:#111;overflow:hidden}
+.rh-bar{height:56px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 8px;background:#fff}
+.rh-menu{width:44px;height:44px;display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.rh-menu span,.rh-menu span::before,.rh-menu span::after{display:block;width:22px;height:2.5px;background:#283873;border-radius:2px}
+.rh-menu span{position:relative}
+.rh-menu span::before,.rh-menu span::after{content:'';position:absolute;left:0}
+.rh-menu span::before{top:-7px}.rh-menu span::after{top:7px}
+.rh-resv{display:flex;align-items:center;gap:6px;color:#73788B;font-size:16px;font-weight:700;padding:6px 10px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.rh-resv svg{width:21px;height:21px;fill:none;stroke:currentColor}
+.rh-body{flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;padding:0 24px;overflow-y:auto}
+.rh-photo{width:96px;height:96px;border-radius:50%;margin-top:50px;background:#B7BFCE;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:none}
+.rh-photo svg{width:66px;height:66px;margin-bottom:-6px;fill:rgba(255,255,255,.9)}
+.rh-name{margin-top:16px;font-size:20px;font-weight:800;color:#283873;text-align:center}
+.rh-spacer{flex:1;min-height:20px}
+.rh-type{align-self:flex-end;font-size:14px;font-weight:700;color:#32A2FA;margin-bottom:9px}
+.rh-div{width:100%;height:1px;background:#E3E4E8;flex:none}
+.rh-info{width:100%;padding:14px 0 20px;flex:none}
+.rh-irow{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0;font-size:16px}
+.rh-irow .k{font-weight:700;color:#111}
+.rh-irow .v{color:#2c2c2c}
+.rh-go{flex:none;height:62px;display:flex;align-items:center;justify-content:center;gap:10px;background:#32A2FA;color:#fff;font-size:20px;font-weight:800;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.rh-go .rh-wheel{display:flex}.rh-go .rh-wheel svg{width:27px;height:27px}
+.rh-go:active{background:#2b93e6}
+.dw{flex:1;display:flex;flex-direction:column;min-height:0;background:#F9F9F9;color:#111;overflow:hidden}
+.dw-top{background:#19254D;flex:none}
+.dw-bar{height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 8px}
+.dw-x{width:44px;height:44px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:23px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.dw-off{display:flex;align-items:center;gap:6px;color:#9aa3bd;font-size:16px;font-weight:700;padding:6px 10px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.dw-off svg{width:20px;height:20px;fill:none;stroke:currentColor}
+.dw-prof{display:flex;align-items:center;gap:14px;padding:2px 22px 22px}
+.dw-photo{width:66px;height:66px;border-radius:50%;background:#46527a;display:flex;align-items:center;justify-content:center;overflow:hidden;flex:none}
+.dw-photo svg{width:46px;height:46px;margin-bottom:-4px;fill:rgba(255,255,255,.8)}
+.dw-nm{font-size:20px;color:#fff}.dw-nm b{font-weight:800}
+.dw-body{flex:1;overflow-y:auto;min-height:0}
+.dw-sec{font-size:15px;font-weight:700;color:#111;padding:20px 25px 4px;background:#F9F9F9}
+.dw-row{display:flex;align-items:center;justify-content:space-between;padding:0 25px;height:60px;background:#F9F9F9;border-bottom:1px solid #E3E4E8;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.dw-row:active{background:#eef0f4}
+.dw-lbl{font-size:16px;color:#4B5064;display:flex;align-items:center;gap:7px}
+.dw-dot{width:6px;height:6px;border-radius:50%;background:#FE4C00;flex:none}
+.dw-chev{width:8px;height:14px;color:#C0C2CC;flex:none;fill:none;stroke:currentColor}
+.dw-gap{height:10px;background:#EFEFF1}
+.dw-row.prac .dw-lbl{color:#283873;font-weight:700}
+.dw-badge{font-size:10px;font-weight:800;color:#fff;background:#FE4C00;border-radius:9px;padding:1px 6px;letter-spacing:.3px}
 .ppill svg{width:17px;height:17px;fill:#FFE1A6}
 .ppill .psep{color:#FFD79A;opacity:.5}
 .ppill .pnot{color:#FFC978}
@@ -284,6 +330,31 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
   function plist(){var dn=pGetDone();var rows=TUTS.map(function(t){var d=dn.indexOf(t.n)>=0;var cls=t.active?(d?'done':'active'):'lock';var oc=t.active?' onclick="P.pOpen(\''+t.n+'\')"':'';var rt=t.active?(d?'<span class="tc-done">✓ 완료</span>':'<span class="tc-go">시작 ›</span>'):'<span class="tc-lock">준비중</span>';return '<div class="tcard '+cls+'"'+oc+'><span class="tc-n">'+t.n+'</span><span class="tc-t">'+t.t+'</span>'+rt+'</div>'}).join('');var c=dn.length;var back='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>';return sb()+'<div class="pshell"><div class="pl-intro"><div class="pl-mode"><span class="pl-cap">🎓</span>연습 모드</div><div class="pl-desc">실제 운행이 아니어도 앱을 미리 체험해요. <b>여기서 하는 활동은 모두 연습용</b>이에요.</div></div><div class="pl-hd"><span class="pl-title">튜토리얼</span><span class="pl-rate">'+c+' / 9 완료</span></div><div class="pl-bar"><i style="width:'+(c/9*100).toFixed(0)+'%"></i></div><div class="pl-body">'+rows+'</div><div class="pl-exit" onclick="P.pExitPractice()" role="button">'+back+'연습 모드 나가기</div></div>'}
   function pdispatch(){var rc=S.pRej||0;return shell(mapBg(),(rc>0?'<div class="pd-rej">거절 '+rc+'회 · 다시 콜이 전달됐어요</div>':'')+'<div class="pdisp"><div class="pd-card"><div class="pd-hd"><span class="pd-tag">실시간 콜</span><span class="pd-eta">예상 20분 · 3.4km</span></div><div class="pd-row"><b>출발</b>위워크 삼성역점</div><div class="pd-row"><b>도착</b>뚝섬역 1번 출구 · 경유 3</div><div class="pd-fare">예상 요금 24,600원</div><div class="pd-btns"><div class="pd-no" onclick="P.pRejectCall()">거절</div><div class="pd-yes" onclick="P.pAccept()">수락</div></div></div></div>')}
   function pcomplete(){return sb()+'<div class="pshell pdone"><div class="phinner"><div class="phico">🎉</div><h1>연습 완료!</h1><p>03. 실시간 콜 운행하기를 마쳤어요.<br>실제 운행·정산과는 무관해요.</p><div class="barfull round" onclick="P.pToList()">목록으로 돌아가기</div></div></div>'}
+  var AVATAR='<svg viewBox="0 0 24 24"><path d="M12 12.6a4.3 4.3 0 1 0 0-8.6 4.3 4.3 0 0 0 0 8.6zm0 1.7c-4.4 0-7.9 2.2-7.9 5.2V21h15.8v-1.5c0-3-3.5-5.2-7.9-5.2z"/></svg>';
+  var CAL='<svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2.2"/><path d="M3.5 9.5h17M8 3.2v3.4M16 3.2v3.4M8.5 14.2l2.2 2.2 4.2-4.4"/></svg>';
+  var OFFWORK='<svg viewBox="0 0 24 24" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h4a1.6 1.6 0 0 1 1.6 1.6v12.8A1.6 1.6 0 0 1 18 20h-4M10 12h10M16.4 8.4 20 12l-3.6 3.6"/></svg>';
+  var CHEV='<svg class="dw-chev" viewBox="0 0 8 14" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 1l6 6-6 6"/></svg>';
+  function realhome(){return sb()
+    +'<div class="rapp">'
+    +'<div class="rh-bar"><div class="rh-menu" onclick="P.openDrawer()" role="button" aria-label="메뉴"><span></span></div><div class="rh-resv" onclick="P.rStub()" role="button">'+CAL+'예약콜</div></div>'
+    +'<div class="rh-body"><div class="rh-photo">'+AVATAR+'</div><div class="rh-name">김재욱(DJL07215)</div><div class="rh-spacer"></div>'
+    +'<div class="rh-type">타다 넥스트</div><div class="rh-div"></div>'
+    +'<div class="rh-info"><div class="rh-irow"><span class="k">차량번호</span><span class="v">56호 1234</span></div><div class="rh-irow"><span class="k">소속</span><span class="v">개인(넥스트_서울_일반)</span></div><div class="rh-irow"><span class="k">계약 형태</span><span class="v">가맹</span></div></div>'
+    +'</div>'
+    +'<div class="rh-go" onclick="P.rGoWork()" role="button"><span class="rh-wheel">'+IC.wheel+'</span>출근하기</div>'
+    +'</div>'}
+  function dwRow(label,onclick,o){o=o||{};var oc=onclick?(' onclick="'+onclick+'"'):'';var badge=o.badge?('<span class="dw-badge">'+o.badge+'</span>'):'';var dot=o.dot?'<span class="dw-dot"></span>':'';return '<div class="dw-row'+(o.prac?' prac':'')+'"'+oc+' role="button"><span class="dw-lbl">'+label+dot+badge+'</span>'+CHEV+'</div>'}
+  function dwSec(t,rows){return '<div class="dw-sec">'+t+'</div>'+rows.join('')}
+  function drawer(){return sb()
+    +'<div class="dw">'
+    +'<div class="dw-top"><div class="dw-bar"><div class="dw-x" onclick="P.closeDrawer()" role="button" aria-label="닫기">✕</div><div class="dw-off" onclick="P.rStub()" role="button">'+OFFWORK+'퇴근하기</div></div><div class="dw-prof"><div class="dw-photo">'+AVATAR+'</div><div class="dw-nm"><b>김재욱</b> 드라이버</div></div></div>'
+    +'<div class="dw-body">'
+    + dwSec('타다 운행',[dwRow('연습 모드','P.enterPractice()',{prac:true,badge:'NEW'}),dwRow('운행 이력','P.rStub()'),dwRow('내 운행리포트','P.rStub()',{dot:true}),dwRow('내 대기순번','P.rStub()'),dwRow('예약콜 목록','P.rStub()'),dwRow('대시보드','P.rStub()'),dwRow('분실물 문의','P.rStub()')])
+    +'<div class="dw-gap"></div>'
+    + dwSec('안내/지원',[dwRow('공지사항','P.rStub()'),dwRow('고객센터','P.rStub()'),dwRow('도움말','P.rStub()'),dwRow('동료 드라이버 소개','P.rStub()'),dwRow('타다 용품 구매','P.rStub()')])
+    +'<div class="dw-gap"></div>'
+    + dwSec('정보 및 설정',[dwRow('내 정보','P.rStub()'),dwRow('내 위치 확인','P.rStub()'),dwRow('앱 설정','P.rStub()')])
+    +'</div></div>'}
   function clearMF(){S.collapsed=false;var ph=document.getElementById('ph');if(ph)ph.classList.remove('mf')}
   function isDone(i){return S.done.indexOf(i)>-1}
   function isUnc(i){return S.uncertain.indexOf(i)>-1}
@@ -330,8 +401,8 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
   function startNavCd(){clearNavCd();var n=15;var id=setInterval(function(){var e=document.getElementById('navcd');if(!e){clearInterval(id);return}n--;if(n<0)n=0;e.textContent=n;if(n<=0){clearInterval(id);if(S._navcd===id)S._navcd=null;P.startGuide()}},1000);S._navcd=id}
   function pay(){return sb()+'<div class="paywrap"><div class="payhd" onclick="P.backPay()" style="cursor:pointer">← 최종 요금 결제</div><div class="payrow"><span>운행요금</span><b>24,600원</b></div><div class="payrow"><span>통행료</span><b>+0원</b></div><div class="paywarn">⚠ 절대 카드/현금을 직접 받지 마세요.</div></div><div class="barfull" onclick="P.finish()">24,600원 결제하기</div>'}
   function done(){return sb()+'<div class="donew"><div class="dok">✓ 결제 완료</div><div class="dbig">운행 완료</div><div class="dsub">8초 뒤 콜 수신이 자동 진행됩니다.</div><div class="dcirc">콜 바로<br>수신하기</div><div class="drest" onclick="P.reset()">↺ 처음부터 다시</div></div>'}
-  function html(){return S.screen==='plist'?plist():S.screen==='pdispatch'?pdispatch():S.screen==='pcomplete'?pcomplete():S.screen==='pickup'?pickup():S.screen==='ptmap'?ptmap():S.screen==='preview'?preview():S.screen==='drive'?drive():S.screen==='full'?full():S.screen==='tmapsel'?tmapsel():S.screen==='tmap'?tmap():S.screen==='pay'?pay():done()}
-  function render(){var h=html();var app=document.getElementById('app');var ph=document.getElementById('ph');if(ph)ph.classList.toggle('appscreen',['plist','pcomplete'].indexOf(S.screen)<0);var ch=(S._last!==S.screen);if(ch){S.collapsed=false;if(ph)ph.classList.remove('mf')}app.innerHTML=h;if(ch){app.style.transition='none';app.style.opacity='0';void app.offsetWidth;app.style.transition='opacity .2s ease';app.style.opacity='1'}S._last=S.screen;if(S.screen==='tmapsel'){startNavCd()}else{clearNavCd()}fitMarkers(false)}
+  function html(){return S.screen==='realhome'?realhome():S.screen==='drawer'?drawer():S.screen==='plist'?plist():S.screen==='pdispatch'?pdispatch():S.screen==='pcomplete'?pcomplete():S.screen==='pickup'?pickup():S.screen==='ptmap'?ptmap():S.screen==='preview'?preview():S.screen==='drive'?drive():S.screen==='full'?full():S.screen==='tmapsel'?tmapsel():S.screen==='tmap'?tmap():S.screen==='pay'?pay():done()}
+  function render(){var h=html();var app=document.getElementById('app');var ph=document.getElementById('ph');if(ph){ph.classList.toggle('appscreen',['plist','pcomplete','realhome','drawer'].indexOf(S.screen)<0);ph.classList.toggle('realapp',['realhome','drawer'].indexOf(S.screen)>=0);}var ch=(S._last!==S.screen);if(ch){S.collapsed=false;if(ph)ph.classList.remove('mf')}app.innerHTML=h;if(ch){app.style.transition='none';app.style.opacity='0';void app.offsetWidth;app.style.transition='opacity .2s ease';app.style.opacity='1'}S._last=S.screen;if(S.screen==='tmapsel'){startNavCd()}else{clearNavCd()}fitMarkers(false)}
   function advance(cur){
     var app=document.getElementById('app');var plist=app.querySelector('.plist');
     var oldCard=plist?plist.querySelector('.crd'):null;var oldRow=plist?plist.querySelector('.irow'):null;
@@ -467,13 +538,18 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
     pExitDo:function(){P.pConfirmClose();clearNavCd();clearMF();S.busy=false;S.screen='plist';S._last='';render();P.toast('연습 목록으로 나왔어요')},
     toast:function(msg){var ph=document.getElementById('ph');var old=document.getElementById('toast');if(old&&old.parentNode)old.parentNode.removeChild(old);var t=document.createElement('div');t.id='toast';t.className='toast';t.textContent=msg;ph.appendChild(t);requestAnimationFrame(function(){requestAnimationFrame(function(){t.classList.add('on')})});clearTimeout(P._tt);P._tt=setTimeout(function(){t.classList.remove('on');setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t)},260)},1700)},
     pExitPractice:function(){if(document.getElementById('pconfirm'))return;var d=document.createElement('div');d.id='pconfirm';d.className='pconfirm';d.innerHTML='<div class="pcbox"><h3>연습 모드를 나갈까요?</h3><p>지금까지 진행 상황은 저장돼요.<br>실제 앱에서는 이전 화면으로 돌아가요.</p><div class="pcbtns"><div class="pcbtn pcb-stay" onclick="P.pConfirmClose()">계속하기</div><div class="pcbtn pcb-exit" onclick="P.pExitConfirm()">나가기</div></div></div>';document.getElementById('ph').appendChild(d)},
-    pExitConfirm:function(){P.pConfirmClose();clearNavCd();clearMF();resetState();S.busy=false;S.collapsed=false;S.screen='plist';S._last='';render();P.toast('실제 앱에서는 이전 화면으로 돌아가요')},
-    reset:function(){clearNavCd();resetState();S.screen='plist';applyFrame();render()},
+    pExitConfirm:function(){P.pConfirmClose();clearNavCd();clearMF();resetState();S.busy=false;S.collapsed=false;S.screen='realhome';S._last='';render()},
+    openDrawer:function(){S.screen='drawer';S._last='';render()},
+    closeDrawer:function(){S.screen='realhome';S._last='';render()},
+    enterPractice:function(){clearNavCd();clearMF();S.busy=false;S.collapsed=false;S.screen='plist';S._last='';render()},
+    rGoWork:function(){P.toast('실제 앱에서는 출근 후 운행이 시작돼요 · 연습 모드는 출근 전에만')},
+    rStub:function(){P.toast('실제 앱 화면이에요 (연습 프로토 범위 밖)')},
+    reset:function(){clearNavCd();resetState();S.screen='realhome';applyFrame();render()},
     mapTap:function(e){if(S.busy||S.collapsed)return;if(e&&e.target&&e.target.closest&&e.target.closest('.bubs'))return;S.collapsed=true;var ph=document.getElementById('ph');if(ph)ph.classList.add('mf');fitMarkers(true);try{if(navigator.vibrate)navigator.vibrate(11)}catch(_){}},
     mapExit:function(){if(S.busy)return;S.collapsed=false;var ph=document.getElementById('ph');if(ph)ph.classList.remove('mf');fitMarkers(true);try{if(navigator.vibrate)navigator.vibrate(11)}catch(_){}},
     simEvent:function(){var p=document.getElementById('devpanel'),s=document.getElementById('devscrim');if(p){p.classList.remove('open');if(s)s.classList.remove('open')}S.collapsed=true;var ph=document.getElementById('ph');if(ph)ph.classList.add('mf');fitMarkers(true);P.toast('지도 확대 상태 · 2.5초 뒤 알림 수신');setTimeout(function(){clearMF();fitMarkers(true);P.toast('🔔 새 배차 알림 · 경로 화면 복귀')},2500)}
   };
-  build(3);resetState();S.screen='plist';applyFrame();render();
+  build(3);resetState();S.screen='realhome';applyFrame();render();
   document.addEventListener('visibilitychange',function(){if(!document.hidden&&S&&S.collapsed){clearMF();fitMarkers(true);if(window.P&&P.toast)P.toast('앱 복귀 · 경로 화면으로 돌아왔어요')}});
   window.addEventListener('resize',function(){try{fitMarkers(false)}catch(_){}});
   (function(){var SEL='.cbtn,.barfull,.tsel-go,.tsel-go2,.tovb,.tov-tada,.tov-act,.bub,.fb,.preq,.mbtn,.pcall,.see,.tb-x,.tsel-back,.mfh';(document.getElementById('ph')||document).addEventListener('pointerdown',function(e){var t=e.target.closest&&e.target.closest(SEL);if(!t)return;try{if(navigator.vibrate)navigator.vibrate(t.matches('.cbtn,.barfull')?18:10)}catch(_){}var rc=t.getBoundingClientRect();var d=Math.max(rc.width,rc.height)*1.15;var cx=(e.clientX==null?rc.left+rc.width/2:e.clientX),cy=(e.clientY==null?rc.top+rc.height/2:e.clientY);var r=document.createElement('span');r.className='rip';r.style.width=r.style.height=d+'px';r.style.left=(cx-rc.left-d/2)+'px';r.style.top=(cy-rc.top-d/2)+'px';var bg=(getComputedStyle(t).backgroundColor.match(/[0-9.]+/g)||['0','0','0','0']);var lum=0.299*(+bg[0])+0.587*(+bg[1])+0.114*(+bg[2]);var solid=(bg[3]==null||(+bg[3])>0.35);r.style.background=(solid&&lum>95)?'rgba(14,18,38,.3)':'rgba(255,255,255,.55)';t.appendChild(r);setTimeout(function(){if(r.parentNode)r.parentNode.removeChild(r)},520)},true)})();
