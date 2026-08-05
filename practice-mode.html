@@ -17,7 +17,8 @@ html,body{margin:0;padding:0;height:100%;background:#101A3D;font-family:var(--fo
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
 /* ===== 기기(반응형): 모바일은 화면 꽉 채움 ===== */
 #ph{--navy:#101A3D;--navy2:#19254D;--navyL:#283873;--navy700:#293F71;--blue700:#0074D7;--cobalt:#0055FF;--blue:#32A2FA;--b300:#5CB4FA;--red:#FE4C00;--lemon:#EEFF00;--e6:#E6E9EF;--ef:#EFEFF1;--dim:#99A5C0;--n1:#C0C8D9;--green:#30A234;--amber:#FFA825;--off:#F5F6F7;--ink:#171A24;--bd:#E3E4E8;--ok:#2FA76A;--fs:1;--fsd:calc(1 + (var(--fs,1) - 1)*.6);--fsx:calc(1 + (var(--fs,1) - 1)*.4);--sheet-max:calc(66% + (var(--fs,1) - 1) * 22%);position:fixed;inset:0;width:100%;height:100dvh;background:var(--navy);overflow:hidden;}
-#app{height:100%;display:flex;flex-direction:column;overflow:hidden}
+#app{height:100%;display:flex;flex-direction:column;overflow:hidden;position:relative}
+.slyr{position:absolute;inset:0;display:flex;flex-direction:column;will-change:transform}
 /* ===== 데스크톱: 가운데 폰 프레임 ===== */
 @media (min-width:600px){
   html,body{background:#0a0d12;}
@@ -160,7 +161,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 .mfexit .mfx-act{font-size:calc(17px * var(--fs,1));font-weight:700;color:#fff}
 /* 실기기(모바일): 가짜 상태바 숨김 — 실제 OS 상태바가 상단을 담당, appbar가 세이프에어리어(노치·아일랜드) 비켜 자리잡음 */
 @media (max-width:599px){.sb{display:none}}
-.pframe{position:absolute;inset:0;border-radius:36px;pointer-events:none;z-index:60}
+.pframe{position:absolute;inset:0;border-radius:36px;pointer-events:none;z-index:60;display:none}
 .pframe.f-soft{box-shadow:inset 0 0 0 2.5px rgba(255,183,74,.92),inset 0 0 44px rgba(255,166,50,.42);animation:pbrz 3.2s ease-in-out infinite}
 @keyframes pbrz{0%,100%{box-shadow:inset 0 0 0 2px rgba(255,183,74,.8),inset 0 0 32px rgba(255,166,50,.32)}50%{box-shadow:inset 0 0 0 3px rgba(255,183,74,1),inset 0 0 56px rgba(255,166,50,.54)}}
 /* 지도 위 문서식 워터마크(연습·실전 아님) — 앱(shell) 화면에서만, 불투명 지도배경 위·마커 아래 */
@@ -172,7 +173,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 /* 개발 기어(경유수·글씨크기)는 연습 홈/완료에선 숨김(콘텐츠 가림 방지), 앱 화면에서만 노출 */
 #ph:not(.appscreen)+.devbtn{display:none}
 /* ===== 실제 앱 화면(출근 전·서랍) — 연습 표시(프레임/필/워터마크) 없음 ===== */
-#ph.realapp .pframe{display:none}
+#ph.appscreen .pframe{display:block}
 #ph.realapp .sb{background:#0b0f1a;color:#fff}
 .rapp{flex:1;display:flex;flex-direction:column;min-height:0;background:#fff;color:#111;overflow:hidden}
 .rh-bar{height:56px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 8px;background:#fff}
@@ -402,7 +403,10 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
   function pay(){return sb()+'<div class="paywrap"><div class="payhd" onclick="P.backPay()" style="cursor:pointer">← 최종 요금 결제</div><div class="payrow"><span>운행요금</span><b>24,600원</b></div><div class="payrow"><span>통행료</span><b>+0원</b></div><div class="paywarn">⚠ 절대 카드/현금을 직접 받지 마세요.</div></div><div class="barfull" onclick="P.finish()">24,600원 결제하기</div>'}
   function done(){return sb()+'<div class="donew"><div class="dok">✓ 결제 완료</div><div class="dbig">운행 완료</div><div class="dsub">8초 뒤 콜 수신이 자동 진행됩니다.</div><div class="dcirc">콜 바로<br>수신하기</div><div class="drest" onclick="P.reset()">↺ 처음부터 다시</div></div>'}
   function html(){return S.screen==='realhome'?realhome():S.screen==='drawer'?drawer():S.screen==='plist'?plist():S.screen==='pdispatch'?pdispatch():S.screen==='pcomplete'?pcomplete():S.screen==='pickup'?pickup():S.screen==='ptmap'?ptmap():S.screen==='preview'?preview():S.screen==='drive'?drive():S.screen==='full'?full():S.screen==='tmapsel'?tmapsel():S.screen==='tmap'?tmap():S.screen==='pay'?pay():done()}
-  function render(){var h=html();var app=document.getElementById('app');var ph=document.getElementById('ph');if(ph){ph.classList.toggle('appscreen',['plist','pcomplete','realhome','drawer'].indexOf(S.screen)<0);ph.classList.toggle('realapp',['realhome','drawer'].indexOf(S.screen)>=0);}var ch=(S._last!==S.screen);if(ch){S.collapsed=false;if(ph)ph.classList.remove('mf')}app.innerHTML=h;if(ch){app.style.transition='none';app.style.opacity='0';void app.offsetWidth;app.style.transition='opacity .2s ease';app.style.opacity='1'}S._last=S.screen;if(S.screen==='tmapsel'){startNavCd()}else{clearNavCd()}fitMarkers(false)}
+  function render(){var h=html();var app=document.getElementById('app');var ph=document.getElementById('ph');if(ph){ph.classList.toggle('appscreen',['plist','pcomplete','realhome','drawer'].indexOf(S.screen)<0);ph.classList.toggle('realapp',['realhome','drawer'].indexOf(S.screen)>=0);}var ch=(S._last!==S.screen);var back=S._back;S._back=false;if(ch){S.collapsed=false;if(ph)ph.classList.remove('mf')}
+    var SLIDE=['realhome','drawer','plist','pcomplete','pdispatch'];var old=app.innerHTML;
+    if(ch&&old&&SLIDE.indexOf(S.screen)>=0){app.innerHTML='<div class="slyr slold">'+old+'</div><div class="slyr slnew">'+h+'</div>';var oldEl=app.firstChild,newEl=app.lastChild;if(back){newEl.style.zIndex=1;oldEl.style.zIndex=2;newEl.style.transform='translateX(-26%)';newEl.style.opacity='.5';}else{newEl.style.zIndex=2;oldEl.style.zIndex=1;newEl.style.transform='translateX(100%)';}void app.offsetWidth;var TR='transform .32s cubic-bezier(.33,0,.2,1),opacity .32s ease';newEl.style.transition=TR;oldEl.style.transition=TR;if(back){newEl.style.transform='translateX(0)';newEl.style.opacity='1';oldEl.style.transform='translateX(100%)';}else{newEl.style.transform='translateX(0)';oldEl.style.transform='translateX(-26%)';oldEl.style.opacity='.4';}var tgt=S.screen;setTimeout(function(){if(S.screen===tgt){var a=document.getElementById('app');if(a){a.innerHTML=h;fitMarkers(false);}}},340);S._last=S.screen;if(S.screen==='tmapsel'){startNavCd()}else{clearNavCd()}return;}
+    app.innerHTML=h;if(ch){app.style.transition='none';app.style.opacity='0';void app.offsetWidth;app.style.transition='opacity .2s ease';app.style.opacity='1'}S._last=S.screen;if(S.screen==='tmapsel'){startNavCd()}else{clearNavCd()}fitMarkers(false)}
   function advance(cur){
     var app=document.getElementById('app');var plist=app.querySelector('.plist');
     var oldCard=plist?plist.querySelector('.crd'):null;var oldRow=plist?plist.querySelector('.irow'):null;
@@ -532,15 +536,15 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
     pOpen:function(n){if(n!=='03'){P.toast('준비 중이에요');return}S.pRej=0;S.screen='pdispatch';render()},
     pRejectCall:function(){S.pRej=(S.pRej||0)+1;P.toast('거절했어요 · 다시 콜이 전달돼요');render()},
     pAccept:function(){build(3);resetState();S.screen='pickup';render()},
-    pToList:function(){S.screen='plist';render()},
+    pToList:function(){S._back=true;S.screen='plist';render()},
     pExit:function(){if(document.getElementById('pconfirm'))return;var toHome=false;var d=document.createElement('div');d.id='pconfirm';d.className='pconfirm';d.innerHTML='<div class="pcbox"><h3>'+(toHome?'연습을 나갈까요?':'연습을 끝낼까요?')+'</h3><p>지금까지 한 활동은 저장돼요.<br>실제 운행·정산과는 무관해요.</p><div class="pcbtns"><div class="pcbtn pcb-stay" onclick="P.pConfirmClose()">계속하기</div><div class="pcbtn pcb-exit" onclick="P.pExitDo()">'+(toHome?'홈으로':'연습 끝내기')+'</div></div></div>';document.getElementById('ph').appendChild(d)},
     pConfirmClose:function(){var d=document.getElementById('pconfirm');if(d&&d.parentNode)d.parentNode.removeChild(d)},
     pExitDo:function(){P.pConfirmClose();clearNavCd();clearMF();S.busy=false;S.screen='plist';S._last='';render();P.toast('연습 목록으로 나왔어요')},
     toast:function(msg){var ph=document.getElementById('ph');var old=document.getElementById('toast');if(old&&old.parentNode)old.parentNode.removeChild(old);var t=document.createElement('div');t.id='toast';t.className='toast';t.textContent=msg;ph.appendChild(t);requestAnimationFrame(function(){requestAnimationFrame(function(){t.classList.add('on')})});clearTimeout(P._tt);P._tt=setTimeout(function(){t.classList.remove('on');setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t)},260)},1700)},
     pExitPractice:function(){if(document.getElementById('pconfirm'))return;var d=document.createElement('div');d.id='pconfirm';d.className='pconfirm';d.innerHTML='<div class="pcbox"><h3>연습 모드를 나갈까요?</h3><p>지금까지 진행 상황은 저장돼요.<br>실제 앱에서는 이전 화면으로 돌아가요.</p><div class="pcbtns"><div class="pcbtn pcb-stay" onclick="P.pConfirmClose()">계속하기</div><div class="pcbtn pcb-exit" onclick="P.pExitConfirm()">나가기</div></div></div>';document.getElementById('ph').appendChild(d)},
-    pExitConfirm:function(){P.pConfirmClose();clearNavCd();clearMF();resetState();S.busy=false;S.collapsed=false;S.screen='realhome';S._last='';render()},
+    pExitConfirm:function(){P.pConfirmClose();clearNavCd();clearMF();resetState();S.busy=false;S.collapsed=false;S._back=true;S.screen='realhome';S._last='';render()},
     openDrawer:function(){S.screen='drawer';S._last='';render()},
-    closeDrawer:function(){S.screen='realhome';S._last='';render()},
+    closeDrawer:function(){S._back=true;S.screen='realhome';S._last='';render()},
     enterPractice:function(){clearNavCd();clearMF();S.busy=false;S.collapsed=false;S.screen='plist';S._last='';render()},
     rGoWork:function(){P.toast('실제 앱에서는 출근 후 운행이 시작돼요 · 연습 모드는 출근 전에만')},
     rStub:function(){P.toast('실제 앱 화면이에요 (연습 프로토 범위 밖)')},
