@@ -167,7 +167,8 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 /* 지도 위 문서식 워터마크(연습·실전 아님) — 앱(shell) 화면에서만, 불투명 지도배경 위·마커 아래 */
 .pwm{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 .pwm i{position:absolute;left:-30%;width:160%;transform:rotate(-20deg);white-space:nowrap;font-style:normal;font-weight:800;font-size:calc(15px*var(--fs,1));letter-spacing:2px;color:rgba(255,140,30,.13)}
-.mribbon{flex:none;display:none;align-items:center;gap:8px;height:calc(34px*var(--fs,1));padding:0 8px 0 14px;background:#3a2717;border-bottom:1.5px solid rgba(255,186,76,.5);z-index:62;-webkit-tap-highlight-color:transparent}
+.mribbon{flex:none;display:none;align-items:center;gap:8px;height:calc(44px*var(--fs,1));padding:0 10px 0 14px;background:#3a2717;border-bottom:1.5px solid rgba(255,186,76,.5);z-index:62;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .12s}
+.mribbon:active{background:#4a3320}
 #ph.appscreen .mribbon{display:flex}
 /* 개발 기어(경유수·글씨크기)는 연습 홈/완료에선 숨김(콘텐츠 가림 방지), 앱 화면에서만 노출 */
 #ph:not(.appscreen)+.devbtn{display:none}
@@ -222,7 +223,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 @keyframes ppulse{0%,100%{opacity:.5;transform:scale(.82)}50%{opacity:1;transform:scale(1.15)}}
 .mribbon .mrl{color:#FFDEB2;font-size:calc(13px*var(--fs,1));font-weight:700}
 .mribbon .pnot{color:#FFD07F;font-size:calc(13px*var(--fs,1));font-weight:800}
-.mribbon .pexit{margin-left:auto;width:26px;height:26px;flex:none;border-radius:50%;background:rgba(255,186,76,.14);display:flex;align-items:center;justify-content:center;font-size:14px;line-height:1;color:#FFDEB2;cursor:pointer}
+.mribbon .pexit{margin-left:auto;width:32px;height:32px;flex:none;border-radius:50%;background:rgba(255,186,76,.14);display:flex;align-items:center;justify-content:center;font-size:15px;line-height:1;color:#FFDEB2;pointer-events:none}
 .pconfirm{position:absolute;inset:0;background:rgba(4,7,16,.6);display:flex;align-items:center;justify-content:center;padding:24px;z-index:80}
 .pcbox{background:#1a2440;border:1px solid #2f3d63;border-radius:12px;padding:24px 20px 20px;width:100%;max-width:320px;text-align:center}
 .pcbox h3{color:#fff;font-size:calc(20px*var(--fs,1));font-weight:800;margin-bottom:10px}
@@ -285,7 +286,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 </head>
 <body>
 <h2 class="sr-only">타다 드라이버앱 v2 프로토타입 — 운행중 화면. 모바일에서 화면 전체에 반응형으로 표시되고, 프로토타입 설정(경유 개수·글씨 크기)은 우하단 톱니 버튼에 숨겨져 있습니다.</h2>
-<div id="ph" style="--fs:1"><div class="mribbon" id="mribbon"><svg class="pspark" viewBox="0 0 24 24"><path d="M12 0C12 6.6 6.6 12 0 12 6.6 12 12 17.4 12 24 12 17.4 17.4 12 24 12 17.4 12 12 6.6 12 0Z"/></svg><span class="mrl">연습 모드</span><span class="pdot"></span><span class="pnot">실전 아님</span><span class="pexit" onclick="P.pExit()">✕</span></div><div id="app"></div><div class="pframe f-soft" id="pframe"></div></div>
+<div id="ph" style="--fs:1"><div class="mribbon" id="mribbon" onclick="P.pExit()"><svg class="pspark" viewBox="0 0 24 24"><path d="M12 0C12 6.6 6.6 12 0 12 6.6 12 12 17.4 12 24 12 17.4 17.4 12 24 12 17.4 12 12 6.6 12 0Z"/></svg><span class="mrl">연습 모드</span><span class="pdot"></span><span class="pnot">실전 아님</span><span class="pexit">✕</span></div><div id="app"></div><div class="pframe f-soft" id="pframe"></div></div>
 <button class="devbtn" id="devbtn" aria-label="프로토타입 설정 열기">⚙</button>
 <div class="devscrim" id="devscrim"></div>
 <div class="devpanel" id="devpanel">
