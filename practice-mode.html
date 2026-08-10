@@ -167,8 +167,9 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 /* 지도 위 문서식 워터마크(연습·실전 아님) — 앱(shell) 화면에서만, 불투명 지도배경 위·마커 아래 */
 .pwm{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 .pwm i{position:absolute;left:-30%;width:160%;transform:rotate(-20deg);white-space:nowrap;font-style:normal;font-weight:800;font-size:calc(15px*var(--fs,1));letter-spacing:2px;color:rgba(255,140,30,.13)}
-.mribbon{flex:none;display:none;align-items:center;gap:8px;height:calc(44px*var(--fs,1));padding:0 10px 0 14px;background:#3a2717;border-bottom:1.5px solid rgba(255,186,76,.5);z-index:62;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .12s}
-.mribbon:active{background:#4a3320}
+.mribbon{flex:none;display:none;align-items:center;gap:9px;height:calc(46px*var(--fs,1));padding:0 12px 0 14px;background:linear-gradient(180deg,#9A5C2F,#7E4A24);box-shadow:0 4px 14px rgba(0,0,0,.4),0 2px 9px rgba(255,168,37,.32),inset 0 1px 0 rgba(255,220,170,.16);position:relative;z-index:62;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.mribbon::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1.5px;background:linear-gradient(90deg,transparent,#FFBA4C 18%,#FFA825 82%,transparent);box-shadow:0 0 9px rgba(255,168,37,.8)}
+.mribbon:active{filter:brightness(1.07)}
 #ph.appscreen .mribbon{display:flex}
 /* 개발 기어(경유수·글씨크기)는 연습 홈/완료에선 숨김(콘텐츠 가림 방지), 앱 화면에서만 노출 */
 #ph:not(.appscreen)+.devbtn{display:none}
@@ -218,12 +219,13 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 .dw-gap{height:10px;background:#EFEFF1}
 .dw-row.prac .dw-lbl{color:#283873;font-weight:700}
 .dw-badge{font-size:10px;font-weight:800;color:#fff;background:#FE4C00;border-radius:9px;padding:1px 6px;letter-spacing:.3px}
-.mribbon .pspark{width:15px;height:15px;flex:none;fill:#FFBA4C}
-.mribbon .pdot{width:5px;height:5px;flex:none;border-radius:50%;background:#FFBA4C;box-shadow:0 0 6px #FFBA4C;animation:ppulse 1.8s ease-in-out infinite}
-@keyframes ppulse{0%,100%{opacity:.5;transform:scale(.82)}50%{opacity:1;transform:scale(1.15)}}
-.mribbon .mrl{color:#FFDEB2;font-size:calc(13px*var(--fs,1));font-weight:700}
-.mribbon .pnot{color:#FFD07F;font-size:calc(13px*var(--fs,1));font-weight:800}
-.mribbon .pexit{margin-left:auto;width:32px;height:32px;flex:none;border-radius:50%;background:rgba(255,186,76,.14);display:flex;align-items:center;justify-content:center;font-size:15px;line-height:1;color:#FFDEB2;pointer-events:none}
+.mribbon .mrlg{flex:1;display:flex;align-items:center;gap:8px;min-width:0}
+.mribbon .pspark{width:15px;height:15px;flex:none;fill:#FFCB6B;filter:drop-shadow(0 0 3px rgba(255,186,76,.85))}
+.mribbon .pdot{width:5px;height:5px;flex:none;border-radius:50%;background:#FFBA4C;box-shadow:0 0 7px #FFBA4C;animation:ppulse 1.9s ease-in-out infinite}
+@keyframes ppulse{0%,100%{opacity:.45;transform:scale(.82)}50%{opacity:1;transform:scale(1.15)}}
+.mribbon .mrl{color:#fff;font-size:calc(15px*var(--fs,1));font-weight:700;white-space:nowrap}
+.mribbon .pnot{color:#FFE0B0;font-size:calc(12.5px*var(--fs,1));font-weight:500;white-space:nowrap}
+.mribbon .pexit{margin-left:auto;flex:none;display:flex;align-items:center;gap:4px;height:30px;padding:0 12px;border-radius:15px;background:rgba(255,214,140,.14);box-shadow:0 0 0 1px rgba(255,214,140,.34) inset;color:#FFDCA0;font-size:calc(13px*var(--fs,1));font-weight:600;line-height:1;white-space:nowrap;pointer-events:none}
 .pconfirm{position:absolute;inset:0;background:rgba(4,7,16,.6);display:flex;align-items:center;justify-content:center;padding:24px;z-index:80}
 .pcbox{background:#1a2440;border:1px solid #2f3d63;border-radius:12px;padding:24px 20px 20px;width:100%;max-width:320px;text-align:center}
 .pcbox h3{color:#fff;font-size:calc(20px*var(--fs,1));font-weight:800;margin-bottom:10px}
@@ -286,7 +288,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 </head>
 <body>
 <h2 class="sr-only">타다 드라이버앱 v2 프로토타입 — 운행중 화면. 모바일에서 화면 전체에 반응형으로 표시되고, 프로토타입 설정(경유 개수·글씨 크기)은 우하단 톱니 버튼에 숨겨져 있습니다.</h2>
-<div id="ph" style="--fs:1"><div class="mribbon" id="mribbon" onclick="P.pExit()"><svg class="pspark" viewBox="0 0 24 24"><path d="M12 0C12 6.6 6.6 12 0 12 6.6 12 12 17.4 12 24 12 17.4 17.4 12 24 12 17.4 12 12 6.6 12 0Z"/></svg><span class="mrl">연습 모드</span><span class="pdot"></span><span class="pnot">실전 아님</span><span class="pexit">✕</span></div><div id="app"></div><div class="pframe f-soft" id="pframe"></div></div>
+<div id="ph" style="--fs:1"><div class="mribbon" id="mribbon" onclick="P.pExit()"><span class="mrlg"><svg class="pspark" viewBox="0 0 24 24"><path d="M12 0C12 6.6 6.6 12 0 12 6.6 12 12 17.4 12 24 12 17.4 17.4 12 24 12 17.4 12 12 6.6 12 0Z"/></svg><span class="mrl">연습 모드</span><span class="pdot"></span><span class="pnot">실제 운행 아님</span></span><span class="pexit">✕ 중지</span></div><div id="app"></div><div class="pframe f-soft" id="pframe"></div></div>
 <button class="devbtn" id="devbtn" aria-label="프로토타입 설정 열기">⚙</button>
 <div class="devscrim" id="devscrim"></div>
 <div class="devpanel" id="devpanel">
