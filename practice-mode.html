@@ -161,7 +161,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 .mfexit .mfx-act{font-size:calc(17px * var(--fs,1));font-weight:700;color:#fff}
 /* 실기기(모바일): 가짜 상태바 숨김 — 실제 OS 상태바가 상단을 담당, appbar가 세이프에어리어(노치·아일랜드) 비켜 자리잡음 */
 @media (max-width:599px){.sb{display:none}}
-.pframe{position:absolute;top:var(--sbh,26px);left:0;right:0;bottom:var(--nbh,44px);border-radius:0;pointer-events:none;z-index:63;display:none}
+.pframe{position:absolute;top:calc(26px + 46px*var(--fs,1));left:0;right:0;bottom:var(--nbh,44px);border-radius:0;pointer-events:none;z-index:63;display:none}
 .pframe.f-soft{box-shadow:inset 0 0 0 1.5px rgba(255,176,40,.9),inset 0 0 22px rgba(255,150,20,.24);animation:pbrz 2.6s ease-in-out infinite}
 @keyframes pbrz{0%,100%{box-shadow:inset 0 0 0 1.5px rgba(255,176,40,.7),inset 0 0 14px rgba(255,150,20,.18)}50%{box-shadow:inset 0 0 0 1.5px rgba(255,190,60,1),inset 0 0 36px rgba(255,150,20,.48)}}
 /* 지도 위 문서식 워터마크(연습·실전 아님) — 앱(shell) 화면에서만, 불투명 지도배경 위·마커 아래 */
