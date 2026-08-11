@@ -162,14 +162,13 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 /* 실기기(모바일): 가짜 상태바 숨김 — 실제 OS 상태바가 상단을 담당, appbar가 세이프에어리어(노치·아일랜드) 비켜 자리잡음 */
 @media (max-width:599px){.sb{display:none}}
 .pframe{position:absolute;inset:0;border-radius:36px;pointer-events:none;z-index:60;display:none}
-.pframe.f-soft{box-shadow:inset 0 0 0 2.5px rgba(255,183,74,.92),inset 0 0 44px rgba(255,166,50,.42);animation:pbrz 3.2s ease-in-out infinite}
+.pframe.f-soft{box-shadow:inset 0 0 0 1.5px rgba(255,168,37,.6),inset 0 0 18px rgba(255,166,50,.13)}
 @keyframes pbrz{0%,100%{box-shadow:inset 0 0 0 2px rgba(255,183,74,.8),inset 0 0 32px rgba(255,166,50,.32)}50%{box-shadow:inset 0 0 0 3px rgba(255,183,74,1),inset 0 0 56px rgba(255,166,50,.54)}}
 /* 지도 위 문서식 워터마크(연습·실전 아님) — 앱(shell) 화면에서만, 불투명 지도배경 위·마커 아래 */
 .pwm{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 .pwm i{position:absolute;left:-30%;width:160%;transform:rotate(-20deg);white-space:nowrap;font-style:normal;font-weight:800;font-size:calc(15px*var(--fs,1));letter-spacing:2px;color:rgba(255,140,30,.13)}
-.mribbon{flex:none;display:none;align-items:center;gap:9px;height:calc(46px*var(--fs,1));padding:0 12px 0 14px;background:linear-gradient(180deg,#9A5C2F,#7E4A24);box-shadow:0 4px 14px rgba(0,0,0,.4),0 2px 9px rgba(255,168,37,.32),inset 0 1px 0 rgba(255,220,170,.16);position:relative;z-index:62;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.mribbon::after{content:"";position:absolute;left:0;right:0;bottom:0;height:1.5px;background:linear-gradient(90deg,transparent,#FFBA4C 18%,#FFA825 82%,transparent);box-shadow:0 0 9px rgba(255,168,37,.8)}
-.mribbon:active{filter:brightness(1.07)}
+.mribbon{flex:none;display:none;align-items:center;gap:8px;height:calc(44px*var(--fs,1));padding:0 8px 0 15px;background:#FBEFD9;border-bottom:1px solid rgba(180,120,40,.22);box-shadow:0 2px 8px rgba(0,0,0,.26);position:relative;z-index:62;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.mribbon:active{background:#F4E4C4}
 #ph.appscreen .mribbon{display:flex}
 /* 개발 기어(경유수·글씨크기)는 연습 홈/완료에선 숨김(콘텐츠 가림 방지), 앱 화면에서만 노출 */
 #ph:not(.appscreen)+.devbtn{display:none}
@@ -220,12 +219,12 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 .dw-row.prac .dw-lbl{color:#283873;font-weight:700}
 .dw-badge{font-size:10px;font-weight:800;color:#fff;background:#FE4C00;border-radius:9px;padding:1px 6px;letter-spacing:.3px}
 .mribbon .mrlg{flex:1;display:flex;align-items:center;gap:8px;min-width:0}
-.mribbon .pspark{width:15px;height:15px;flex:none;fill:#FFCB6B;filter:drop-shadow(0 0 3px rgba(255,186,76,.85))}
-.mribbon .pdot{width:5px;height:5px;flex:none;border-radius:50%;background:#FFBA4C;box-shadow:0 0 7px #FFBA4C;animation:ppulse 1.9s ease-in-out infinite}
+.mribbon .pspark{width:14px;height:14px;flex:none;fill:#E0902A}
+.mribbon .pdot{width:4px;height:4px;flex:none;border-radius:50%;background:#D89A3A}
 @keyframes ppulse{0%,100%{opacity:.45;transform:scale(.82)}50%{opacity:1;transform:scale(1.15)}}
-.mribbon .mrl{color:#fff;font-size:calc(15px*var(--fs,1));font-weight:700;white-space:nowrap}
-.mribbon .pnot{color:#FFE0B0;font-size:calc(12.5px*var(--fs,1));font-weight:500;white-space:nowrap}
-.mribbon .pexit{margin-left:auto;flex:none;display:flex;align-items:center;gap:4px;height:30px;padding:0 12px;border-radius:15px;background:rgba(255,214,140,.14);box-shadow:0 0 0 1px rgba(255,214,140,.34) inset;color:#FFDCA0;font-size:calc(13px*var(--fs,1));font-weight:600;line-height:1;white-space:nowrap;pointer-events:none}
+.mribbon .mrl{color:#16213F;font-size:calc(14.5px*var(--fs,1));font-weight:700;white-space:nowrap}
+.mribbon .pnot{color:#7A6A4A;font-size:calc(12.5px*var(--fs,1));font-weight:500;white-space:nowrap}
+.mribbon .pexit{margin-left:auto;flex:none;display:flex;align-items:center;gap:5px;height:30px;padding:0 14px;border-radius:15px;background:#FFA825;color:#3A2408;font-size:calc(13px*var(--fs,1));font-weight:700;line-height:1;white-space:nowrap;pointer-events:none}
 .pconfirm{position:absolute;inset:0;background:rgba(4,7,16,.6);display:flex;align-items:center;justify-content:center;padding:24px;z-index:80}
 .pcbox{background:#1a2440;border:1px solid #2f3d63;border-radius:12px;padding:24px 20px 20px;width:100%;max-width:320px;text-align:center}
 .pcbox h3{color:#fff;font-size:calc(20px*var(--fs,1));font-weight:800;margin-bottom:10px}
