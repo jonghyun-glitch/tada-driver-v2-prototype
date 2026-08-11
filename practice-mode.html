@@ -161,9 +161,9 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 .mfexit .mfx-act{font-size:calc(17px * var(--fs,1));font-weight:700;color:#fff}
 /* 실기기(모바일): 가짜 상태바 숨김 — 실제 OS 상태바가 상단을 담당, appbar가 세이프에어리어(노치·아일랜드) 비켜 자리잡음 */
 @media (max-width:599px){.sb{display:none}}
-.pframe{position:absolute;inset:0;border-radius:36px;pointer-events:none;z-index:60;display:none}
-.pframe.f-soft{box-shadow:inset 0 0 0 1.5px rgba(255,168,37,.62),inset 0 0 18px rgba(255,166,50,.15);animation:pbrz 2.8s ease-in-out infinite}
-@keyframes pbrz{0%,100%{box-shadow:inset 0 0 0 1.5px rgba(255,168,37,.5),inset 0 0 12px rgba(255,166,50,.10)}50%{box-shadow:inset 0 0 0 1.5px rgba(255,168,37,.82),inset 0 0 30px rgba(255,166,50,.26)}}
+.pframe{position:absolute;top:var(--sbh,26px);left:0;right:0;bottom:var(--nbh,44px);border-radius:0;pointer-events:none;z-index:63;display:none}
+.pframe.f-soft{box-shadow:inset 0 0 0 1.5px rgba(255,176,40,.9),inset 0 0 22px rgba(255,150,20,.24);animation:pbrz 2.6s ease-in-out infinite}
+@keyframes pbrz{0%,100%{box-shadow:inset 0 0 0 1.5px rgba(255,176,40,.7),inset 0 0 14px rgba(255,150,20,.18)}50%{box-shadow:inset 0 0 0 1.5px rgba(255,190,60,1),inset 0 0 36px rgba(255,150,20,.48)}}
 /* 지도 위 문서식 워터마크(연습·실전 아님) — 앱(shell) 화면에서만, 불투명 지도배경 위·마커 아래 */
 .pwm{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 .pwm i{position:absolute;left:-30%;width:160%;transform:rotate(-20deg);white-space:nowrap;font-style:normal;font-weight:800;font-size:calc(15px*var(--fs,1));letter-spacing:2px;color:rgba(255,140,30,.13)}
@@ -174,6 +174,13 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 #ph:not(.appscreen)+.devbtn{display:none}
 /* ===== 실제 앱 화면(출근 전·서랍) — 연습 표시(프레임/필/워터마크) 없음 ===== */
 #ph.appscreen .pframe{display:block}
+.ossb{flex:none;display:none;height:26px;align-items:center;justify-content:space-between;padding:0 18px;background:#000;color:#fff;font-size:11px;font-weight:600;z-index:64;position:relative}
+.ossb .osi{letter-spacing:.5px}
+.osnav{flex:none;display:none;height:44px;align-items:center;justify-content:center;gap:72px;background:#000;z-index:64;position:relative}
+.osnav i{font-style:normal;font-size:16px;color:#c8ccd6;opacity:.9}
+#ph.appscreen .ossb{display:flex}
+#ph.appscreen .osnav{display:flex}
+#ph.appscreen .sb{display:none}
 #ph.realapp .sb{background:#0b0f1a;color:#fff}
 .rapp{flex:1;display:flex;flex-direction:column;min-height:0;background:#fff;color:#111;overflow:hidden}
 .rh-bar{height:56px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 8px;background:#fff}
@@ -287,7 +294,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 </head>
 <body>
 <h2 class="sr-only">타다 드라이버앱 v2 프로토타입 — 운행중 화면. 모바일에서 화면 전체에 반응형으로 표시되고, 프로토타입 설정(경유 개수·글씨 크기)은 우하단 톱니 버튼에 숨겨져 있습니다.</h2>
-<div id="ph" style="--fs:1"><div class="mribbon" id="mribbon" onclick="P.pExit()"><span class="mrlg"><svg class="pspark" viewBox="0 0 24 24"><path d="M12 0C12 6.6 6.6 12 0 12 6.6 12 12 17.4 12 24 12 17.4 17.4 12 24 12 17.4 12 12 6.6 12 0Z"/></svg><span class="mrl">연습 모드</span><span class="pdot"></span><span class="pnot">실제 운행 아님</span></span><span class="pexit">✕ 중지</span></div><div id="app"></div><div class="pframe f-soft" id="pframe"></div></div>
+<div id="ph" style="--fs:1"><div class="ossb"><span>12:45</span><span class="osi">▂▄▆　100%</span></div><div class="mribbon" id="mribbon" onclick="P.pExit()"><span class="mrlg"><svg class="pspark" viewBox="0 0 24 24"><path d="M12 0C12 6.6 6.6 12 0 12 6.6 12 12 17.4 12 24 12 17.4 17.4 12 24 12 17.4 12 12 6.6 12 0Z"/></svg><span class="mrl">연습 모드</span><span class="pdot"></span><span class="pnot">실제 운행 아님</span></span><span class="pexit">✕ 중지</span></div><div id="app"></div><div class="osnav"><i>◁</i><i>○</i><i>▢</i></div><div class="pframe f-soft" id="pframe"></div></div>
 <button class="devbtn" id="devbtn" aria-label="프로토타입 설정 열기">⚙</button>
 <div class="devscrim" id="devscrim"></div>
 <div class="devpanel" id="devpanel">
