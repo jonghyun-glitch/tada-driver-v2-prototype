@@ -161,13 +161,13 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 .mfexit .mfx-act{font-size:calc(17px * var(--fs,1));font-weight:700;color:#fff}
 /* 실기기(모바일): 가짜 상태바 숨김 — 실제 OS 상태바가 상단을 담당, appbar가 세이프에어리어(노치·아일랜드) 비켜 자리잡음 */
 @media (max-width:599px){.sb{display:none}}
-.pframe{position:absolute;top:calc(26px + 46px*var(--fs,1));left:0;right:0;bottom:var(--nbh,44px);border-radius:0;pointer-events:none;z-index:63;display:none}
+.pframe{position:absolute;top:calc(26px + 50px*var(--fs,1));left:0;right:0;bottom:var(--nbh,44px);border-radius:0;pointer-events:none;z-index:63;display:none}
 .pframe.f-soft{box-shadow:inset 0 0 0 1.25px rgba(60,203,65,.5),inset 0 0 20px rgba(60,203,65,.24);animation:pbrz 2.6s ease-in-out infinite}
 @keyframes pbrz{0%,100%{box-shadow:inset 0 0 0 1.25px rgba(60,203,65,.5),inset 0 0 14px rgba(60,203,65,.16)}50%{box-shadow:inset 0 0 0 1.25px rgba(60,203,65,.5),inset 0 0 34px rgba(60,203,65,.42)}}
 /* 지도 위 문서식 워터마크(연습·실전 아님) — 앱(shell) 화면에서만, 불투명 지도배경 위·마커 아래 */
 .pwm{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 .pwm i{position:absolute;left:-30%;width:160%;transform:rotate(-20deg);white-space:nowrap;font-style:normal;font-weight:800;font-size:calc(15px*var(--fs,1));letter-spacing:2px;color:rgba(48,162,52,.14)}
-.mribbon{flex:none;display:none;align-items:center;gap:9px;height:calc(46px*var(--fs,1));padding:0 8px 0 15px;background:linear-gradient(180deg,#F8F9FB,#EDF0F4);border-bottom:1px solid rgba(120,132,155,.3);box-shadow:0 2px 8px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.6);position:relative;z-index:62;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.mribbon{flex:none;display:none;align-items:center;gap:9px;height:calc(50px*var(--fs,1));padding:0 8px 0 15px;background:linear-gradient(180deg,#F8F9FB,#EDF0F4);border-bottom:1px solid rgba(120,132,155,.3);box-shadow:0 2px 8px rgba(0,0,0,.26),inset 0 1px 0 rgba(255,255,255,.6);position:relative;z-index:62;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .mribbon:active{filter:brightness(.98)}
 #ph.appscreen .mribbon{display:flex}
 /* 개발 기어(경유수·글씨크기)는 연습 홈/완료에선 숨김(콘텐츠 가림 방지), 앱 화면에서만 노출 */
@@ -230,9 +230,11 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 .mribbon .pspark{width:14px;height:14px;flex:none;fill:#30A234}
 .mribbon .pdot{width:4px;height:4px;flex:none;border-radius:50%;background:#30A234}
 @keyframes ppulse{0%,100%{opacity:.45;transform:scale(.82)}50%{opacity:1;transform:scale(1.15)}}
-.mribbon .mrl{color:#14203D;font-size:calc(16px*var(--fs,1));font-weight:700;letter-spacing:.1px;white-space:nowrap}
+.mribbon .mrl{color:#14203D;font-size:calc(22px*var(--fs,1));font-weight:700;letter-spacing:.1px;white-space:nowrap}
 .mribbon .pnot{color:#6B7688;font-size:calc(14px*var(--fs,1));font-weight:500;white-space:nowrap}
-.mribbon .pexit{margin-left:auto;flex:none;display:flex;align-items:center;gap:5px;height:30px;padding:0 14px;border-radius:15px;background:#16213F;color:#EAF0F8;box-shadow:inset 0 1px 0 rgba(255,255,255,.12);font-size:calc(15px*var(--fs,1));font-weight:700;line-height:1;white-space:nowrap;pointer-events:none}
+.mribbon .pexit{margin-left:auto;flex:none;display:flex;align-items:center;gap:6px;height:34px;padding:0 12px 0 11px;border-radius:8px;background:transparent;color:#19254D;border:1.5px solid #19254D;font-size:calc(16px*var(--fs,1));font-weight:700;line-height:1;white-space:nowrap;pointer-events:none}
+.mribbon .ppause{display:inline-flex;gap:3px;align-items:center;flex:none}
+.mribbon .ppause i{width:3px;height:13px;background:currentColor;border-radius:1px}
 .pconfirm{position:absolute;inset:0;background:rgba(4,7,16,.6);display:flex;align-items:center;justify-content:center;padding:24px;z-index:80}
 .pcbox{background:#1a2440;border:1px solid #2f3d63;border-radius:12px;padding:24px 20px 20px;width:100%;max-width:320px;text-align:center}
 .pcbox h3{color:#fff;font-size:calc(20px*var(--fs,1));font-weight:800;margin-bottom:10px}
@@ -295,7 +297,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 </head>
 <body>
 <h2 class="sr-only">타다 드라이버앱 v2 프로토타입 — 운행중 화면. 모바일에서 화면 전체에 반응형으로 표시되고, 프로토타입 설정(경유 개수·글씨 크기)은 우하단 톱니 버튼에 숨겨져 있습니다.</h2>
-<div id="ph" style="--fs:1"><div class="ossb"><span>12:45</span><span class="osi">▂▄▆　100%</span></div><div class="mribbon" id="mribbon" onclick="P.pExit()"><span class="mrlg"><svg class="pspark" viewBox="0 0 24 24"><path d="M12 0C12 6.6 6.6 12 0 12 6.6 12 12 17.4 12 24 12 17.4 17.4 12 24 12 17.4 12 12 6.6 12 0Z"/></svg><span class="mrl">연습 모드</span><span class="pdot"></span><span class="pnot">실제 운행 아님</span></span><span class="pexit">✕ 중지</span></div><div id="app"></div><div class="osnav"><i>◁</i><i>○</i><i>▢</i></div><div class="pframe f-soft" id="pframe"></div></div>
+<div id="ph" style="--fs:1"><div class="ossb"><span>12:45</span><span class="osi">▂▄▆　100%</span></div><div class="mribbon" id="mribbon" onclick="P.pExit()"><span class="mrlg"><span class="mrl">연습 모드</span><span class="pnot">실제 운행 아님</span></span><span class="pexit"><span class="ppause"><i></i><i></i></span>중지</span></div><div id="app"></div><div class="osnav"><i>◁</i><i>○</i><i>▢</i></div><div class="pframe f-soft" id="pframe"></div></div>
 <button class="devbtn" id="devbtn" aria-label="프로토타입 설정 열기">⚙</button>
 <div class="devscrim" id="devscrim"></div>
 <div class="devpanel" id="devpanel">
@@ -548,7 +550,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
     pRejectCall:function(){S.pRej=(S.pRej||0)+1;P.toast('거절했어요 · 다시 콜이 전달돼요');render()},
     pAccept:function(){build(3);resetState();S.screen='pickup';render()},
     pToList:function(){S._back=true;S.screen='plist';render()},
-    pExit:function(){if(document.getElementById('pconfirm'))return;var toHome=false;var d=document.createElement('div');d.id='pconfirm';d.className='pconfirm';d.innerHTML='<div class="pcbox"><h3>'+(toHome?'연습을 나갈까요?':'연습을 끝낼까요?')+'</h3><p>지금까지 한 활동은 저장돼요.<br>실제 운행·정산과는 무관해요.</p><div class="pcbtns"><div class="pcbtn pcb-stay" onclick="P.pConfirmClose()">계속하기</div><div class="pcbtn pcb-exit" onclick="P.pExitDo()">'+(toHome?'홈으로':'연습 끝내기')+'</div></div></div>';document.getElementById('ph').appendChild(d)},
+    pExit:function(){if(document.getElementById('pconfirm'))return;var toHome=false;var d=document.createElement('div');d.id='pconfirm';d.className='pconfirm';d.innerHTML='<div class="pcbox"><h3>'+(toHome?'연습을 나갈까요?':'연습을 멈출까요?')+'</h3><p>지금까지 진행은 저장돼요.<br>목록에서 언제든 이어서 할 수 있어요.</p><div class="pcbtns"><div class="pcbtn pcb-stay" onclick="P.pConfirmClose()">계속하기</div><div class="pcbtn pcb-exit" onclick="P.pExitDo()">'+(toHome?'홈으로':'목록으로')+'</div></div></div>';document.getElementById('ph').appendChild(d)},
     pConfirmClose:function(){var d=document.getElementById('pconfirm');if(d&&d.parentNode)d.parentNode.removeChild(d)},
     pExitDo:function(){P.pConfirmClose();clearNavCd();clearMF();S.busy=false;S.screen='plist';S._last='';render();P.toast('연습 목록으로 나왔어요')},
     toast:function(msg){var ph=document.getElementById('ph');var old=document.getElementById('toast');if(old&&old.parentNode)old.parentNode.removeChild(old);var t=document.createElement('div');t.id='toast';t.className='toast';t.textContent=msg;ph.appendChild(t);requestAnimationFrame(function(){requestAnimationFrame(function(){t.classList.add('on')})});clearTimeout(P._tt);P._tt=setTimeout(function(){t.classList.remove('on');setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t)},260)},1700)},
