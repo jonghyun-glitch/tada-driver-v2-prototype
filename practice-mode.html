@@ -167,7 +167,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 /* 지도 위 문서식 워터마크(연습·실전 아님) — 앱(shell) 화면에서만, 불투명 지도배경 위·마커 아래 */
 .pwm{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 .pwm i{position:absolute;left:-30%;width:160%;transform:rotate(-20deg);white-space:nowrap;font-style:normal;font-weight:800;font-size:calc(15px*var(--fs,1));letter-spacing:2px;color:rgba(48,162,52,.14)}
-.mribbon{flex:none;display:none;align-items:center;gap:9px;height:calc(50px*var(--fs,1));padding:0 8px 0 15px;background:#000000;border-bottom:1px solid rgba(255,255,255,.08);box-shadow:0 2px 8px rgba(0,0,0,.35);position:relative;z-index:62;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.mribbon{flex:none;display:none;align-items:center;justify-content:center;gap:10px;height:calc(50px*var(--fs,1));padding:0 10px;background:#000000;border-bottom:1px solid rgba(255,255,255,.08);box-shadow:0 2px 8px rgba(0,0,0,.35);position:relative;z-index:62;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .mribbon:active{filter:brightness(.98)}
 #ph.appscreen .mribbon{display:flex}
 /* 개발 기어(경유수·글씨크기)는 연습 홈/완료에선 숨김(콘텐츠 가림 방지), 앱 화면에서만 노출 */
@@ -226,14 +226,14 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 .dw-gap{height:10px;background:#EFEFF1}
 .dw-row.prac .dw-lbl{color:#283873;font-weight:700}
 .dw-badge{font-size:10px;font-weight:800;color:#fff;background:#FE4C00;border-radius:9px;padding:1px 6px;letter-spacing:.3px}
-.mribbon .mrlg{flex:1;display:flex;align-items:center;gap:8px;min-width:0}
+.mribbon .mrlg{flex:none;display:flex;align-items:center;gap:8px}
 .mribbon .pspark{width:14px;height:14px;flex:none;fill:#30A234}
 .mribbon .pdot{width:4px;height:4px;flex:none;border-radius:50%;background:#30A234}
 @keyframes ppulse{0%,100%{opacity:.45;transform:scale(.82)}50%{opacity:1;transform:scale(1.15)}}
 .mribbon .mrl{color:#FFFFFF;font-size:calc(18px*var(--fs,1));font-weight:700;letter-spacing:.1px;white-space:nowrap}
 .mribbon .pnot{color:#000000;font-size:calc(10px*var(--fs,1));font-weight:700;white-space:nowrap}
 .mribbon .rdot{width:8px;height:8px;border-radius:50%;background:#32A2FA;flex:none}
-.mribbon .pexit{margin-left:auto;flex:none;display:flex;align-items:center;height:34px;padding:0 14px;border-radius:4px;background:#233565;color:#32A2FA;font-size:calc(18px*var(--fs,1));font-weight:700;line-height:1;white-space:nowrap;pointer-events:none}
+.mribbon .pexit{flex:none;display:flex;align-items:center;height:34px;padding:0 14px;border-radius:4px;background:#233565;color:#32A2FA;font-size:calc(18px*var(--fs,1));font-weight:700;line-height:1;white-space:nowrap;pointer-events:none}
 .mribbon .ppause{display:inline-flex;gap:3px;align-items:center;flex:none}
 .mribbon .ppause i{width:3px;height:13px;background:currentColor;border-radius:1px}
 .pconfirm{position:absolute;inset:0;background:rgba(4,7,16,.6);display:flex;align-items:center;justify-content:center;padding:24px;z-index:80}
