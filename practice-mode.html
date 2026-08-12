@@ -230,9 +230,10 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 .mribbon .pspark{width:14px;height:14px;flex:none;fill:#30A234}
 .mribbon .pdot{width:4px;height:4px;flex:none;border-radius:50%;background:#30A234}
 @keyframes ppulse{0%,100%{opacity:.45;transform:scale(.82)}50%{opacity:1;transform:scale(1.15)}}
-.mribbon .mrl{color:#14203D;font-size:calc(22px*var(--fs,1));font-weight:700;letter-spacing:.1px;white-space:nowrap}
-.mribbon .pnot{color:#6B7688;font-size:calc(14px*var(--fs,1));font-weight:500;white-space:nowrap}
-.mribbon .pexit{margin-left:auto;flex:none;display:flex;align-items:center;gap:6px;height:34px;padding:0 12px 0 11px;border-radius:8px;background:transparent;color:#19254D;border:1.5px solid #19254D;font-size:calc(16px*var(--fs,1));font-weight:700;line-height:1;white-space:nowrap;pointer-events:none}
+.mribbon .mrl{color:#000000;font-size:calc(18px*var(--fs,1));font-weight:700;letter-spacing:.1px;white-space:nowrap}
+.mribbon .pnot{color:#000000;font-size:calc(10px*var(--fs,1));font-weight:700;white-space:nowrap}
+.mribbon .rdot{width:6px;height:6px;border-radius:50%;background:#FE4C00;flex:none}
+.mribbon .pexit{margin-left:auto;flex:none;display:flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:8px;background:#EFEFF1;color:#19254D;font-size:calc(16px*var(--fs,1));font-weight:700;line-height:1;white-space:nowrap;pointer-events:none}
 .mribbon .ppause{display:inline-flex;gap:3px;align-items:center;flex:none}
 .mribbon .ppause i{width:3px;height:13px;background:currentColor;border-radius:1px}
 .pconfirm{position:absolute;inset:0;background:rgba(4,7,16,.6);display:flex;align-items:center;justify-content:center;padding:24px;z-index:80}
@@ -258,7 +259,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 .pl-desc b{color:#FFD79A;font-weight:700}
 .pl-hd{display:flex;align-items:center;justify-content:space-between;padding:4px 20px 8px;font-size:16px;font-weight:700}
 .pl-title{color:#C0C8D9}
-.pl-rate{font-size:14px;color:#30A234;font-weight:700}
+.pl-rate{font-size:14px;color:#32A2FA;font-weight:700}
 .pl-hd-l{display:flex;align-items:center;gap:8px}
 .pl-back{width:42px;height:42px;margin-left:-10px;display:flex;align-items:center;justify-content:center;color:#C8D2E6;border-radius:50%;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .pl-back:active{background:#1b2745}
@@ -268,17 +269,17 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 .pl-exit:active{background:#22305a}
 .pl-exit svg{width:20px;height:20px}
 .pl-bar{height:6px;background:#19254D;border-radius:3px;margin:0 20px 14px;overflow:hidden}
-.pl-bar i{display:block;height:100%;background:#30A234;border-radius:3px;transition:width .45s cubic-bezier(.5,0,0,1)}
+.pl-bar i{display:block;height:100%;background:#0094F9;border-radius:3px;transition:width .45s cubic-bezier(.5,0,0,1)}
 .pl-body{flex:1;overflow-y:auto;padding:0 16px 24px;display:flex;flex-direction:column;gap:10px}
 .tcard{display:flex;align-items:center;gap:12px;background:#16213D;border:1px solid #263352;border-radius:4px;padding:15px 14px;-webkit-tap-highlight-color:transparent}
 .tcard{cursor:pointer}
 .tcard:active{background:#1b2947}
-.tcard.done{border-color:#30A234;background:#13251c}
+.tcard.done{border-color:#293F71;background:#19254D}
 .tcard.lock{opacity:.5}
 .tc-n{font-size:13px;font-weight:700;color:#8ea0c8;width:22px;flex:none}
 .tc-t{flex:1;font-size:15px;font-weight:600}
 .tc-go{font-size:20px;color:#FFBA4C;font-weight:700}
-.tc-done{font-size:13px;color:#30A234;font-weight:700}
+.tc-done{font-size:13px;color:#32A2FA;background:#233565;border-radius:4px;padding:2px 8px;font-weight:700}
 .tc-lock{font-size:12px;color:#7885a8}
 .pdisp{padding:6px 0}
 .pd-rej{text-align:center;font-size:12px;color:#ff9f6b;margin:0 0 8px}
@@ -297,7 +298,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
 </head>
 <body>
 <h2 class="sr-only">타다 드라이버앱 v2 프로토타입 — 운행중 화면. 모바일에서 화면 전체에 반응형으로 표시되고, 프로토타입 설정(경유 개수·글씨 크기)은 우하단 톱니 버튼에 숨겨져 있습니다.</h2>
-<div id="ph" style="--fs:1"><div class="ossb"><span>12:45</span><span class="osi">▂▄▆　100%</span></div><div class="mribbon" id="mribbon" onclick="P.pExit()"><span class="mrlg"><span class="mrl">연습 모드</span><span class="pnot">실제 운행 아님</span></span><span class="pexit"><span class="ppause"><i></i><i></i></span>중지</span></div><div id="app"></div><div class="osnav"><i>◁</i><i>○</i><i>▢</i></div><div class="pframe f-soft" id="pframe"></div></div>
+<div id="ph" style="--fs:1"><div class="ossb"><span>12:45</span><span class="osi">▂▄▆　100%</span></div><div class="mribbon" id="mribbon" onclick="P.pExit()"><span class="mrlg"><span class="rdot"></span><span class="mrl">연습 모드</span><span class="pnot">실제 운행 아님</span></span><span class="pexit">끝내기<span class="ppause"><i></i><i></i></span></span></div><div id="app"></div><div class="osnav"><i>◁</i><i>○</i><i>▢</i></div><div class="pframe f-soft" id="pframe"></div></div>
 <button class="devbtn" id="devbtn" aria-label="프로토타입 설정 열기">⚙</button>
 <div class="devscrim" id="devscrim"></div>
 <div class="devpanel" id="devpanel">
@@ -550,7 +551,7 @@ svg.i{fill:currentColor}svg.is{fill:none;stroke:currentColor}
     pRejectCall:function(){S.pRej=(S.pRej||0)+1;P.toast('거절했어요 · 다시 콜이 전달돼요');render()},
     pAccept:function(){build(3);resetState();S.screen='pickup';render()},
     pToList:function(){S._back=true;S.screen='plist';render()},
-    pExit:function(){if(document.getElementById('pconfirm'))return;var toHome=false;var d=document.createElement('div');d.id='pconfirm';d.className='pconfirm';d.innerHTML='<div class="pcbox"><h3>'+(toHome?'연습을 나갈까요?':'연습을 멈출까요?')+'</h3><p>지금까지 진행은 저장돼요.<br>목록에서 언제든 이어서 할 수 있어요.</p><div class="pcbtns"><div class="pcbtn pcb-stay" onclick="P.pConfirmClose()">계속하기</div><div class="pcbtn pcb-exit" onclick="P.pExitDo()">'+(toHome?'홈으로':'목록으로')+'</div></div></div>';document.getElementById('ph').appendChild(d)},
+    pExit:function(){if(document.getElementById('pconfirm'))return;var toHome=false;var d=document.createElement('div');d.id='pconfirm';d.className='pconfirm';d.innerHTML='<div class="pcbox"><h3>'+(toHome?'연습을 나갈까요?':'연습을 끝낼까요?')+'</h3><p>지금까지 진행은 저장돼요.<br>목록에서 언제든 이어서 할 수 있어요.</p><div class="pcbtns"><div class="pcbtn pcb-stay" onclick="P.pConfirmClose()">계속하기</div><div class="pcbtn pcb-exit" onclick="P.pExitDo()">'+(toHome?'홈으로':'목록으로')+'</div></div></div>';document.getElementById('ph').appendChild(d)},
     pConfirmClose:function(){var d=document.getElementById('pconfirm');if(d&&d.parentNode)d.parentNode.removeChild(d)},
     pExitDo:function(){P.pConfirmClose();clearNavCd();clearMF();S.busy=false;S.screen='plist';S._last='';render();P.toast('연습 목록으로 나왔어요')},
     toast:function(msg){var ph=document.getElementById('ph');var old=document.getElementById('toast');if(old&&old.parentNode)old.parentNode.removeChild(old);var t=document.createElement('div');t.id='toast';t.className='toast';t.textContent=msg;ph.appendChild(t);requestAnimationFrame(function(){requestAnimationFrame(function(){t.classList.add('on')})});clearTimeout(P._tt);P._tt=setTimeout(function(){t.classList.remove('on');setTimeout(function(){if(t.parentNode)t.parentNode.removeChild(t)},260)},1700)},
